@@ -1,8 +1,9 @@
-package xyz.eeckhout.smartcity.Model;
+package xyz.eeckhout.smartcity.Model.JCDecaux;
 
-import java.io.Serializable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
 
 public class Position implements Serializable
 {

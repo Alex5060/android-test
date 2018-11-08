@@ -1,11 +1,13 @@
 
-package xyz.eeckhout.smartcity.Model;
+package xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVoiture;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.List;
+
+import xyz.eeckhout.smartcity.Model.VilleNamur.GeoShape;
 
 public class Fields implements Serializable
 {

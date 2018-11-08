@@ -1,10 +1,12 @@
 
-package xyz.eeckhout.smartcity.Model;
+package xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVelo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+
+import xyz.eeckhout.smartcity.Model.VilleNamur.Geometry;
 
 public class Record implements Serializable
 {
@@ -24,7 +26,7 @@ public class Record implements Serializable
     @SerializedName("record_timestamp")
     @Expose
     private String recordTimestamp;
-    private final static long serialVersionUID = 6967250420604876911L;
+    private final static long serialVersionUID = 2740843868664626542L;
 
     /**
      * No args constructor for use in serialization

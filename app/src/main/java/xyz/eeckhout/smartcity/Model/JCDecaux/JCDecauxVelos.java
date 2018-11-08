@@ -1,4 +1,4 @@
-package xyz.eeckhout.smartcity.Model;
+package xyz.eeckhout.smartcity.Model.JCDecaux;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

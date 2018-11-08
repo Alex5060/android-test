@@ -1,5 +1,5 @@
 
-package xyz.eeckhout.smartcity.Model;
+package xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVoiture;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

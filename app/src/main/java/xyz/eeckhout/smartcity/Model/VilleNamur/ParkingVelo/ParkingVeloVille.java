@@ -1,5 +1,5 @@
 
-package xyz.eeckhout.smartcity.Model;
+package xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVelo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
-public class ParkingAuto implements Serializable
+public class ParkingVeloVille implements Serializable
 {
 
     @SerializedName("nhits")
@@ -19,16 +19,22 @@ public class ParkingAuto implements Serializable
     @SerializedName("records")
     @Expose
     private List<Record> records = null;
-    @SerializedName("facet_groups")
-    @Expose
-    private List<FacetGroup> facetGroups = null;
-    private final static long serialVersionUID = 849184003397715162L;
+    private final static long serialVersionUID = 7386561069958669794L;
 
     /**
      * No args constructor for use in serialization
      * 
      */
-    public ParkingAuto() {
+    public ParkingVeloVille() {
+    }
+
+    @Override
+    public String toString() {
+        return "ParkingVeloVille{" +
+                "nhits=" + nhits +
+                ", parameters=" + parameters +
+                ", records=" + records +
+                '}';
     }
 
     /**
@@ -36,14 +42,12 @@ public class ParkingAuto implements Serializable
      * @param nhits
      * @param parameters
      * @param records
-     * @param facetGroups
      */
-    public ParkingAuto(Integer nhits, Parameters parameters, List<Record> records, List<FacetGroup> facetGroups) {
+    public ParkingVeloVille(Integer nhits, Parameters parameters, List<Record> records) {
         super();
         this.nhits = nhits;
         this.parameters = parameters;
         this.records = records;
-        this.facetGroups = facetGroups;
     }
 
     public Integer getNhits() {
@@ -70,21 +74,4 @@ public class ParkingAuto implements Serializable
         this.records = records;
     }
 
-    public List<FacetGroup> getFacetGroups() {
-        return facetGroups;
-    }
-
-    public void setFacetGroups(List<FacetGroup> facetGroups) {
-        this.facetGroups = facetGroups;
-    }
-
-    @Override
-    public String toString() {
-        return "ParkingAuto{" +
-                "nhits=" + nhits +
-                ", parameters=" + parameters +
-                ", records=" + records +
-                ", facetGroups=" + facetGroups +
-                '}';
-    }
 }

@@ -14,7 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-import xyz.eeckhout.smartcity.Model.JCDecauxVelos;
+import xyz.eeckhout.smartcity.Model.JCDecaux.JCDecauxVelos;
 
 public class JCDecauxDAO {
 

@@ -23,15 +23,18 @@ import java.util.ArrayList;
 
 import xyz.eeckhout.smartcity.DataAccess.JCDecauxDAO;
 import xyz.eeckhout.smartcity.DataAccess.ParkingAutoDAO;
-import xyz.eeckhout.smartcity.Model.JCDecauxVelos;
-import xyz.eeckhout.smartcity.Model.ParkingAuto;
-import xyz.eeckhout.smartcity.Model.Record;
+import xyz.eeckhout.smartcity.DataAccess.ParkingVeloVilleDAO;
+import xyz.eeckhout.smartcity.Model.JCDecaux.JCDecauxVelos;
+import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVelo.ParkingVeloVille;
+import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVoiture.ParkingAuto;
+import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVoiture.Record;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     private ArrayList<Marker> markers = new ArrayList<Marker>();
     private ParkingAuto parkingAuto;
+    private ParkingVeloVille parkingVelo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +77,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         /* Loading Parking Voiture */
         new LoadParkingAuto().execute();
+
+        /* Loading Parking Velo */
+        new LoadParkingVeloVille().execute();
+
         /* Move camera */
         LatLng namur = new LatLng(50.469313, 4.862612);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(namur,15));
@@ -175,6 +182,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         .title(record.getFields().getPlsyDescri())
                                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                                         .snippet("Nb places : "+ record.getFields().getPlaces()))
+                );
+                markers.get(markers.size() - 1).setTag(record);
+            }
+        }
+    }
+
+    private class LoadParkingVeloVille extends AsyncTask<String, Void, ParkingVeloVille>
+    {
+        @Override
+        protected ParkingVeloVille doInBackground(String ...params)
+        {
+
+            ParkingVeloVilleDAO parkingVeloVilleDAO  = new ParkingVeloVilleDAO();
+            ParkingVeloVille parkingVeloVille = new ParkingVeloVille();
+            try {
+                parkingVeloVille = parkingVeloVilleDAO.getAllParkingVeloVille();
+            }
+            catch (Exception e)
+            {
+                Log.i("erreur", e.getMessage());
+            }
+            return parkingVeloVille;
+        }
+
+        @Override
+        protected void onPostExecute (ParkingVeloVille parkingVeloVille)
+        {
+            parkingVelo = parkingVeloVille;
+            for(xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVelo.Record record : parkingVeloVille.getRecords()){
+                LatLng latLng = new LatLng(record.getFields().getGeoPoint2d().get(0), record.getFields().getGeoPoint2d().get(1));
+                markers.add(
+                        mMap.addMarker(
+                                new MarkerOptions().position(latLng)
+                                        .title(record.getFields().getNomStation())
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                                        .snippet("Nb places : "+ record.getFields().getNbreArceaux()))
                 );
                 markers.get(markers.size() - 1).setTag(record);
             }
