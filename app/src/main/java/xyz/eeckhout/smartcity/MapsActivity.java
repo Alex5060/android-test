@@ -3,9 +3,9 @@ package xyz.eeckhout.smartcity;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -20,16 +20,18 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import xyz.eeckhout.smartcity.DataAccess.JCDecauxDAO;
-import xyz.eeckhout.smartcity.Model.Example;
+import xyz.eeckhout.smartcity.DataAccess.ParkingAutoDAO;
+import xyz.eeckhout.smartcity.Model.JCDecauxVelos;
+import xyz.eeckhout.smartcity.Model.ParkingAuto;
+import xyz.eeckhout.smartcity.Model.Record;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     private ArrayList<Marker> markers = new ArrayList<Marker>();
-    private ArrayList<Example> libiaVelos;
+    private ParkingAuto parkingAuto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +48,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             }
         }
-
-        new LoadJCDecaux().execute();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -68,30 +68,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-//        LoadJCDecaux jcDecauxLoading = new LoadJCDecaux();
-//        jcDecauxLoading.execute();
+        /* Loading JCDecauxVelos */
+        LoadJCDecaux jcDecauxLoading = new LoadJCDecaux();
+        jcDecauxLoading.execute();
 
-        // Add a marker in Sydney and move the camera
+        /* Loading Parking Voiture */
+        new LoadParkingAuto().execute();
+        /* Move camera */
         LatLng namur = new LatLng(50.469313, 4.862612);
-//        markers.add(mMap.addMarker(new MarkerOptions().position(namur).title("Namur")
-//                .snippet("Population: 4,137,400")));
-//        markers.get(markers.size() - 1).setTag("Stationnement vélos");
-//        // icon with blue color
-//        markers.add(mMap.addMarker(new MarkerOptions().position(new LatLng(50.471339, 4.854766))
-//                .title("IESN")
-//                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))));
-//        markers.get(markers.size() - 1).setTag("Haute Ecole de Namur Liège Luxembourg, Implentation IESN");
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(namur,15));
-
-        Example libiaVelo;
-        for(int i = 0; i < libiaVelos.size(); i++){
-            libiaVelo = libiaVelos.get(i);
-            if(libiaVelo != null){
-                LatLng latLng = new LatLng(libiaVelo.getPosition().getLat(), libiaVelo.getPosition().getLng());
-                mMap.addMarker(new MarkerOptions().position(latLng).title(libiaVelo.getName())
-                        .snippet("Disponibilités : " + libiaVelo.getAvailableBikes()));
-            }
-        }
 
         // Set a listener for marker click.
         mMap.setOnMarkerClickListener(this);
@@ -127,15 +112,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private class LoadJCDecaux extends AsyncTask<String, Void, ArrayList<Example>>
+    private class LoadJCDecaux extends AsyncTask<String, Void, ArrayList<JCDecauxVelos>>
     {
         @Override
-        protected ArrayList<Example> doInBackground(String ...params)
+        protected ArrayList<JCDecauxVelos> doInBackground(String ...params)
         {
             JCDecauxDAO jcDecauxDAO = new JCDecauxDAO();
-            ArrayList<Example> examples = new ArrayList<>();
+            ArrayList<JCDecauxVelos> velos = new ArrayList<>();
             try {
-                examples = jcDecauxDAO.getAllJCDecaux();
+                velos = jcDecauxDAO.getAllJCDecaux();
+            }
+            catch (Exception e)
+            {
+                Log.i("erreur", e.getMessage());
+            }
+            return velos;
+        }
+
+        @Override
+        protected void onPostExecute (ArrayList<JCDecauxVelos> velos)
+        {
+            for(JCDecauxVelos velo : velos){
+                LatLng latLng = new LatLng(velo.getPosition().getLat(), velo.getPosition().getLng());
+                markers.add(
+                        mMap.addMarker(
+                            new MarkerOptions().position(latLng)
+                                    .title(velo.getName())
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                                    .snippet("Disponibilités : " + velo.getAvailableBikes()))
+                );
+                markers.get(markers.size() - 1).setTag(velo);
+            }
+        }
+    }
+
+    private class LoadParkingAuto extends AsyncTask<String, Void, ParkingAuto>
+    {
+        @Override
+        protected ParkingAuto doInBackground(String ...params)
+        {
+            ParkingAutoDAO parkingAutoDAO  = new ParkingAutoDAO();
+            ParkingAuto examples = new ParkingAuto();
+            try {
+                examples = parkingAutoDAO.getAllJCDecaux();
             }
             catch (Exception e)
             {
@@ -145,10 +164,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         @Override
-        protected void onPostExecute (ArrayList<Example> examples)
+        protected void onPostExecute (ParkingAuto parkingAuto)
         {
-            for(Example example : examples){
-                MapsActivity.this.libiaVelos.add(example);
+            MapsActivity.this.parkingAuto = parkingAuto;
+            for(Record record : parkingAuto.getRecords()){
+                LatLng latLng = new LatLng(record.getFields().getGeoPoint2d().get(0), record.getFields().getGeoPoint2d().get(1));
+                markers.add(
+                        mMap.addMarker(
+                                new MarkerOptions().position(latLng)
+                                        .title(record.getFields().getPlsyDescri())
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                        .snippet("Nb places : "+ record.getFields().getPlaces()))
+                );
+                markers.get(markers.size() - 1).setTag(record);
             }
         }
     }

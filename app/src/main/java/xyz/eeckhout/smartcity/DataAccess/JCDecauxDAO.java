@@ -14,12 +14,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-import javax.net.ssl.HttpsURLConnection;
-
-import xyz.eeckhout.smartcity.Model.Example;
+import xyz.eeckhout.smartcity.Model.JCDecauxVelos;
 
 public class JCDecauxDAO {
-    public ArrayList<Example> getAllJCDecaux() throws Exception
+
+    public ArrayList<JCDecauxVelos> getAllJCDecaux() throws Exception
     {
         URL url = new URL("https://api.jcdecaux.com/vls/v1/stations?contract=Namur&apiKey=7ec5a7ba2ddc9278fa2fe4682c02fbe08ec541c1");
         //URL url = new URL("https://jsonplaceholder.typicode.com/users");
@@ -41,19 +40,19 @@ public class JCDecauxDAO {
         return jsonToExample(stringJSON);
     }
 
-    private ArrayList<Example> jsonToExample(String stringJSON) throws Exception
+    private ArrayList<JCDecauxVelos> jsonToExample(String stringJSON) throws Exception
     {
-        ArrayList<Example> examples = new ArrayList<>();
-        Example example;
+        ArrayList<JCDecauxVelos> velos = new ArrayList<>();
+        JCDecauxVelos velo;
         JSONArray jsonArray = new JSONArray(stringJSON);
         for (int i = 0; i < jsonArray.length(); i++)
         {
             JSONObject jsonJCDecauxPlace = jsonArray.getJSONObject(i);
             Gson object = new GsonBuilder().create();
-            example = object.fromJson(jsonJCDecauxPlace.toString(), Example.class);
-            Log.i("Samy", "jsonToExample: " + example.toString());
-            examples.add(example);
+            velo = object.fromJson(jsonJCDecauxPlace.toString(), JCDecauxVelos.class);
+            Log.i("Samy", "jsonToExample: " + velo.toString());
+            velos.add(velo);
         }
-        return examples;
+        return velos;
     }
 }

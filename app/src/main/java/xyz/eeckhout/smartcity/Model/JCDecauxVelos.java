@@ -1,9 +1,10 @@
 package xyz.eeckhout.smartcity.Model;
-import java.io.Serializable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-public class Example implements Serializable
+
+import java.io.Serializable;
+public class JCDecauxVelos implements Serializable
 {
 
     @SerializedName("number")
@@ -48,7 +49,7 @@ public class Example implements Serializable
      * No args constructor for use in serialization
      *
      */
-    public Example() {
+    public JCDecauxVelos() {
     }
 
     /**
@@ -66,7 +67,7 @@ public class Example implements Serializable
      * @param contractName
      * @param availableBikes
      */
-    public Example(Integer number, String contractName, String name, String address, Position position, Boolean banking, Boolean bonus, Integer bikeStands, Integer availableBikeStands, Integer availableBikes, String status, Double lastUpdate) {
+    public JCDecauxVelos(Integer number, String contractName, String name, String address, Position position, Boolean banking, Boolean bonus, Integer bikeStands, Integer availableBikeStands, Integer availableBikes, String status, Double lastUpdate) {
         super();
         this.number = number;
         this.contractName = contractName;
@@ -180,7 +181,7 @@ public class Example implements Serializable
 
     @Override
     public String toString() {
-        return "Example{" +
+        return "JCDecauxVelos{" +
                 "number=" + number +
                 ", contractName='" + contractName + '\'' +
                 ", name='" + name + '\'' +
