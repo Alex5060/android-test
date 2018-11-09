@@ -2,6 +2,7 @@ package xyz.eeckhout.smartcity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -15,16 +16,22 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CustomCap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.RoundCap;
 
 import java.util.ArrayList;
 
+import xyz.eeckhout.smartcity.DataAccess.ItineraireVeloVilleDAO;
 import xyz.eeckhout.smartcity.DataAccess.JCDecauxDAO;
 import xyz.eeckhout.smartcity.DataAccess.ParkingAutoDAO;
 import xyz.eeckhout.smartcity.DataAccess.ParkingVeloVilleDAO;
 import xyz.eeckhout.smartcity.Model.JCDecaux.JCDecauxVelos;
+import xyz.eeckhout.smartcity.Model.ItineraireVelo.ItineraireVeloVille;
 import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVelo.ParkingVeloVille;
 import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVoiture.ParkingAuto;
 import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVoiture.Record;
@@ -35,6 +42,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ArrayList<Marker> markers = new ArrayList<Marker>();
     private ParkingAuto parkingAuto;
     private ParkingVeloVille parkingVelo;
+    private ItineraireVeloVille itineraireVelo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,12 +89,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         /* Loading Parking Velo */
         new LoadParkingVeloVille().execute();
 
+        /* Loading ItineraireVelo */
+        new LoadItineraireVeloVille().execute();
+
         /* Move camera */
         LatLng namur = new LatLng(50.469313, 4.862612);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(namur,15));
 
         // Set a listener for marker click.
         mMap.setOnMarkerClickListener(this);
+
+        // Instantiates a new Polyline object and adds points to define a rectangle
+
+        PolylineOptions rectOptions = new PolylineOptions()
+                .clickable(true)
+                .add(new LatLng(50.4703316231, 4.8655017399)
+                , new LatLng(50.4701745972, 4.8652616016)
+                , new LatLng(50.4701317925,  4.8643163498))
+                .width(30)
+                .color(Color.rgb(255, 180, 0))
+                .startCap(new RoundCap())
+                .endCap(new RoundCap() )
+                ;
+        Polyline polyline = mMap.addPolyline(rectOptions);
+        polyline.setTag("A");
+
     }
 
     public boolean onMarkerClick(final Marker marker) {
@@ -218,6 +245,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         .title(record.getFields().getNomStation())
                                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                                         .snippet("Nb places : "+ record.getFields().getNbreArceaux()))
+                );
+                markers.get(markers.size() - 1).setTag(record);
+            }
+        }
+    }
+
+    private class LoadItineraireVeloVille extends AsyncTask<String, Void, ItineraireVeloVille>
+    {
+        @Override
+        protected ItineraireVeloVille doInBackground(String ...params)
+        {
+
+            ItineraireVeloVilleDAO itineraireVeloVilleDAO  = new ItineraireVeloVilleDAO();
+            ItineraireVeloVille itineraireVeloVille = new ItineraireVeloVille();
+            try {
+                itineraireVeloVille = itineraireVeloVilleDAO.getAllItineraireVeloVille();
+            }
+            catch (Exception e)
+            {
+                Log.i("erreur", e.getMessage());
+            }
+            return itineraireVeloVille;
+        }
+
+        @Override
+        protected void onPostExecute (ItineraireVeloVille itineraireVeloVille)
+        {
+            itineraireVelo = itineraireVeloVille;
+            for(xyz.eeckhout.smartcity.Model.ItineraireVelo.Record record : itineraireVeloVille.getRecords()){
+                LatLng latLng = new LatLng(record.getFields().getGeoPoint2d().get(0), record.getFields().getGeoPoint2d().get(1));
+                markers.add(
+                        mMap.addMarker(
+                                new MarkerOptions().position(latLng)
+                                        .title(record.getFields().getNom())
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+                                        .snippet("Itinéraire communal : "+ record.getFields().getItiCodeCom()))
                 );
                 markers.get(markers.size() - 1).setTag(record);
             }
