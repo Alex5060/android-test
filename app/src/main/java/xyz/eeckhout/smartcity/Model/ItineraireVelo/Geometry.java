@@ -1,10 +1,11 @@
 
 package xyz.eeckhout.smartcity.Model.ItineraireVelo;
 
-import java.io.Serializable;
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+import java.util.List;
 
 public class Geometry implements Serializable
 {
@@ -14,7 +15,7 @@ public class Geometry implements Serializable
     private String type;
     @SerializedName("coordinates")
     @Expose
-    private List<Float> coordinates = null;
+    private List<Double> coordinates = null;
     private final static long serialVersionUID = 6349317039320522505L;
 
     /**
@@ -29,7 +30,7 @@ public class Geometry implements Serializable
      * @param type
      * @param coordinates
      */
-    public Geometry(String type, List<Float> coordinates) {
+    public Geometry(String type, List<Double> coordinates) {
         super();
         this.type = type;
         this.coordinates = coordinates;
@@ -43,11 +44,11 @@ public class Geometry implements Serializable
         this.type = type;
     }
 
-    public List<Float> getCoordinates() {
+    public List<Double> getCoordinates() {
         return coordinates;
     }
 
-    public void setCoordinates(List<Float> coordinates) {
+    public void setCoordinates(List<Double> coordinates) {
         this.coordinates = coordinates;
     }
 

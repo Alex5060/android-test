@@ -1,10 +1,11 @@
 
 package xyz.eeckhout.smartcity.Model.ItineraireVelo;
 
-import java.io.Serializable;
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+import java.util.List;
 
 public class Fields implements Serializable
 {
@@ -29,7 +30,7 @@ public class Fields implements Serializable
     private String nom;
     @SerializedName("geo_point_2d")
     @Expose
-    private List<Float> geoPoint2d = null;
+    private List<Double> geoPoint2d = null;
     @SerializedName("iti_code_com")
     @Expose
     private String itiCodeCom;
@@ -65,7 +66,7 @@ public class Fields implements Serializable
      * @param geoPoint2d
      * @param nom
      */
-    public Fields(String itiRegional, String itiCommunal, String itiCodeReg, String categorie, String itiCodeEu, String nom, List<Float> geoPoint2d, String itiCodeCom, GeoShape geoShape, String itiEuropeen, Integer id) {
+    public Fields(String itiRegional, String itiCommunal, String itiCodeReg, String categorie, String itiCodeEu, String nom, List<Double> geoPoint2d, String itiCodeCom, GeoShape geoShape, String itiEuropeen, Integer id) {
         super();
         this.itiRegional = itiRegional;
         this.itiCommunal = itiCommunal;
@@ -128,11 +129,11 @@ public class Fields implements Serializable
         this.nom = nom;
     }
 
-    public List<Float> getGeoPoint2d() {
+    public List<Double> getGeoPoint2d() {
         return geoPoint2d;
     }
 
-    public void setGeoPoint2d(List<Float> geoPoint2d) {
+    public void setGeoPoint2d(List<Double> geoPoint2d) {
         this.geoPoint2d = geoPoint2d;
     }
 

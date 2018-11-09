@@ -1,5 +1,7 @@
 package xyz.eeckhout.smartcity.DataAccess;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -16,7 +18,7 @@ public class ItineraireVeloVilleDAO {
 
     public ItineraireVeloVille getAllItineraireVeloVille() throws Exception
     {
-        URL url = new URL("https://data.namur.be/api/records/1.0/search/?dataset=namur-mobilite-itineraires-velo&facet=iti_code_reg&facet=iti_code_eu&facet=iti_communal&facet=iti_code_com");
+        URL url = new URL("https://data.namur.be/api/records/1.0/search/?dataset=namur-mobilite-itineraires-velo&facet=iti_code_reg&facet=iti_code_eu&facet=iti_communal&facet=iti_code_com&q=not(recordid%3D2321372ec5bc0e62f1e999d9f290c82c73e24d51)");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -39,6 +41,7 @@ public class ItineraireVeloVilleDAO {
         JSONObject jsonObject = new JSONObject(stringJSON);
 
         Gson object = new GsonBuilder().create();
+        Log.i("Samy", ""+jsonObject.length());
         itineraireVeloVille = object.fromJson(jsonObject.toString(), xyz.eeckhout.smartcity.Model.ItineraireVelo.ItineraireVeloVille.class);
 
         return itineraireVeloVille;

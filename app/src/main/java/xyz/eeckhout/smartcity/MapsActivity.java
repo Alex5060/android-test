@@ -16,7 +16,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CustomCap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -30,8 +29,8 @@ import xyz.eeckhout.smartcity.DataAccess.ItineraireVeloVilleDAO;
 import xyz.eeckhout.smartcity.DataAccess.JCDecauxDAO;
 import xyz.eeckhout.smartcity.DataAccess.ParkingAutoDAO;
 import xyz.eeckhout.smartcity.DataAccess.ParkingVeloVilleDAO;
-import xyz.eeckhout.smartcity.Model.JCDecaux.JCDecauxVelos;
 import xyz.eeckhout.smartcity.Model.ItineraireVelo.ItineraireVeloVille;
+import xyz.eeckhout.smartcity.Model.JCDecaux.JCDecauxVelos;
 import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVelo.ParkingVeloVille;
 import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVoiture.ParkingAuto;
 import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVoiture.Record;
@@ -101,18 +100,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Instantiates a new Polyline object and adds points to define a rectangle
 
-        PolylineOptions rectOptions = new PolylineOptions()
-                .clickable(true)
-                .add(new LatLng(50.4703316231, 4.8655017399)
-                , new LatLng(50.4701745972, 4.8652616016)
-                , new LatLng(50.4701317925,  4.8643163498))
-                .width(30)
-                .color(Color.rgb(255, 180, 0))
-                .startCap(new RoundCap())
-                .endCap(new RoundCap() )
-                ;
-        Polyline polyline = mMap.addPolyline(rectOptions);
-        polyline.setTag("A");
+//        PolylineOptions rectOptions = new PolylineOptions()
+//                .clickable(true)
+//                .add(new LatLng(50.4703316231, 4.8655017399)
+//                , new LatLng(50.4701745972, 4.8652616016)
+//                , new LatLng(50.4701317925,  4.8643163498))
+//                .width(30)
+//                .color(Color.rgb(255, 180, 0))
+//                .startCap(new RoundCap())
+//                .endCap(new RoundCap() )
+//                ;
+//        Polyline polyline = mMap.addPolyline(rectOptions);
+//        polyline.setTag("A");
 
     }
 
@@ -256,7 +255,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected ItineraireVeloVille doInBackground(String ...params)
         {
-
             ItineraireVeloVilleDAO itineraireVeloVilleDAO  = new ItineraireVeloVilleDAO();
             ItineraireVeloVille itineraireVeloVille = new ItineraireVeloVille();
             try {
@@ -274,15 +272,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         {
             itineraireVelo = itineraireVeloVille;
             for(xyz.eeckhout.smartcity.Model.ItineraireVelo.Record record : itineraireVeloVille.getRecords()){
-                LatLng latLng = new LatLng(record.getFields().getGeoPoint2d().get(0), record.getFields().getGeoPoint2d().get(1));
-                markers.add(
-                        mMap.addMarker(
-                                new MarkerOptions().position(latLng)
-                                        .title(record.getFields().getNom())
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
-                                        .snippet("Itinéraire communal : "+ record.getFields().getItiCodeCom()))
-                );
-                markers.get(markers.size() - 1).setTag(record);
+                PolylineOptions rectOptions = new PolylineOptions()
+                        .clickable(true)
+                        .width(30)
+                        .color(Color.rgb(255, 180, 0))
+                        .startCap(new RoundCap())
+                        .endCap(new RoundCap() )
+                        .addAll(record.getFields().getGeoShape().getLatLng())
+                        ;
+
+                Polyline polyline = mMap.addPolyline(rectOptions);
+                polyline.setTag(record);
             }
         }
     }
