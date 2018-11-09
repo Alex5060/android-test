@@ -69,6 +69,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     protected void onStop() {
+        super.onStop();
         HttpResponseCache cache = HttpResponseCache.getInstalled();
         if (cache != null) {
             cache.flush();
@@ -209,11 +210,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         {
             for(JCDecauxVelos velo : velos){
                 LatLng latLng = new LatLng(velo.getPosition().getLat(), velo.getPosition().getLng());
+                //BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
                 markers.add(
                         mMap.addMarker(
                             new MarkerOptions().position(latLng)
                                     .title(velo.getName())
-                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo))
                                     .snippet("Disponibilités : " + velo.getAvailableBikes()))
                 );
                 markers.get(markers.size() - 1).setTag(velo);
