@@ -1,4 +1,4 @@
-package xyz.eeckhout.smartcity;
+package xyz.eeckhout.smartcity.controller;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -42,9 +42,9 @@ import xyz.eeckhout.smartcity.Model.JCDecaux.JCDecauxVelos;
 import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVelo.ParkingVeloVille;
 import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVoiture.ParkingAuto;
 import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVoiture.Record;
+import xyz.eeckhout.smartcity.R;
 
 public class MapsFragment extends Fragment {
-
     private GoogleMap mMap;
     private SupportMapFragment mSupportMapFragment;
     private ArrayList<Marker> markers = new ArrayList<>();
@@ -56,61 +56,64 @@ public class MapsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             final Bundle savedInstanceState) {
-        mSupportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapDefault);
-        if (mSupportMapFragment == null) {
-            FragmentManager fragmentManager = getChildFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            mSupportMapFragment = SupportMapFragment.newInstance();
-            fragmentTransaction.replace(R.id.mapDefault, mSupportMapFragment).commit();
-        }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
+        if (Utils.isDataConnectionAvailable(getContext())) {
+            mSupportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapDefault);
+            if (mSupportMapFragment == null) {
+                FragmentManager fragmentManager = getChildFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                mSupportMapFragment = SupportMapFragment.newInstance();
+                fragmentTransaction.replace(R.id.mapDefault, mSupportMapFragment).commit();
+            }
 
-        if (mSupportMapFragment != null) {
-            mSupportMapFragment.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(GoogleMap googleMap) {
-                    mMap = googleMap;
-                    enableMyLocationIfPermitted();
-                    mMap.getUiSettings().setZoomControlsEnabled(true);
+            if (mSupportMapFragment != null) {
+                mSupportMapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        mMap = googleMap;
+                        enableMyLocationIfPermitted();
+                        mMap.getUiSettings().setZoomControlsEnabled(true);
 
-                    /* Loading JCDecauxVelos */
-                    new LoadJCDecaux().execute();
+                        /* Loading JCDecauxVelos */
+                        new LoadJCDecaux().execute();
 
-                    /* Loading Parking Voiture */
-                    new LoadParkingAuto().execute();
+                        /* Loading Parking Voiture */
+                        new LoadParkingAuto().execute();
 
-                    /* Loading Parking Velo */
-                    new LoadParkingVeloVille().execute();
+                        /* Loading Parking Velo */
+                        new LoadParkingVeloVille().execute();
 
-                    /* Loading ItineraireVelo */
-                    new LoadItineraireVeloVille().execute();
+                        /* Loading ItineraireVelo */
+                        new LoadItineraireVeloVille().execute();
 
-                    /* Move camera */
-                    LatLng namur = new LatLng(50.469313, 4.862612);
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(namur, 15));
+                        /* Move camera */
+                        LatLng namur = new LatLng(50.469313, 4.862612);
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(namur, 15));
 
-                    // Set a listener for marker click.
-                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                        @Override
-                        public boolean onMarkerClick(final Marker marker) {
-                            // Check if a click count was set, then display the click count.
-                            Toast.makeText(getContext(), marker.getTitle() + " has been clicked :" + marker.getTag() + ".", Toast.LENGTH_LONG).show();
+                        // Set a listener for marker click.
+                        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                            @Override
+                            public boolean onMarkerClick(final Marker marker) {
+                                // Check if a click count was set, then display the click count.
+                                Toast.makeText(getContext(), marker.getTitle() + " has been clicked :" + marker.getTag() + ".", Toast.LENGTH_LONG).show();
 
-                            // Return false to indicate that we have not consumed the event and that we wish
-                            // for the default behavior to occur (which is for the camera to move such that the
-                            // marker is centered and for the marker's info window to open, if it has one).
-                            return false;
-                        }
-                    });
-                    mMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
-                        @Override
-                        public void onPolylineClick(Polyline polyline) {
-                            Toast.makeText(getContext(), polyline.getTag().toString(), Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
-            });
+                                // Return false to indicate that we have not consumed the event and that we wish
+                                // for the default behavior to occur (which is for the camera to move such that the
+                                // marker is centered and for the marker's info window to open, if it has one).
+                                return false;
+                            }
+                        });
+                        mMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
+                            @Override
+                            public void onPolylineClick(Polyline polyline) {
+                                Toast.makeText(getContext(), polyline.getTag().toString(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                });
+            }
+        } else {
+            Toast.makeText(getContext(), R.string.error_internet_connection, Toast.LENGTH_LONG).show();
         }
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.activity_maps, container, false);
@@ -219,7 +222,7 @@ public class MapsFragment extends Fragment {
 
         @Override
         protected void onPostExecute(ParkingAuto parkingAuto) {
-            parkingAuto = parkingAuto;
+            MapsFragment.this.parkingAuto = parkingAuto;
             for (Record record : parkingAuto.getRecords()) {
                 LatLng latLng = new LatLng(record.getFields().getGeoPoint2d().get(0), record.getFields().getGeoPoint2d().get(1));
                 markers.add(
