@@ -44,7 +44,7 @@ import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVoiture.Record;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnPolylineClickListener  {
 
     private GoogleMap mMap;
-    private ArrayList<Marker> markers = new ArrayList<Marker>();
+    private ArrayList<Marker> markers = new ArrayList<>();
     private ParkingAuto parkingAuto;
     private ParkingVeloVille parkingVelo;
     private ItineraireVeloVille itineraireVelo;
@@ -215,7 +215,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         mMap.addMarker(
                             new MarkerOptions().position(latLng)
                                     .title(velo.getName())
-                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2))
                                     .snippet("Disponibilités : " + velo.getAvailableBikes()))
                 );
                 markers.get(markers.size() - 1).setTag(velo);
@@ -250,7 +250,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         mMap.addMarker(
                                 new MarkerOptions().position(latLng)
                                         .title(record.getFields().getPlsyDescri())
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.parking_voiture))
                                         .snippet("Nb places : "+ record.getFields().getPlaces()))
                 );
                 markers.get(markers.size() - 1).setTag(record);
@@ -286,7 +286,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         mMap.addMarker(
                                 new MarkerOptions().position(latLng)
                                         .title(record.getFields().getNomStation())
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.parking_velo))
                                         .snippet("Nb places : "+ record.getFields().getNbreArceaux()))
                 );
                 markers.get(markers.size() - 1).setTag(record);
