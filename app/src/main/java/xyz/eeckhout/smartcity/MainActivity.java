@@ -1,22 +1,22 @@
 package xyz.eeckhout.smartcity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import android.support.v7.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-    private GoogleMap mMap;
-    private MapFragment mapFragment;
+    private MapsActivity mapFragment = new MapsActivity();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.mapDefault);
+
+        getMapFragment();
+    }
+
+    private void getMapFragment(){
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.content, mapFragment)
+//                .commit();
     }
 }

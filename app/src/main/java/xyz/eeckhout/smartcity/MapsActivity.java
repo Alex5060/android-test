@@ -53,7 +53,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
         try {
             File httpCacheDir = new File(this.getCacheDir(), "http");
             long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
@@ -319,7 +318,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 PolylineOptions rectOptions = new PolylineOptions()
                         .clickable(true)
                         .width(30)
-                        .color(Color.rgb(255, 180, 0))
+                        .color(Color.rgb(0, 205, 0))
                         .startCap(new RoundCap())
                         .endCap(new RoundCap() )
                         .addAll(record.getFields().getGeoShape().getLatLng())
