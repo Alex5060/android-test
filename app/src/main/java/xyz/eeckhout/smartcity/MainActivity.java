@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-    private MapsActivity mapFragment = new MapsActivity();
+    private MapsFragment mapFragment = new MapsFragment();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -14,9 +14,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getMapFragment(){
-//        getSupportFragmentManager()
-//                .beginTransaction()
-//                .replace(R.id.content, mapFragment)
-//                .commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content, mapFragment)
+                .commit();
     }
 }
