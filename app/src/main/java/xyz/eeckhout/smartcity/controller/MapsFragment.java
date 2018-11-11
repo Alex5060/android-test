@@ -346,7 +346,7 @@ public class MapsFragment extends Fragment {
                         .addAll(PolyUtil.decode(route.getPoints()));
                 Polyline polyline = mMap.addPolyline(rectOptions);
                 polyline.setTag(direction);
-                
+
                 markers.add(
                         mMap.addMarker(
                                 new MarkerOptions()
