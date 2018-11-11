@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -74,18 +75,22 @@ public class MapsFragment extends Fragment {
                         enableMyLocationIfPermitted();
                         mMap.getUiSettings().setZoomControlsEnabled(true);
 
-                        /* Loading JCDecauxVelos */
-                        new LoadJCDecaux().execute();
-
-                        /* Loading Parking Voiture */
-                        new LoadParkingAuto().execute();
-
-                        /* Loading Parking Velo */
-                        new LoadParkingVeloVille().execute();
-
-                        /* Loading ItineraireVelo */
-                        new LoadItineraireVeloVille().execute();
-
+                        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isJCDecauxLoadingEnable", true)) {
+                            /* Loading JCDecauxVelos */
+                            new LoadJCDecaux().execute();
+                        }
+                        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isCarParkLoadingEnable", true)) {
+                            /* Loading Parking Voiture */
+                            new LoadParkingAuto().execute();
+                        }
+                        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBycicleParkLoadingEnable", true)) {
+                            /* Loading Parking Velo */
+                            new LoadParkingVeloVille().execute();
+                        }
+                        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isItineraireVeloLoadingEnable", true)) {
+                            /* Loading ItineraireVelo */
+                            new LoadItineraireVeloVille().execute();
+                        }
                         /* Move camera */
                         LatLng namur = new LatLng(50.469313, 4.862612);
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(namur, 15));
