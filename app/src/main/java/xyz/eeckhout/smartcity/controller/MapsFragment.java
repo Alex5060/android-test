@@ -204,10 +204,19 @@ public class MapsFragment extends Fragment {
                         mMap.addMarker(
                                 new MarkerOptions().position(latLng)
                                         .title(velo.getName())
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_vert))
                                         .snippet("Disponibilités : " + velo.getAvailableBikes()))
                 );
-                markers.get(markers.size() - 1).setTag(velo);
+                Marker marker = markers.get(markers.size() - 1);
+                if (velo.getAvailableBikes() > 5) {
+                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_vert));
+                } else {
+                    if (velo.getAvailableBikes() > 2) {
+                        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_orange));
+                    } else {
+                        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_rouge));
+                    }
+                }
+                marker.setTag(velo);
             }
         }
     }
