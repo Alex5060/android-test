@@ -34,24 +34,24 @@ import com.google.android.gms.maps.model.RoundCap;
 
 import java.util.ArrayList;
 
-import xyz.eeckhout.smartcity.DataAccess.ItineraireVeloVilleDAO;
-import xyz.eeckhout.smartcity.DataAccess.JCDecauxDAO;
-import xyz.eeckhout.smartcity.DataAccess.ParkingAutoDAO;
-import xyz.eeckhout.smartcity.DataAccess.ParkingVeloVilleDAO;
-import xyz.eeckhout.smartcity.Model.ItineraireVelo.ItineraireVeloVille;
-import xyz.eeckhout.smartcity.Model.JCDecaux.JCDecauxVelos;
-import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVelo.ParkingVeloVille;
-import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVoiture.ParkingAuto;
-import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVoiture.Record;
 import xyz.eeckhout.smartcity.R;
+import xyz.eeckhout.smartcity.dataAccess.BikeParkingNamurDAO;
+import xyz.eeckhout.smartcity.dataAccess.BikeRouteNamurDAO;
+import xyz.eeckhout.smartcity.dataAccess.CarParkingNamurDAO;
+import xyz.eeckhout.smartcity.dataAccess.JCDecauxDAO;
+import xyz.eeckhout.smartcity.model.jcdecaux.JCDecauxBikes;
+import xyz.eeckhout.smartcity.model.villeNamur.bikeParking.BikeParkingNamur;
+import xyz.eeckhout.smartcity.model.villeNamur.bikeRoute.BikeRouteNamur;
+import xyz.eeckhout.smartcity.model.villeNamur.carParking.CarParkingNamur;
+import xyz.eeckhout.smartcity.model.villeNamur.carParking.Record;
 
 public class MapsFragment extends Fragment {
     private GoogleMap mMap;
     private SupportMapFragment mSupportMapFragment;
     private ArrayList<Marker> markers = new ArrayList<>();
-    private ParkingAuto parkingAuto;
-    private ParkingVeloVille parkingVelo;
-    private ItineraireVeloVille itineraireVelo;
+    private CarParkingNamur carParkingNamur;
+    private BikeParkingNamur parkingVelo;
+    private BikeRouteNamur itineraireVelo;
 
     public MapsFragment() {
     }
@@ -76,7 +76,7 @@ public class MapsFragment extends Fragment {
                         mMap.getUiSettings().setZoomControlsEnabled(true);
 
                         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isJCDecauxLoadingEnable", true)) {
-                            /* Loading JCDecauxVelos */
+                            /* Loading JCDecauxBikes */
                             new LoadJCDecaux().execute();
                         }
                         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isCarParkLoadingEnable", true)) {
@@ -182,11 +182,11 @@ public class MapsFragment extends Fragment {
         }
     }
 
-    private class LoadJCDecaux extends AsyncTask<String, Void, ArrayList<JCDecauxVelos>> {
+    private class LoadJCDecaux extends AsyncTask<String, Void, ArrayList<JCDecauxBikes>> {
         @Override
-        protected ArrayList<JCDecauxVelos> doInBackground(String... params) {
+        protected ArrayList<JCDecauxBikes> doInBackground(String... params) {
             JCDecauxDAO jcDecauxDAO = new JCDecauxDAO();
-            ArrayList<JCDecauxVelos> velos = new ArrayList<>();
+            ArrayList<JCDecauxBikes> velos = new ArrayList<>();
             try {
                 velos = jcDecauxDAO.getAllJCDecaux();
             } catch (Exception e) {
@@ -196,8 +196,8 @@ public class MapsFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<JCDecauxVelos> velos) {
-            for (JCDecauxVelos velo : velos) {
+        protected void onPostExecute(ArrayList<JCDecauxBikes> velos) {
+            for (JCDecauxBikes velo : velos) {
                 LatLng latLng = new LatLng(velo.getPosition().getLat(), velo.getPosition().getLng());
                 //BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
                 markers.add(
@@ -212,13 +212,13 @@ public class MapsFragment extends Fragment {
         }
     }
 
-    private class LoadParkingAuto extends AsyncTask<String, Void, ParkingAuto> {
+    private class LoadParkingAuto extends AsyncTask<String, Void, CarParkingNamur> {
         @Override
-        protected ParkingAuto doInBackground(String... params) {
-            ParkingAutoDAO parkingAutoDAO = new ParkingAutoDAO();
-            ParkingAuto examples = new ParkingAuto();
+        protected CarParkingNamur doInBackground(String... params) {
+            CarParkingNamurDAO carParkingNamurDAO = new CarParkingNamurDAO();
+            CarParkingNamur examples = new CarParkingNamur();
             try {
-                examples = parkingAutoDAO.getAllJCDecaux();
+                examples = carParkingNamurDAO.getAllJCDecaux();
             } catch (Exception e) {
                 Log.i("erreur", e.getMessage());
             }
@@ -226,9 +226,9 @@ public class MapsFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(ParkingAuto parkingAuto) {
-            MapsFragment.this.parkingAuto = parkingAuto;
-            for (Record record : parkingAuto.getRecords()) {
+        protected void onPostExecute(CarParkingNamur carParkingNamur) {
+            MapsFragment.this.carParkingNamur = carParkingNamur;
+            for (Record record : carParkingNamur.getRecords()) {
                 LatLng latLng = new LatLng(record.getFields().getGeoPoint2d().get(0), record.getFields().getGeoPoint2d().get(1));
                 markers.add(
                         mMap.addMarker(
@@ -242,23 +242,23 @@ public class MapsFragment extends Fragment {
         }
     }
 
-    private class LoadParkingVeloVille extends AsyncTask<String, Void, ParkingVeloVille> {
+    private class LoadParkingVeloVille extends AsyncTask<String, Void, BikeParkingNamur> {
         @Override
-        protected ParkingVeloVille doInBackground(String... params) {
-            ParkingVeloVilleDAO parkingVeloVilleDAO = new ParkingVeloVilleDAO();
-            ParkingVeloVille parkingVeloVille = new ParkingVeloVille();
+        protected BikeParkingNamur doInBackground(String... params) {
+            BikeParkingNamurDAO bikeParkingNamurDAO = new BikeParkingNamurDAO();
+            BikeParkingNamur bikeParkingNamur = new BikeParkingNamur();
             try {
-                parkingVeloVille = parkingVeloVilleDAO.getAllParkingVeloVille();
+                bikeParkingNamur = bikeParkingNamurDAO.getAllParkingVeloVille();
             } catch (Exception e) {
                 Log.i("erreur", e.getMessage());
             }
-            return parkingVeloVille;
+            return bikeParkingNamur;
         }
 
         @Override
-        protected void onPostExecute(ParkingVeloVille parkingVeloVille) {
-            parkingVelo = parkingVeloVille;
-            for (xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVelo.Record record : parkingVeloVille.getRecords()) {
+        protected void onPostExecute(BikeParkingNamur bikeParkingNamur) {
+            parkingVelo = bikeParkingNamur;
+            for (xyz.eeckhout.smartcity.model.villeNamur.bikeParking.Record record : bikeParkingNamur.getRecords()) {
                 LatLng latLng = new LatLng(record.getFields().getGeoPoint2d().get(0), record.getFields().getGeoPoint2d().get(1));
                 markers.add(
                         mMap.addMarker(
@@ -272,23 +272,23 @@ public class MapsFragment extends Fragment {
         }
     }
 
-    private class LoadItineraireVeloVille extends AsyncTask<String, Void, ItineraireVeloVille> {
+    private class LoadItineraireVeloVille extends AsyncTask<String, Void, BikeRouteNamur> {
         @Override
-        protected ItineraireVeloVille doInBackground(String... params) {
-            ItineraireVeloVilleDAO itineraireVeloVilleDAO = new ItineraireVeloVilleDAO();
-            ItineraireVeloVille itineraireVeloVille = new ItineraireVeloVille();
+        protected BikeRouteNamur doInBackground(String... params) {
+            BikeRouteNamurDAO bikeRouteNamurDAO = new BikeRouteNamurDAO();
+            BikeRouteNamur bikeRouteNamur = new BikeRouteNamur();
             try {
-                itineraireVeloVille = itineraireVeloVilleDAO.getAllItineraireVeloVille();
+                bikeRouteNamur = bikeRouteNamurDAO.getAllItineraireVeloVille();
             } catch (Exception e) {
                 Log.i("erreur", e.getMessage());
             }
-            return itineraireVeloVille;
+            return bikeRouteNamur;
         }
 
         @Override
-        protected void onPostExecute(ItineraireVeloVille itineraireVeloVille) {
-            itineraireVelo = itineraireVeloVille;
-            for (xyz.eeckhout.smartcity.Model.ItineraireVelo.Record record : itineraireVeloVille.getRecords()) {
+        protected void onPostExecute(BikeRouteNamur bikeRouteNamur) {
+            itineraireVelo = bikeRouteNamur;
+            for (xyz.eeckhout.smartcity.model.villeNamur.bikeRoute.Record record : bikeRouteNamur.getRecords()) {
                 PolylineOptions rectOptions = new PolylineOptions()
                         .clickable(true)
                         .width(30)

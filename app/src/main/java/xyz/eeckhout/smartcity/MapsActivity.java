@@ -31,23 +31,23 @@
 //import java.io.IOException;
 //import java.util.ArrayList;
 //
-//import xyz.eeckhout.smartcity.DataAccess.ItineraireVeloVilleDAO;
+//import xyz.eeckhout.smartcity.DataAccess.BikeRouteNamurDAO;
 //import xyz.eeckhout.smartcity.DataAccess.JCDecauxDAO;
-//import xyz.eeckhout.smartcity.DataAccess.ParkingAutoDAO;
-//import xyz.eeckhout.smartcity.DataAccess.ParkingVeloVilleDAO;
-//import xyz.eeckhout.smartcity.Model.ItineraireVelo.ItineraireVeloVille;
-//import xyz.eeckhout.smartcity.Model.JCDecaux.JCDecauxVelos;
-//import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVelo.ParkingVeloVille;
-//import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVoiture.ParkingAuto;
+//import xyz.eeckhout.smartcity.DataAccess.CarParkingNamurDAO;
+//import xyz.eeckhout.smartcity.DataAccess.BikeParkingNamurDAO;
+//import xyz.eeckhout.smartcity.Model.ItineraireVelo.BikeRouteNamur;
+//import xyz.eeckhout.smartcity.Model.JCDecaux.JCDecauxBikes;
+//import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVelo.BikeParkingNamur;
+//import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVoiture.CarParkingNamur;
 //import xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVoiture.Record;
 //
 //public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnPolylineClickListener  {
 //
 //    private GoogleMap mMap;
 //    private ArrayList<Marker> markers = new ArrayList<>();
-//    private ParkingAuto parkingAuto;
-//    private ParkingVeloVille parkingVelo;
-//    private ItineraireVeloVille itineraireVelo;
+//    private CarParkingNamur parkingAuto;
+//    private BikeParkingNamur parkingVelo;
+//    private BikeRouteNamur itineraireVelo;
 //
 //    @Override
 //    protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +90,7 @@
 //        enableMyLocationIfPermitted();
 //        mMap.getUiSettings().setZoomControlsEnabled(true);
 //
-//        /* Loading JCDecauxVelos */
+//        /* Loading JCDecauxBikes */
 //        LoadJCDecaux jcDecauxLoading = new LoadJCDecaux();
 //        jcDecauxLoading.execute();
 //
@@ -187,13 +187,13 @@
 //        }
 //    }
 //
-//    private class LoadJCDecaux extends AsyncTask<String, Void, ArrayList<JCDecauxVelos>>
+//    private class LoadJCDecaux extends AsyncTask<String, Void, ArrayList<JCDecauxBikes>>
 //    {
 //        @Override
-//        protected ArrayList<JCDecauxVelos> doInBackground(String ...params)
+//        protected ArrayList<JCDecauxBikes> doInBackground(String ...params)
 //        {
 //            JCDecauxDAO jcDecauxDAO = new JCDecauxDAO();
-//            ArrayList<JCDecauxVelos> velos = new ArrayList<>();
+//            ArrayList<JCDecauxBikes> velos = new ArrayList<>();
 //            try {
 //                velos = jcDecauxDAO.getAllJCDecaux();
 //            }
@@ -205,9 +205,9 @@
 //        }
 //
 //        @Override
-//        protected void onPostExecute (ArrayList<JCDecauxVelos> velos)
+//        protected void onPostExecute (ArrayList<JCDecauxBikes> velos)
 //        {
-//            for(JCDecauxVelos velo : velos){
+//            for(JCDecauxBikes velo : velos){
 //                LatLng latLng = new LatLng(velo.getPosition().getLat(), velo.getPosition().getLng());
 //                //BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
 //                markers.add(
@@ -222,13 +222,13 @@
 //        }
 //    }
 //
-//    private class LoadParkingAuto extends AsyncTask<String, Void, ParkingAuto>
+//    private class LoadParkingAuto extends AsyncTask<String, Void, CarParkingNamur>
 //    {
 //        @Override
-//        protected ParkingAuto doInBackground(String ...params)
+//        protected CarParkingNamur doInBackground(String ...params)
 //        {
-//            ParkingAutoDAO parkingAutoDAO  = new ParkingAutoDAO();
-//            ParkingAuto examples = new ParkingAuto();
+//            CarParkingNamurDAO parkingAutoDAO  = new CarParkingNamurDAO();
+//            CarParkingNamur examples = new CarParkingNamur();
 //            try {
 //                examples = parkingAutoDAO.getAllJCDecaux();
 //            }
@@ -240,7 +240,7 @@
 //        }
 //
 //        @Override
-//        protected void onPostExecute (ParkingAuto parkingAuto)
+//        protected void onPostExecute (CarParkingNamur parkingAuto)
 //        {
 //            MapsActivity.this.parkingAuto = parkingAuto;
 //            for(Record record : parkingAuto.getRecords()){
@@ -257,14 +257,14 @@
 //        }
 //    }
 //
-//    private class LoadParkingVeloVille extends AsyncTask<String, Void, ParkingVeloVille>
+//    private class LoadParkingVeloVille extends AsyncTask<String, Void, BikeParkingNamur>
 //    {
 //        @Override
-//        protected ParkingVeloVille doInBackground(String ...params)
+//        protected BikeParkingNamur doInBackground(String ...params)
 //        {
 //
-//            ParkingVeloVilleDAO parkingVeloVilleDAO  = new ParkingVeloVilleDAO();
-//            ParkingVeloVille parkingVeloVille = new ParkingVeloVille();
+//            BikeParkingNamurDAO parkingVeloVilleDAO  = new BikeParkingNamurDAO();
+//            BikeParkingNamur parkingVeloVille = new BikeParkingNamur();
 //            try {
 //                parkingVeloVille = parkingVeloVilleDAO.getAllParkingVeloVille();
 //            }
@@ -276,7 +276,7 @@
 //        }
 //
 //        @Override
-//        protected void onPostExecute (ParkingVeloVille parkingVeloVille)
+//        protected void onPostExecute (BikeParkingNamur parkingVeloVille)
 //        {
 //            parkingVelo = parkingVeloVille;
 //            for(xyz.eeckhout.smartcity.Model.VilleNamur.ParkingVelo.Record record : parkingVeloVille.getRecords()){
@@ -293,13 +293,13 @@
 //        }
 //    }
 //
-//    private class LoadItineraireVeloVille extends AsyncTask<String, Void, ItineraireVeloVille>
+//    private class LoadItineraireVeloVille extends AsyncTask<String, Void, BikeRouteNamur>
 //    {
 //        @Override
-//        protected ItineraireVeloVille doInBackground(String ...params)
+//        protected BikeRouteNamur doInBackground(String ...params)
 //        {
-//            ItineraireVeloVilleDAO itineraireVeloVilleDAO  = new ItineraireVeloVilleDAO();
-//            ItineraireVeloVille itineraireVeloVille = new ItineraireVeloVille();
+//            BikeRouteNamurDAO itineraireVeloVilleDAO  = new BikeRouteNamurDAO();
+//            BikeRouteNamur itineraireVeloVille = new BikeRouteNamur();
 //            try {
 //                itineraireVeloVille = itineraireVeloVilleDAO.getAllItineraireVeloVille();
 //            }
@@ -311,7 +311,7 @@
 //        }
 //
 //        @Override
-//        protected void onPostExecute (ItineraireVeloVille itineraireVeloVille)
+//        protected void onPostExecute (BikeRouteNamur itineraireVeloVille)
 //        {
 //            itineraireVelo = itineraireVeloVille;
 //            for(xyz.eeckhout.smartcity.Model.ItineraireVelo.Record record : itineraireVeloVille.getRecords()){
