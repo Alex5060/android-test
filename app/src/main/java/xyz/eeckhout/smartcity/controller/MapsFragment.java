@@ -81,17 +81,17 @@ public class MapsFragment extends Fragment {
                             /* Loading JCDecauxBikes */
                             new LoadJCDecaux().execute();
                         }
-                        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isCarParkLoadingEnable", true)) {
+                        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isCarParkingNamurLoadingEnable", true)) {
                             /* Loading Parking Voiture */
-                            new LoadParkingAuto().execute();
+                            new LoadCarParkingNamur().execute();
                         }
-                        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBycicleParkLoadingEnable", true)) {
+                        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeParkingNamurLoadingEnable", true)) {
                             /* Loading Parking Velo */
-                            new LoadParkingVeloVille().execute();
+                            new LoadBikeParkingNamur().execute();
                         }
-                        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isItineraireVeloLoadingEnable", true)) {
+                        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeRouteLoadingEnable", true)) {
                             /* Loading ItineraireVelo */
-                            new LoadItineraireVeloVille().execute();
+                            new LoadBikeRouteNamur().execute();
                         }
                         /* Move camera */
                         LatLng namur = new LatLng(50.469313, 4.862612);
@@ -187,41 +187,41 @@ public class MapsFragment extends Fragment {
         @Override
         protected ArrayList<JCDecauxBikes> doInBackground(String... params) {
             JCDecauxDAO jcDecauxDAO = new JCDecauxDAO();
-            ArrayList<JCDecauxBikes> velos = new ArrayList<>();
+            ArrayList<JCDecauxBikes> bikes = new ArrayList<>();
             try {
-                velos = jcDecauxDAO.getAllJCDecaux();
+                bikes = jcDecauxDAO.getAllJCDecaux();
             } catch (Exception e) {
                 Log.i("erreur", e.getMessage());
             }
-            return velos;
+            return bikes;
         }
 
         @Override
-        protected void onPostExecute(ArrayList<JCDecauxBikes> velos) {
-            for (JCDecauxBikes velo : velos) {
-                LatLng latLng = new LatLng(velo.getPosition().getLat(), velo.getPosition().getLng());
+        protected void onPostExecute(ArrayList<JCDecauxBikes> bikes) {
+            for (JCDecauxBikes bike : bikes) {
+                LatLng latLng = new LatLng(bike.getPosition().getLat(), bike.getPosition().getLng());
                 markers.add(
                         mMap.addMarker(
                                 new MarkerOptions().position(latLng)
-                                        .title(velo.getName())
-                                        .snippet("Disponibilités : " + velo.getAvailableBikes()))
+                                        .title(bike.getName())
+                                        .snippet("Disponibilités : " + bike.getAvailableBikes()))
                 );
                 Marker marker = markers.get(markers.size() - 1);
-                if (velo.getAvailableBikes() > JCDECAUX_MIDDLE_LIMIT) {
+                if (bike.getAvailableBikes() > JCDECAUX_MIDDLE_LIMIT) {
                     marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_vert));
                 } else {
-                    if (velo.getAvailableBikes() > JCDECAUX_CRITICAL_LIMIT) {
+                    if (bike.getAvailableBikes() > JCDECAUX_CRITICAL_LIMIT) {
                         marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_orange));
                     } else {
                         marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_rouge));
                     }
                 }
-                marker.setTag(velo);
+                marker.setTag(bike);
             }
         }
     }
 
-    private class LoadParkingAuto extends AsyncTask<String, Void, CarParkingNamur> {
+    private class LoadCarParkingNamur extends AsyncTask<String, Void, CarParkingNamur> {
         @Override
         protected CarParkingNamur doInBackground(String... params) {
             CarParkingNamurDAO carParkingNamurDAO = new CarParkingNamurDAO();
@@ -251,7 +251,7 @@ public class MapsFragment extends Fragment {
         }
     }
 
-    private class LoadParkingVeloVille extends AsyncTask<String, Void, BikeParkingNamur> {
+    private class LoadBikeParkingNamur extends AsyncTask<String, Void, BikeParkingNamur> {
         @Override
         protected BikeParkingNamur doInBackground(String... params) {
             BikeParkingNamurDAO bikeParkingNamurDAO = new BikeParkingNamurDAO();
@@ -281,7 +281,7 @@ public class MapsFragment extends Fragment {
         }
     }
 
-    private class LoadItineraireVeloVille extends AsyncTask<String, Void, BikeRouteNamur> {
+    private class LoadBikeRouteNamur extends AsyncTask<String, Void, BikeRouteNamur> {
         @Override
         protected BikeRouteNamur doInBackground(String... params) {
             BikeRouteNamurDAO bikeRouteNamurDAO = new BikeRouteNamurDAO();
