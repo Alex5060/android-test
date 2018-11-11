@@ -204,7 +204,7 @@ public class MapsFragment extends Fragment {
                         mMap.addMarker(
                                 new MarkerOptions().position(latLng)
                                         .title(velo.getName())
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2))
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_vert))
                                         .snippet("Disponibilités : " + velo.getAvailableBikes()))
                 );
                 markers.get(markers.size() - 1).setTag(velo);
