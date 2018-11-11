@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
+import com.google.maps.android.PolyUtil;
 
 import java.util.ArrayList;
 
@@ -38,7 +39,10 @@ import xyz.eeckhout.smartcity.R;
 import xyz.eeckhout.smartcity.dataAccess.BikeParkingNamurDAO;
 import xyz.eeckhout.smartcity.dataAccess.BikeRouteNamurDAO;
 import xyz.eeckhout.smartcity.dataAccess.CarParkingNamurDAO;
+import xyz.eeckhout.smartcity.dataAccess.GoogleMapsDirectionDAO;
 import xyz.eeckhout.smartcity.dataAccess.JCDecauxDAO;
+import xyz.eeckhout.smartcity.model.graphhopper.Graphhopper;
+import xyz.eeckhout.smartcity.model.graphhopper.Path;
 import xyz.eeckhout.smartcity.model.jcdecaux.JCDecauxBikes;
 import xyz.eeckhout.smartcity.model.villeNamur.bikeParking.BikeParkingNamur;
 import xyz.eeckhout.smartcity.model.villeNamur.bikeRoute.BikeRouteNamur;
@@ -93,6 +97,8 @@ public class MapsFragment extends Fragment {
                             /* Loading ItineraireVelo */
                             new LoadBikeRouteNamur().execute();
                         }
+
+                        new LoadDirection().execute();
                         /* Move camera */
                         LatLng namur = new LatLng(50.469313, 4.862612);
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(namur, 15));
@@ -308,6 +314,49 @@ public class MapsFragment extends Fragment {
 
                 Polyline polyline = mMap.addPolyline(rectOptions);
                 polyline.setTag(record);
+            }
+        }
+    }
+
+    private class LoadDirection extends AsyncTask<String, Void, Graphhopper> {
+        @Override
+        protected Graphhopper doInBackground(String... params) {
+            GoogleMapsDirectionDAO dao = new GoogleMapsDirectionDAO();
+            Graphhopper direction = null;
+            try {
+                ArrayList<LatLng> latLngs = new ArrayList<LatLng>();
+                latLngs.add(new LatLng(50.471387, 4.854798));
+                latLngs.add(new LatLng(50.454703, 4.875776));
+                direction = dao.getDirection(latLngs, "foot");
+            } catch (Exception e) {
+                Log.i("erreur", e.getMessage());
+            }
+            return direction;
+        }
+
+        @Override
+        protected void onPostExecute(Graphhopper direction) {
+            for (Path route : direction.getPaths()) {
+                PolylineOptions rectOptions = new PolylineOptions()
+                        .clickable(true)
+                        .width(30)
+                        .color(Color.rgb(0, 0, 205))
+                        .startCap(new RoundCap())
+                        .endCap(new RoundCap())
+                        .addAll(PolyUtil.decode(route.getPoints()));
+                Polyline polyline = mMap.addPolyline(rectOptions);
+                polyline.setTag(direction);
+                
+                markers.add(
+                        mMap.addMarker(
+                                new MarkerOptions()
+                                        .position(new LatLng(route.getBbox().get(0), route.getBbox().get(1)))
+                        ));
+                markers.add(
+                        mMap.addMarker(
+                                new MarkerOptions()
+                                        .position(new LatLng(route.getBbox().get(2), route.getBbox().get(3)))
+                        ));
             }
         }
     }
