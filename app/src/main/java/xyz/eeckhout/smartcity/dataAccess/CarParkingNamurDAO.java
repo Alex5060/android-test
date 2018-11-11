@@ -13,13 +13,10 @@ import java.net.URL;
 import xyz.eeckhout.smartcity.model.villeNamur.carParking.CarParkingNamur;
 
 public class CarParkingNamurDAO {
-
+    private static final String API_BASE_URL = "https://data.namur.be/api/records/1.0/search/";
     public CarParkingNamur getAllJCDecaux() throws Exception
     {
-        //URL url = new URL("https://api.jcdecaux.com/vls/v1/stations?contract=Namur&apiKey=7ec5a7ba2ddc9278fa2fe4682c02fbe08ec541c1");
-        //URL url = new URL("https://jsonplaceholder.typicode.com/users");
-        //URL url = new URL("https://api.androidhive.info/volley/person_array.json");
-        URL url = new URL("https://data.namur.be/api/records/1.0/search/?dataset=namur-mobilite-parking&facet=plsy_fonction&fbclid=IwAR3yPg5BkqS0oBqJbeeqcMKNzve-5dyekBHx0L9_XEUc9jRcPvxbgOqXoUw");
+        URL url = new URL(getApiBaseUrl() + "?dataset=namur-mobilite-parking&facet=plsy_fonction&fbclid=IwAR3yPg5BkqS0oBqJbeeqcMKNzve-5dyekBHx0L9_XEUc9jRcPvxbgOqXoUw");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -38,12 +35,12 @@ public class CarParkingNamurDAO {
 
     private CarParkingNamur jsonToExample(String stringJSON) throws Exception
     {
-        CarParkingNamur carParkingNamur = new CarParkingNamur();
         JSONObject jsonObject = new JSONObject(stringJSON);
-
         Gson object = new GsonBuilder().create();
-        carParkingNamur = object.fromJson(jsonObject.toString(), CarParkingNamur.class);
+        return object.fromJson(jsonObject.toString(), CarParkingNamur.class);
+    }
 
-        return carParkingNamur;
+    private static String getApiBaseUrl() {
+        return API_BASE_URL;
     }
 }

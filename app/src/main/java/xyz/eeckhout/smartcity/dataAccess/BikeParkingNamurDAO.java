@@ -13,13 +13,10 @@ import java.net.URL;
 import xyz.eeckhout.smartcity.model.villeNamur.bikeParking.BikeParkingNamur;
 
 public class BikeParkingNamurDAO {
-
+    private static final String API_BASE_URL = "https://data.namur.be/api/records/1.0/search/";
     public BikeParkingNamur getAllParkingVeloVille() throws Exception
     {
-        //URL url = new URL("https://api.jcdecaux.com/vls/v1/stations?contract=Namur&apiKey=7ec5a7ba2ddc9278fa2fe4682c02fbe08ec541c1");
-        //URL url = new URL("https://jsonplaceholder.typicode.com/users");
-        //URL url = new URL("https://api.androidhive.info/volley/person_array.json");
-        URL url = new URL("https://data.namur.be/api/records/1.0/search/?dataset=namur-mobilite-stationnements-velo0");
+        URL url = new URL(getApiBaseUrl() + "?dataset=namur-mobilite-stationnements-velo0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -38,12 +35,12 @@ public class BikeParkingNamurDAO {
 
     private BikeParkingNamur jsonToParkingVeloVille(String stringJSON) throws Exception
     {
-        BikeParkingNamur bikeParkingNamur = new BikeParkingNamur();
         JSONObject jsonObject = new JSONObject(stringJSON);
-
         Gson object = new GsonBuilder().create();
-        bikeParkingNamur = object.fromJson(jsonObject.toString(), BikeParkingNamur.class);
+        return object.fromJson(jsonObject.toString(), BikeParkingNamur.class);
+    }
 
-        return bikeParkingNamur;
+    private static String getApiBaseUrl() {
+        return API_BASE_URL;
     }
 }

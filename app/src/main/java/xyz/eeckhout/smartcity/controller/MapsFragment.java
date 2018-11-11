@@ -46,6 +46,8 @@ import xyz.eeckhout.smartcity.model.villeNamur.carParking.CarParkingNamur;
 import xyz.eeckhout.smartcity.model.villeNamur.carParking.Record;
 
 public class MapsFragment extends Fragment {
+    private static final int JCDECAUX_MIDDLE_LIMIT = 5;
+    private static final int JCDECAUX_CRITICAL_LIMIT = 2;
     private GoogleMap mMap;
     private SupportMapFragment mSupportMapFragment;
     private ArrayList<Marker> markers = new ArrayList<>();
@@ -171,13 +173,12 @@ public class MapsFragment extends Fragment {
                                            int[] grantResults) {
         switch (requestCode) {
             case 1: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // La permission est garantie
                 } else {
                     // La permission est refusée
                 }
-                return;
+                break;
             }
         }
     }
@@ -199,7 +200,6 @@ public class MapsFragment extends Fragment {
         protected void onPostExecute(ArrayList<JCDecauxBikes> velos) {
             for (JCDecauxBikes velo : velos) {
                 LatLng latLng = new LatLng(velo.getPosition().getLat(), velo.getPosition().getLng());
-                //BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
                 markers.add(
                         mMap.addMarker(
                                 new MarkerOptions().position(latLng)
@@ -207,10 +207,10 @@ public class MapsFragment extends Fragment {
                                         .snippet("Disponibilités : " + velo.getAvailableBikes()))
                 );
                 Marker marker = markers.get(markers.size() - 1);
-                if (velo.getAvailableBikes() > 5) {
+                if (velo.getAvailableBikes() > JCDECAUX_MIDDLE_LIMIT) {
                     marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_vert));
                 } else {
-                    if (velo.getAvailableBikes() > 2) {
+                    if (velo.getAvailableBikes() > JCDECAUX_CRITICAL_LIMIT) {
                         marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_orange));
                     } else {
                         marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_rouge));
