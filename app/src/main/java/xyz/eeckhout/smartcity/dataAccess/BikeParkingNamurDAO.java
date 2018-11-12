@@ -16,7 +16,7 @@ public class BikeParkingNamurDAO {
     private static final String API_BASE_URL = "https://data.namur.be/api/records/1.0/search/";
     public BikeParkingNamur getAllParkingVeloVille() throws Exception
     {
-        URL url = new URL(getApiBaseUrl() + "?dataset=namur-mobilite-stationnements-velo0");
+        URL url = new URL(getApiBaseUrl() + "?dataset=namur-mobilite-stationnements-velo0&rows=30");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));

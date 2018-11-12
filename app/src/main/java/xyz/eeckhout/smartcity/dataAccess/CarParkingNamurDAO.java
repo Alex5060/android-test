@@ -16,7 +16,7 @@ public class CarParkingNamurDAO {
     private static final String API_BASE_URL = "https://data.namur.be/api/records/1.0/search/";
     public CarParkingNamur getAllJCDecaux() throws Exception
     {
-        URL url = new URL(getApiBaseUrl() + "?dataset=namur-mobilite-parking&facet=plsy_fonction&fbclid=IwAR3yPg5BkqS0oBqJbeeqcMKNzve-5dyekBHx0L9_XEUc9jRcPvxbgOqXoUw");
+        URL url = new URL(getApiBaseUrl() + "?dataset=namur-mobilite-parking&facet=plsy_fonction&rows=30");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));

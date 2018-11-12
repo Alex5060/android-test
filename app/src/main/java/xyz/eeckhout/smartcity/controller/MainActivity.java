@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar)     findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .replace(R.id.content, mapFragment)
                 .commit();
     }
-
 
     private void getInternetErrorFragment() {
         getSupportFragmentManager()

@@ -16,7 +16,7 @@ public class BikeRouteNamurDAO {
     private static final String API_BASE_URL = "https://data.namur.be/api/records/1.0/search/";
     public BikeRouteNamur getAllItineraireVeloVille() throws Exception
     {
-        URL url = new URL(getApiBaseUrl() + "?dataset=namur-mobilite-itineraires-velo&facet=iti_code_reg&facet=iti_code_eu&facet=iti_communal&facet=iti_code_com&q=not(recordid%3D2321372ec5bc0e62f1e999d9f290c82c73e24d51)");
+        URL url = new URL(getApiBaseUrl() + "?dataset=namur-mobilite-itineraires-velo&facet=iti_code_reg&facet=iti_code_eu&facet=iti_communal&facet=iti_code_com&rows=30");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setUseCaches(true);
         BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));

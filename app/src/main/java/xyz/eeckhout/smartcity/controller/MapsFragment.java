@@ -1,13 +1,15 @@
 package xyz.eeckhout.smartcity.controller;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,12 +21,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -50,10 +52,17 @@ public class MapsFragment extends Fragment {
     private static final int JCDECAUX_CRITICAL_LIMIT = 2;
     private GoogleMap mMap;
     private SupportMapFragment mSupportMapFragment;
+    private LocationManager locationManager;
     private ArrayList<Marker> markers = new ArrayList<>();
     private CarParkingNamur carParkingNamur;
     private BikeParkingNamur parkingVelo;
     private BikeRouteNamur itineraireVelo;
+    private LoadBikeParkingNamur loadBikeParkingNamur;
+    private LoadBikeRouteNamur loadBikeRouteNamur;
+    private LoadCarParkingNamur loadCarParkingNamur;
+    private LoadJCDecaux loadJCDecaux;
+    private static final long MIN_TIME = 400;
+    private static final float MIN_DISTANCE = 100;
 
     public MapsFragment() {
     }
@@ -69,6 +78,34 @@ public class MapsFragment extends Fragment {
                 fragmentTransaction.replace(R.id.mapDefault, mSupportMapFragment).commit();
             }
 
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+                        mMap.animateCamera(cameraUpdate);
+                        locationManager.removeUpdates(this);
+                    }
+
+                    @Override
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String provider) {
+
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String provider) {
+
+                    }
+                }); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
+            }
+
             if (mSupportMapFragment != null) {
                 mSupportMapFragment.getMapAsync(new OnMapReadyCallback() {
                     @Override
@@ -79,19 +116,24 @@ public class MapsFragment extends Fragment {
 
                         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isJCDecauxLoadingEnable", true)) {
                             /* Loading JCDecauxBikes */
-                            new LoadJCDecaux().execute();
+                            loadJCDecaux = new LoadJCDecaux();
+                            loadJCDecaux.execute();
                         }
                         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isCarParkingNamurLoadingEnable", true)) {
                             /* Loading Parking Voiture */
-                            new LoadCarParkingNamur().execute();
+                            loadCarParkingNamur = new LoadCarParkingNamur();
+                            loadCarParkingNamur.execute();
+                            ;
                         }
                         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeParkingNamurLoadingEnable", true)) {
                             /* Loading Parking Velo */
-                            new LoadBikeParkingNamur().execute();
+                            loadBikeParkingNamur = new LoadBikeParkingNamur();
+                            loadBikeParkingNamur.execute();
                         }
                         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeRouteLoadingEnable", true)) {
                             /* Loading ItineraireVelo */
-                            new LoadBikeRouteNamur().execute();
+                            loadBikeRouteNamur = new LoadBikeRouteNamur();
+                            loadBikeRouteNamur.execute();
                         }
                         /* Move camera */
                         LatLng namur = new LatLng(50.469313, 4.862612);
@@ -126,6 +168,23 @@ public class MapsFragment extends Fragment {
         return inflater.inflate(R.layout.activity_maps, container, false);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (loadJCDecaux != null) {
+            loadJCDecaux.cancel(true);
+        }
+        if (loadBikeParkingNamur != null) {
+            loadBikeParkingNamur.cancel(true);
+        }
+        if (loadBikeRouteNamur != null) {
+            loadBikeRouteNamur.cancel(true);
+        }
+        if (loadCarParkingNamur != null) {
+            loadCarParkingNamur.cancel(true);
+        }
+    }
+
     private void enableMyLocationIfPermitted() {
         if (ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -148,24 +207,24 @@ public class MapsFragment extends Fragment {
                 }
             };
 
-    private GoogleMap.OnMyLocationClickListener onMyLocationClickListener =
-            new GoogleMap.OnMyLocationClickListener() {
-                @Override
-                public void onMyLocationClick(@NonNull Location location) {
-
-                    mMap.setMinZoomPreference(12);
-
-                    CircleOptions circleOptions = new CircleOptions();
-                    circleOptions.center(new LatLng(location.getLatitude(),
-                            location.getLongitude()));
-
-                    circleOptions.radius(200);
-                    circleOptions.fillColor(Color.RED);
-                    circleOptions.strokeWidth(6);
-
-                    mMap.addCircle(circleOptions);
-                }
-            };
+//    private GoogleMap.OnMyLocationClickListener onMyLocationClickListener =
+//            new GoogleMap.OnMyLocationClickListener() {
+//                @Override
+//                public void onMyLocationClick(@NonNull Location location) {
+//
+//                    mMap.setMinZoomPreference(12);
+//
+//                    CircleOptions circleOptions = new CircleOptions();
+//                    circleOptions.center(new LatLng(location.getLatitude(),
+//                            location.getLongitude()));
+//
+//                    circleOptions.radius(200);
+//                    circleOptions.fillColor(Color.RED);
+//                    circleOptions.strokeWidth(6);
+//
+//                    mMap.addCircle(circleOptions);
+//                }
+//            };
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -309,6 +368,11 @@ public class MapsFragment extends Fragment {
                 Polyline polyline = mMap.addPolyline(rectOptions);
                 polyline.setTag(record);
             }
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
         }
     }
 }
