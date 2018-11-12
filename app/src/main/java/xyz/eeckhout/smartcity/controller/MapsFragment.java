@@ -39,7 +39,7 @@ import xyz.eeckhout.smartcity.R;
 import xyz.eeckhout.smartcity.dataAccess.BikeParkingNamurDAO;
 import xyz.eeckhout.smartcity.dataAccess.BikeRouteNamurDAO;
 import xyz.eeckhout.smartcity.dataAccess.CarParkingNamurDAO;
-import xyz.eeckhout.smartcity.dataAccess.GoogleMapsDirectionDAO;
+import xyz.eeckhout.smartcity.dataAccess.GraphhopperDirectionDAO;
 import xyz.eeckhout.smartcity.dataAccess.JCDecauxDAO;
 import xyz.eeckhout.smartcity.model.graphhopper.Graphhopper;
 import xyz.eeckhout.smartcity.model.graphhopper.Path;
@@ -306,7 +306,7 @@ public class MapsFragment extends Fragment {
             for (xyz.eeckhout.smartcity.model.villeNamur.bikeRoute.Record record : bikeRouteNamur.getRecords()) {
                 PolylineOptions rectOptions = new PolylineOptions()
                         .clickable(true)
-                        .width(30)
+                        .width(15)
                         .color(Color.rgb(0, 205, 0))
                         .startCap(new RoundCap())
                         .endCap(new RoundCap())
@@ -321,7 +321,7 @@ public class MapsFragment extends Fragment {
     private class LoadDirection extends AsyncTask<String, Void, Graphhopper> {
         @Override
         protected Graphhopper doInBackground(String... params) {
-            GoogleMapsDirectionDAO dao = new GoogleMapsDirectionDAO();
+            GraphhopperDirectionDAO dao = new GraphhopperDirectionDAO();
             Graphhopper direction = null;
             try {
                 ArrayList<LatLng> latLngs = new ArrayList<LatLng>();

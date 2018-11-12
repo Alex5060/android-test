@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 import xyz.eeckhout.smartcity.model.graphhopper.Graphhopper;
 
-public class GoogleMapsDirectionDAO {
+public class GraphhopperDirectionDAO {
     private static final String API_BASE_URL = "https://graphhopper.com/api/1/";
 
     public Graphhopper getDirection(ArrayList<LatLng> latLngs, String vehicle) throws Exception {
