@@ -35,7 +35,11 @@ public class BikeRouteNamurDAO {
     }
 
     public BikeRouteNamur getItinerairesFromArea(LatLng center, float distance) throws Exception {
-        URL url = new URL(getApiBaseUrl() + "?dataset=namur-mobilite-itineraires-velo&facet=iti_code_reg&facet=iti_code_eu&facet=iti_communal&facet=iti_code_com&rows=30");
+        StringBuilder urlBuilder = new StringBuilder(getApiBaseUrl());
+        urlBuilder.append("?dataset=namur-mobilite-itineraires-velo&facet=iti_code_reg&facet=iti_code_eu&facet=iti_communal&facet=iti_code_com&rows=30");
+        urlBuilder.append("&geofilter.distance=");
+        urlBuilder.append(center.latitude).append(",").append(center.longitude).append(",").append(distance);
+        URL url = new URL(urlBuilder.toString());
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setUseCaches(true);
         BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
