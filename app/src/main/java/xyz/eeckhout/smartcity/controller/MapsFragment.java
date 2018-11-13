@@ -76,6 +76,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private LoadJCDecaux loadJCDecaux;
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 100;
+    private MapViewModel model;
+
     public static xyz.eeckhout.smartcity.controller.MapsFragment newInstance() {
         return new xyz.eeckhout.smartcity.controller.MapsFragment();
     }
@@ -83,6 +85,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+
+        model = ViewModelProviders.of(this).get(MapViewModel.class);
+        if(model != null) {
+            carParkingNamur = model.getCarParkingNamur().getValue();
+            jcDecauxBikes = model.getJcDecauxBikes().getValue();
+            itineraireVelo = model.getItineraireVelo().getValue();
+            parkingVelo = model.getParkingVelo().getValue();
+        }
     }
 
     @Override
@@ -143,6 +153,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        model.getCarParkingNamur().setValue(carParkingNamur);
+        model.getItineraireVelo().setValue(itineraireVelo);
+        model.getJcDecauxBikes().setValue(jcDecauxBikes);
+        model.getParkingVelo().setValue(parkingVelo);
         mMapView.onSaveInstanceState(outState);
     }
 
