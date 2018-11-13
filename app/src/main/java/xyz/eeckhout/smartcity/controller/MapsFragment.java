@@ -112,12 +112,12 @@ public class MapsFragment extends Fragment {
                     @Override
                     public void onMapReady(GoogleMap googleMap) {
                         mMap = googleMap;
-                        /* Move camera */
-                        LatLng namur = new LatLng(50.469313, 4.862612);
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(namur, 15));
-
                         enableMyLocationIfPermitted();
+                        /* Move camera */
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(50.469313, 4.862612), 15));
                         mMap.getUiSettings().setZoomControlsEnabled(true);
+
+                        VisibleRegion visibleRegion = mMap.getProjection().getVisibleRegion();
 
                         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isJCDecauxLoadingEnable", true)) {
                             /* Loading JCDecauxBikes */
@@ -127,17 +127,17 @@ public class MapsFragment extends Fragment {
                         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isCarParkingNamurLoadingEnable", true)) {
                             /* Loading Parking Voiture */
                             loadCarParkingNamur = new LoadCarParkingNamur();
-                            loadCarParkingNamur.execute(mMap.getProjection().getVisibleRegion());
+                            loadCarParkingNamur.execute(visibleRegion);
                         }
                         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeParkingNamurLoadingEnable", true)) {
                             /* Loading Parking Velo */
                             loadBikeParkingNamur = new LoadBikeParkingNamur();
-                            loadBikeParkingNamur.execute(mMap.getProjection().getVisibleRegion());
+                            loadBikeParkingNamur.execute(visibleRegion);
                         }
                         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeRouteLoadingEnable", true)) {
                             /* Loading ItineraireVelo */
                             loadBikeRouteNamur = new LoadBikeRouteNamur();
-                            loadBikeRouteNamur.execute(mMap.getProjection().getVisibleRegion());
+                            loadBikeRouteNamur.execute(visibleRegion);
                         }
 
                         // Set a listener for marker click.

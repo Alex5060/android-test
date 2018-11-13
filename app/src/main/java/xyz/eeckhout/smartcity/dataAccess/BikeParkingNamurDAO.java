@@ -35,10 +35,10 @@ public class BikeParkingNamurDAO {
 
     public BikeParkingNamur getPakingVeloFromArez(LatLng center, float distance) throws Exception {
         StringBuilder urlBuilder = new StringBuilder(getApiBaseUrl());
-        urlBuilder.append("?dataset=namur-mobilite-stationnements-velo0&rows=30");
+        urlBuilder.append("?dataset=namur-mobilite-stationnements-velo0&rows=-1");
         urlBuilder.append("&geofilter.distance=");
         urlBuilder.append(center.latitude).append(",").append(center.longitude).append(",").append(distance);
-        URL url = new URL(getApiBaseUrl() + "?dataset=namur-mobilite-stationnements-velo0&rows=30");
+        URL url = new URL(urlBuilder.toString());
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));

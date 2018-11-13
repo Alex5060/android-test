@@ -35,7 +35,7 @@ public class CarParkingNamurDAO {
 
     public CarParkingNamur getParkingFromArea(LatLng center, float distance) throws Exception {
         StringBuilder urlBuilder = new StringBuilder(getApiBaseUrl());
-        urlBuilder.append("?dataset=namur-mobilite-parking&facet=plsy_fonction&rows=30");
+        urlBuilder.append("?dataset=namur-mobilite-parking&facet=plsy_fonction&rows=-1");
         urlBuilder.append("&geofilter.distance=");
         urlBuilder.append(center.latitude).append(",").append(center.longitude).append(",").append(distance);
         URL url = new URL(urlBuilder.toString());
