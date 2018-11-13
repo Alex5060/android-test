@@ -1,10 +1,14 @@
 package xyz.eeckhout.smartcity.controller;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import xyz.eeckhout.smartcity.AccountFragment;
 import xyz.eeckhout.smartcity.R;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -24,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        enableMyLocationIfPermitted();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -46,18 +52,52 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        getMapFragment();
+    }
+
+    private void enableMyLocationIfPermitted() {
+        if (ContextCompat.checkSelfPermission(getBaseContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION},
+                    1);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[],
+                                           int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // La permission est garantie
+                } else {
+                    // La permission est refusée
+                }
+                break;
+            }
+        }
+    }
+
+    private void getMapFragment(){
         if (Utils.isDataConnectionAvailable(getApplicationContext())) {
-            getMapFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.content, mapFragment)
+                    .commit();
         } else {
             getInternetErrorFragment();
             Toast.makeText(getApplicationContext(), R.string.error_internet_connection, Toast.LENGTH_LONG).show();
         }
     }
 
-    private void getMapFragment(){
+    private void getAccountFragment(){
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.content, mapFragment)
+                .replace(R.id.content, new AccountFragment())
                 .commit();
     }
 
@@ -107,13 +147,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            getMapFragment();
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
-
+            getAccountFragment();
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
