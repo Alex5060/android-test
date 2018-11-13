@@ -117,28 +117,33 @@ public class MapsFragment extends Fragment {
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(50.469313, 4.862612), 15));
                         mMap.getUiSettings().setZoomControlsEnabled(true);
 
-                        VisibleRegion visibleRegion = mMap.getProjection().getVisibleRegion();
-
-                        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isJCDecauxLoadingEnable", true)) {
-                            /* Loading JCDecauxBikes */
-                            loadJCDecaux = new LoadJCDecaux();
-                            loadJCDecaux.execute();
-                        }
-                        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isCarParkingNamurLoadingEnable", true)) {
-                            /* Loading Parking Voiture */
-                            loadCarParkingNamur = new LoadCarParkingNamur();
-                            loadCarParkingNamur.execute(visibleRegion);
-                        }
-                        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeParkingNamurLoadingEnable", true)) {
-                            /* Loading Parking Velo */
-                            loadBikeParkingNamur = new LoadBikeParkingNamur();
-                            loadBikeParkingNamur.execute(visibleRegion);
-                        }
-                        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeRouteLoadingEnable", true)) {
-                            /* Loading ItineraireVelo */
-                            loadBikeRouteNamur = new LoadBikeRouteNamur();
-                            loadBikeRouteNamur.execute(visibleRegion);
-                        }
+                        mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+                            @Override
+                            public void onCameraIdle() {
+                                VisibleRegion visibleRegion = mMap.getProjection().getVisibleRegion();
+                                mMap.clear();
+                                if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isJCDecauxLoadingEnable", true)) {
+                                    /* Loading JCDecauxBikes */
+                                    loadJCDecaux = new LoadJCDecaux();
+                                    loadJCDecaux.execute();
+                                }
+                                if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isCarParkingNamurLoadingEnable", true)) {
+                                    /* Loading Parking Voiture */
+                                    loadCarParkingNamur = new LoadCarParkingNamur();
+                                    loadCarParkingNamur.execute(visibleRegion);
+                                }
+                                if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeParkingNamurLoadingEnable", true)) {
+                                    /* Loading Parking Velo */
+                                    loadBikeParkingNamur = new LoadBikeParkingNamur();
+                                    loadBikeParkingNamur.execute(visibleRegion);
+                                }
+                                if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeRouteLoadingEnable", true)) {
+                                    /* Loading ItineraireVelo */
+                                    loadBikeRouteNamur = new LoadBikeRouteNamur();
+                                    loadBikeRouteNamur.execute(visibleRegion);
+                                }
+                            }
+                        });
 
                         // Set a listener for marker click.
                         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -366,9 +371,6 @@ public class MapsFragment extends Fragment {
                 BikeRouteNamur bikeRouteNamur = new BikeRouteNamur();
                 try {
                     VisibleRegion visibleRegion = (VisibleRegion) params[0];
-                    //bikeRouteNamur = bikeRouteNamurDAO.getAllItineraireVeloVille();
-//                    Log.i("samy", ""+visibleRegion.latLngBounds.getCenter().latitude+","+visibleRegion.latLngBounds.getCenter().longitude);
-//                    Log.i("samy", "Distance : "+Utils.getDistanceVisibleRegion(visibleRegion));
                     bikeRouteNamur = bikeRouteNamurDAO.getItinerairesFromArea(visibleRegion.latLngBounds.getCenter(), Utils.getDistanceVisibleRegion(visibleRegion));
                 } catch (Exception e) {
                     Log.i("erreur", e.getMessage());
@@ -385,7 +387,7 @@ public class MapsFragment extends Fragment {
                 for (xyz.eeckhout.smartcity.model.villeNamur.bikeRoute.Record record : bikeRouteNamur.getRecords()) {
                     PolylineOptions rectOptions = new PolylineOptions()
                             .clickable(true)
-                            .width(30)
+                            .width(15)
                             .color(Color.rgb(0, 205, 0))
                             .startCap(new RoundCap())
                             .endCap(new RoundCap())
