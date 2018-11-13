@@ -23,7 +23,6 @@ import xyz.eeckhout.smartcity.AccountFragment;
 import xyz.eeckhout.smartcity.R;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
-    private Fragment mapFragment = new MapsFragment();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (Utils.isDataConnectionAvailable(getApplicationContext())) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.content, mapFragment)
+                    .replace(R.id.content, MapsFragment.newInstance())
                     .commit();
         } else {
             getInternetErrorFragment();
