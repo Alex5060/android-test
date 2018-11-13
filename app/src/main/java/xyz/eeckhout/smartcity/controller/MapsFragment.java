@@ -66,11 +66,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private MapView mMapView;
     private static final int JCDECAUX_MIDDLE_LIMIT = 5;
     private static final int JCDECAUX_CRITICAL_LIMIT = 2;
-    private LocationManager locationManager;
-    private ArrayList<Marker> markers = new ArrayList<>();
     private CarParkingNamur carParkingNamur;
     private BikeParkingNamur parkingVelo;
     private BikeRouteNamur itineraireVelo;
+    private ArrayList<JCDecauxBikes> jcDecauxBikes;
     private LoadBikeParkingNamur loadBikeParkingNamur;
     private LoadBikeRouteNamur loadBikeRouteNamur;
     private LoadCarParkingNamur loadCarParkingNamur;
@@ -99,7 +98,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    map.clear();
+                    addAllData();
                 }
             });
         }
@@ -194,30 +193,73 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
                 @Override
                 public void onCameraIdle() {
-                    VisibleRegion visibleRegion = map.getProjection().getVisibleRegion();
-                    map.clear();
-                    if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isJCDecauxLoadingEnable", true)) {
-                        /* Loading JCDecauxBikes */
-                        loadJCDecaux = new LoadJCDecaux();
-                        loadJCDecaux.execute();
-                    }
-                    if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isCarParkingNamurLoadingEnable", true)) {
-                        /* Loading Parking Voiture */
-                        loadCarParkingNamur = new LoadCarParkingNamur();
-                        loadCarParkingNamur.execute(visibleRegion);
-                    }
-                    if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeParkingNamurLoadingEnable", true)) {
-                        /* Loading Parking Velo */
-                        loadBikeParkingNamur = new LoadBikeParkingNamur();
-                        loadBikeParkingNamur.execute(visibleRegion);
-                    }
-                    if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeRouteLoadingEnable", true)) {
-                        /* Loading ItineraireVelo */
-                        loadBikeRouteNamur = new LoadBikeRouteNamur();
-                        loadBikeRouteNamur.execute(visibleRegion);
-                    }
+                    addAllData();
                 }
             });
+        }
+    }
+
+    private void addAllData(){
+        map.clear();
+        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isJCDecauxLoadingEnable", true)) {
+            if(jcDecauxBikes != null && jcDecauxBikes.size() > 0) {
+                addAllLibiaVeloMarkers(jcDecauxBikes);
+            }
+            else {
+                /* Loading JCDecauxBikes */
+                loadJCDecaux = new LoadJCDecaux();
+                loadJCDecaux.execute();
+            }
+        }
+        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isCarParkingNamurLoadingEnable", true)) {
+            if(carParkingNamur != null && carParkingNamur.getRecords().size() > 0){
+                addCarParkings(carParkingNamur);
+            }
+            else {
+                /* Loading Parking Voiture */
+                loadCarParkingNamur = new LoadCarParkingNamur();
+                loadCarParkingNamur.execute(getVisibleRegion());
+            }
+        }
+        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeParkingNamurLoadingEnable", true)) {
+            if(parkingVelo != null && parkingVelo.getRecords().size() > 0){
+                addBikeParkings(parkingVelo);
+            }
+            else {
+                /* Loading Parking Velo */
+                loadBikeParkingNamur = new LoadBikeParkingNamur();
+                loadBikeParkingNamur.execute(getVisibleRegion());
+            }
+        }
+        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeRouteLoadingEnable", true)) {
+            if(itineraireVelo != null && itineraireVelo.getRecords().size() > 0){
+                addBikesRoutes(itineraireVelo);
+            }
+            else {
+                /* Loading ItineraireVelo */
+                loadBikeRouteNamur = new LoadBikeRouteNamur();
+                loadBikeRouteNamur.execute(getVisibleRegion());
+            }
+        }
+    }
+
+    private void addAllLibiaVeloMarkers(ArrayList<JCDecauxBikes> bikes){
+        for (JCDecauxBikes bike : bikes) {
+            LatLng latLng = new LatLng(bike.getPosition().getLat(), bike.getPosition().getLng());
+            Marker marker = map.addMarker(
+                    new MarkerOptions().position(latLng)
+                            .title(bike.getName())
+                            .snippet("Disponibilités : " + bike.getAvailableBikes()));
+            if (bike.getAvailableBikes() > JCDECAUX_MIDDLE_LIMIT) {
+                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_vert));
+            } else {
+                if (bike.getAvailableBikes() > JCDECAUX_CRITICAL_LIMIT) {
+                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_orange));
+                } else {
+                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_rouge));
+                }
+            }
+            marker.setTag(bike);
         }
     }
 
@@ -236,26 +278,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
         @Override
         protected void onPostExecute(ArrayList<JCDecauxBikes> bikes) {
-            for (JCDecauxBikes bike : bikes) {
-                LatLng latLng = new LatLng(bike.getPosition().getLat(), bike.getPosition().getLng());
-                markers.add(
-                        map.addMarker(
-                                new MarkerOptions().position(latLng)
-                                        .title(bike.getName())
-                                        .snippet("Disponibilités : " + bike.getAvailableBikes()))
-                );
-                Marker marker = markers.get(markers.size() - 1);
-                if (bike.getAvailableBikes() > JCDECAUX_MIDDLE_LIMIT) {
-                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_vert));
-                } else {
-                    if (bike.getAvailableBikes() > JCDECAUX_CRITICAL_LIMIT) {
-                        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_orange));
-                    } else {
-                        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_rouge));
-                    }
-                }
-                marker.setTag(bike);
-            }
+            jcDecauxBikes = bikes;
+            addAllLibiaVeloMarkers(jcDecauxBikes);
         }
     }
 
@@ -285,18 +309,20 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         protected void onPostExecute(CarParkingNamur carParkingNamur) {
             if (carParkingNamur != null) {
                 MapsFragment.this.carParkingNamur = carParkingNamur;
-                for (Record record : carParkingNamur.getRecords()) {
-                    LatLng latLng = new LatLng(record.getFields().getGeoPoint2d().get(0), record.getFields().getGeoPoint2d().get(1));
-                    markers.add(
-                            map.addMarker(
-                                    new MarkerOptions().position(latLng)
-                                            .title(record.getFields().getPlsyDescri())
-                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.parking_voiture))
-                                            .snippet("Nb places : " + record.getFields().getPlaces()))
-                    );
-                    markers.get(markers.size() - 1).setTag(record);
-                }
+                addCarParkings(carParkingNamur);
             }
+        }
+    }
+
+    private void addCarParkings(CarParkingNamur carParkingNamur){
+        for (Record record : carParkingNamur.getRecords()) {
+            LatLng latLng = new LatLng(record.getFields().getGeoPoint2d().get(0), record.getFields().getGeoPoint2d().get(1));
+            map.addMarker(
+                    new MarkerOptions().position(latLng)
+                            .title(record.getFields().getPlsyDescri())
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.parking_voiture))
+                            .snippet("Nb places : " + record.getFields().getPlaces()))
+                    .setTag(record);
         }
     }
 
@@ -322,18 +348,35 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         protected void onPostExecute(BikeParkingNamur bikeParkingNamur) {
             if (bikeParkingNamur != null) {
                 parkingVelo = bikeParkingNamur;
-                for (xyz.eeckhout.smartcity.model.villeNamur.bikeParking.Record record : bikeParkingNamur.getRecords()) {
-                    LatLng latLng = new LatLng(record.getFields().getGeoPoint2d().get(0), record.getFields().getGeoPoint2d().get(1));
-                    markers.add(
-                            map.addMarker(
-                                    new MarkerOptions().position(latLng)
-                                            .title(record.getFields().getNomStation())
-                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.parking_velo))
-                                            .snippet("Nb places : " + record.getFields().getNbreArceaux()))
-                    );
-                    markers.get(markers.size() - 1).setTag(record);
-                }
+                addBikeParkings(parkingVelo);
             }
+        }
+    }
+
+    private void addBikeParkings(BikeParkingNamur bikeParkingNamur){
+        for (xyz.eeckhout.smartcity.model.villeNamur.bikeParking.Record record : bikeParkingNamur.getRecords()) {
+            LatLng latLng = new LatLng(record.getFields().getGeoPoint2d().get(0), record.getFields().getGeoPoint2d().get(1));
+            map.addMarker(
+                    new MarkerOptions().position(latLng)
+                            .title(record.getFields().getNomStation())
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.parking_velo))
+                            .snippet("Nb places : " + record.getFields().getNbreArceaux())
+            ).setTag(record);
+        }
+    }
+
+    private void addBikesRoutes(BikeRouteNamur bikeRouteNamur){
+        for (xyz.eeckhout.smartcity.model.villeNamur.bikeRoute.Record record : bikeRouteNamur.getRecords()) {
+            PolylineOptions rectOptions = new PolylineOptions()
+                    .clickable(true)
+                    .width(15)
+                    .color(Color.rgb(0, 205, 0))
+                    .startCap(new RoundCap())
+                    .endCap(new RoundCap())
+                    .addAll(record.getFields().getGeoShape().getLatLng());
+
+            Polyline polyline = map.addPolyline(rectOptions);
+            polyline.setTag(record);
         }
     }
 
@@ -358,18 +401,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         protected void onPostExecute(BikeRouteNamur bikeRouteNamur) {
             if (bikeRouteNamur != null) {
                 itineraireVelo = bikeRouteNamur;
-                for (xyz.eeckhout.smartcity.model.villeNamur.bikeRoute.Record record : bikeRouteNamur.getRecords()) {
-                    PolylineOptions rectOptions = new PolylineOptions()
-                            .clickable(true)
-                            .width(15)
-                            .color(Color.rgb(0, 205, 0))
-                            .startCap(new RoundCap())
-                            .endCap(new RoundCap())
-                            .addAll(record.getFields().getGeoShape().getLatLng());
-
-                    Polyline polyline = map.addPolyline(rectOptions);
-                    polyline.setTag(record);
-                }
+                addBikesRoutes(itineraireVelo);
             }
         }
 
