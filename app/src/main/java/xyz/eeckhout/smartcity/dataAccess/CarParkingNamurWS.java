@@ -11,12 +11,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import xyz.eeckhout.smartcity.model.villeNamur.bikeParking.BikeParkingNamur;
+import xyz.eeckhout.smartcity.model.villeNamur.carParking.CarParkingNamur;
 
-public class BikeParkingNamurDAO {
+public class CarParkingNamurWS {
     private static final String API_BASE_URL = "https://data.namur.be/api/records/1.0/search/";
-    public BikeParkingNamur getAllParkingVeloVille() throws Exception {
-        URL url = new URL(getApiBaseUrl() + "?dataset=namur-mobilite-stationnements-velo0&rows=30");
+    public CarParkingNamur getAllJCDecaux() throws Exception {
+        URL url = new URL(getApiBaseUrl() + "?dataset=namur-mobilite-parking&facet=plsy_fonction&rows=30");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -30,12 +30,12 @@ public class BikeParkingNamurDAO {
         }
         buffer.close();
         stringJSON = builder.toString();
-        return jsonToParkingVeloVille(stringJSON);
+        return jsonToExample(stringJSON);
     }
 
-    public BikeParkingNamur getPakingVeloFromArez(LatLng center, float distance) throws Exception {
+    public CarParkingNamur getParkingFromArea(LatLng center, float distance) throws Exception {
         StringBuilder urlBuilder = new StringBuilder(getApiBaseUrl());
-        urlBuilder.append("?dataset=namur-mobilite-stationnements-velo0&rows=-1");
+        urlBuilder.append("?dataset=namur-mobilite-parking&facet=plsy_fonction&rows=-1");
         urlBuilder.append("&geofilter.distance=");
         urlBuilder.append(center.latitude).append(",").append(center.longitude).append(",").append(distance);
         URL url = new URL(urlBuilder.toString());
@@ -52,14 +52,14 @@ public class BikeParkingNamurDAO {
         }
         buffer.close();
         stringJSON = builder.toString();
-        return jsonToParkingVeloVille(stringJSON);
+        return jsonToExample(stringJSON);
     }
 
-    private BikeParkingNamur jsonToParkingVeloVille(String stringJSON) throws Exception
+    private CarParkingNamur jsonToExample(String stringJSON) throws Exception
     {
         JSONObject jsonObject = new JSONObject(stringJSON);
         Gson object = new GsonBuilder().create();
-        return object.fromJson(jsonObject.toString(), BikeParkingNamur.class);
+        return object.fromJson(jsonObject.toString(), CarParkingNamur.class);
     }
 
     private static String getApiBaseUrl() {

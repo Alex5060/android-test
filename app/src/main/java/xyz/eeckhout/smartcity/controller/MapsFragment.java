@@ -1,25 +1,14 @@
 package xyz.eeckhout.smartcity.controller;
 
-import android.Manifest;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -27,15 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -46,13 +32,11 @@ import com.google.android.gms.maps.model.VisibleRegion;
 
 import java.util.ArrayList;
 
-import xyz.eeckhout.smartcity.AccountViewModel;
 import xyz.eeckhout.smartcity.R;
-import xyz.eeckhout.smartcity.dataAccess.BikeParkingNamurDAO;
-import xyz.eeckhout.smartcity.dataAccess.BikeRouteNamurDAO;
-import xyz.eeckhout.smartcity.dataAccess.CarParkingNamurDAO;
-import xyz.eeckhout.smartcity.dataAccess.JCDecauxDAO;
-import xyz.eeckhout.smartcity.model.jcdecaux.JCDecauxBikes;
+import xyz.eeckhout.smartcity.dataAccess.BikeParkingNamurWS;
+import xyz.eeckhout.smartcity.dataAccess.BikeRouteNamurWS;
+import xyz.eeckhout.smartcity.dataAccess.CarParkingNamurWS;
+import xyz.eeckhout.smartcity.model.jcdecaux.JCDecauxStation;
 import xyz.eeckhout.smartcity.model.villeNamur.bikeParking.BikeParkingNamur;
 import xyz.eeckhout.smartcity.model.villeNamur.bikeRoute.BikeRouteNamur;
 import xyz.eeckhout.smartcity.model.villeNamur.carParking.CarParkingNamur;
@@ -69,11 +53,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private CarParkingNamur carParkingNamur;
     private BikeParkingNamur parkingVelo;
     private BikeRouteNamur itineraireVelo;
-    private ArrayList<JCDecauxBikes> jcDecauxBikes;
-    private LoadBikeParkingNamur loadBikeParkingNamur;
+    private ArrayList<JCDecauxStation> jcDecauxBikes;
     private LoadBikeRouteNamur loadBikeRouteNamur;
     private LoadCarParkingNamur loadCarParkingNamur;
-    private LoadJCDecaux loadJCDecaux;
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 100;
     private MapViewModel model;
@@ -91,7 +73,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             carParkingNamur = model.getCarParkingNamur().getValue();
             jcDecauxBikes = model.getJcDecauxBikes().getValue();
             itineraireVelo = model.getItineraireVelo().getValue();
-            parkingVelo = model.getParkingVelo().getValue();
+            parkingVelo = model.getBikeParking().getValue();
         }
     }
 
@@ -136,12 +118,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         super.onDestroy();
         mMapView.onDestroy();
         //        super.onDestroy();
-        if (loadJCDecaux != null) {
-            loadJCDecaux.cancel(true);
-        }
-        if (loadBikeParkingNamur != null) {
-            loadBikeParkingNamur.cancel(true);
-        }
         if (loadBikeRouteNamur != null) {
             loadBikeRouteNamur.cancel(true);
         }
@@ -155,8 +131,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         super.onSaveInstanceState(outState);
         model.getCarParkingNamur().setValue(carParkingNamur);
         model.getItineraireVelo().setValue(itineraireVelo);
-        model.getJcDecauxBikes().setValue(jcDecauxBikes);
-        model.getParkingVelo().setValue(parkingVelo);
         mMapView.onSaveInstanceState(outState);
     }
 
@@ -216,14 +190,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private void addAllData(){
         map.clear();
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isJCDecauxLoadingEnable", true)) {
-            if(jcDecauxBikes != null && jcDecauxBikes.size() > 0) {
-                addAllLibiaVeloMarkers(jcDecauxBikes);
-            }
-            else {
-                /* Loading JCDecauxBikes */
-                loadJCDecaux = new LoadJCDecaux();
-                loadJCDecaux.execute();
-            }
+                addAllLibiaVeloMarkers(mViewModel.getJcDecauxBikes().getValue());
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isCarParkingNamurLoadingEnable", true)) {
             if(carParkingNamur != null && carParkingNamur.getRecords().size() > 0){
@@ -236,14 +203,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             }
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeParkingNamurLoadingEnable", true)) {
-            if(parkingVelo != null && parkingVelo.getRecords().size() > 0){
-                addBikeParkings(parkingVelo);
-            }
-            else {
-                /* Loading Parking Velo */
-                loadBikeParkingNamur = new LoadBikeParkingNamur();
-                loadBikeParkingNamur.execute(getVisibleRegion());
-            }
+            addBikeParkings(mViewModel.getBikeParking().getValue());
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeRouteLoadingEnable", true)) {
             if(itineraireVelo != null && itineraireVelo.getRecords().size() > 0){
@@ -257,8 +217,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void addAllLibiaVeloMarkers(ArrayList<JCDecauxBikes> bikes){
-        for (JCDecauxBikes bike : bikes) {
+    private void addAllLibiaVeloMarkers(ArrayList<JCDecauxStation> bikes){
+        for (JCDecauxStation bike : bikes) {
             LatLng latLng = new LatLng(bike.getPosition().getLat(), bike.getPosition().getLng());
             Marker marker = map.addMarker(
                     new MarkerOptions().position(latLng)
@@ -277,26 +237,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private class LoadJCDecaux extends AsyncTask<String, Void, ArrayList<JCDecauxBikes>> {
-        @Override
-        protected ArrayList<JCDecauxBikes> doInBackground(String... params) {
-            JCDecauxDAO jcDecauxDAO = new JCDecauxDAO();
-            ArrayList<JCDecauxBikes> bikes = new ArrayList<>();
-            try {
-                bikes = jcDecauxDAO.getAllJCDecaux();
-            } catch (Exception e) {
-                Log.i("erreur", e.getMessage());
-            }
-            return bikes;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<JCDecauxBikes> bikes) {
-            jcDecauxBikes = bikes;
-            addAllLibiaVeloMarkers(jcDecauxBikes);
-        }
-    }
-
     private VisibleRegion getVisibleRegion() {
         return map.getProjection().getVisibleRegion();
     }
@@ -305,12 +245,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         @Override
         protected CarParkingNamur doInBackground(Object... params) {
             if (params.length > 0) {
-                CarParkingNamurDAO carParkingNamurDAO = new CarParkingNamurDAO();
+                CarParkingNamurWS carParkingNamurWS = new CarParkingNamurWS();
                 CarParkingNamur examples = new CarParkingNamur();
                 try {
                     VisibleRegion visibleRegion = (VisibleRegion) params[0];
-                    //examples = carParkingNamurDAO.getAllJCDecaux();
-                    examples = carParkingNamurDAO.getParkingFromArea(visibleRegion.latLngBounds.getCenter(), Utils.getDistanceVisibleRegion(visibleRegion));
+                    //examples = carParkingNamurWS.getAllJCDecaux();
+                    examples = carParkingNamurWS.getParkingFromArea(visibleRegion.latLngBounds.getCenter(), Utils.getDistanceVisibleRegion(visibleRegion));
                 } catch (Exception e) {
                     Log.i("erreur", e.getMessage());
                 }
@@ -337,33 +277,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.parking_voiture))
                             .snippet("Nb places : " + record.getFields().getPlaces()))
                     .setTag(record);
-        }
-    }
-
-    private class LoadBikeParkingNamur extends AsyncTask<Object, Void, BikeParkingNamur> {
-        @Override
-        protected BikeParkingNamur doInBackground(Object... params) {
-            if (params.length > 0) {
-                BikeParkingNamurDAO bikeParkingNamurDAO = new BikeParkingNamurDAO();
-                BikeParkingNamur bikeParkingNamur = new BikeParkingNamur();
-                try {
-                    VisibleRegion visibleRegion = (VisibleRegion) params[0];
-                    //bikeParkingNamur = bikeParkingNamurDAO.getAllParkingVeloVille();
-                    bikeParkingNamur = bikeParkingNamurDAO.getPakingVeloFromArez(visibleRegion.latLngBounds.getCenter(), Utils.getDistanceVisibleRegion(visibleRegion));
-                } catch (Exception e) {
-                    Log.i("erreur", e.getMessage());
-                }
-                return bikeParkingNamur;
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(BikeParkingNamur bikeParkingNamur) {
-            if (bikeParkingNamur != null) {
-                parkingVelo = bikeParkingNamur;
-                addBikeParkings(parkingVelo);
-            }
         }
     }
 
@@ -398,11 +311,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         @Override
         protected BikeRouteNamur doInBackground(Object... params) {
             if (params.length > 0) {
-                BikeRouteNamurDAO bikeRouteNamurDAO = new BikeRouteNamurDAO();
+                BikeRouteNamurWS bikeRouteNamurWS = new BikeRouteNamurWS();
                 BikeRouteNamur bikeRouteNamur = new BikeRouteNamur();
                 try {
                     VisibleRegion visibleRegion = (VisibleRegion) params[0];
-                    bikeRouteNamur = bikeRouteNamurDAO.getItinerairesFromArea(visibleRegion.latLngBounds.getCenter(), Utils.getDistanceVisibleRegion(visibleRegion));
+                    bikeRouteNamur = bikeRouteNamurWS.getItinerairesFromArea(visibleRegion.latLngBounds.getCenter(), Utils.getDistanceVisibleRegion(visibleRegion));
                 } catch (Exception e) {
                     Log.i("erreur", e.getMessage());
                 }
@@ -482,7 +395,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 //                    VisibleRegion visibleRegion = mMap.getProjection().getVisibleRegion();
 //                    mMap.clear();
 //                    if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isJCDecauxLoadingEnable", true)) {
-//                        /* Loading JCDecauxBikes */
+//                        /* Loading JCDecauxStation */
 //                        loadJCDecaux = new LoadJCDecaux();
 //                        loadJCDecaux.execute();
 //                    }
@@ -557,11 +470,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 //        }
 //    }
 //
-//    private class LoadJCDecaux extends AsyncTask<String, Void, ArrayList<JCDecauxBikes>> {
+//    private class LoadJCDecaux extends AsyncTask<String, Void, ArrayList<JCDecauxStation>> {
 //        @Override
-//        protected ArrayList<JCDecauxBikes> doInBackground(String... params) {
-//            JCDecauxDAO jcDecauxDAO = new JCDecauxDAO();
-//            ArrayList<JCDecauxBikes> bikes = new ArrayList<>();
+//        protected ArrayList<JCDecauxStation> doInBackground(String... params) {
+//            JCDecauxWS jcDecauxDAO = new JCDecauxWS();
+//            ArrayList<JCDecauxStation> bikes = new ArrayList<>();
 //            try {
 //                bikes = jcDecauxDAO.getAllJCDecaux();
 //            } catch (Exception e) {
@@ -571,8 +484,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 //        }
 //
 //        @Override
-//        protected void onPostExecute(ArrayList<JCDecauxBikes> bikes) {
-//            for (JCDecauxBikes bike : bikes) {
+//        protected void onPostExecute(ArrayList<JCDecauxStation> bikes) {
+//            for (JCDecauxStation bike : bikes) {
 //                LatLng latLng = new LatLng(bike.getPosition().getLat(), bike.getPosition().getLng());
 //                markers.add(
 //                        mMap.addMarker(
@@ -603,7 +516,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 //        @Override
 //        protected CarParkingNamur doInBackground(Object... params) {
 //            if (params.length > 0) {
-//                CarParkingNamurDAO carParkingNamurDAO = new CarParkingNamurDAO();
+//                CarParkingNamurWS carParkingNamurDAO = new CarParkingNamurWS();
 //                CarParkingNamur examples = new CarParkingNamur();
 //                try {
 //                    VisibleRegion visibleRegion = (VisibleRegion) params[0];
@@ -640,7 +553,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 //        @Override
 //        protected BikeParkingNamur doInBackground(Object... params) {
 //            if (params.length > 0) {
-//                BikeParkingNamurDAO bikeParkingNamurDAO = new BikeParkingNamurDAO();
+//                BikeParkingNamurWS bikeParkingNamurDAO = new BikeParkingNamurWS();
 //                BikeParkingNamur bikeParkingNamur = new BikeParkingNamur();
 //                try {
 //                    VisibleRegion visibleRegion = (VisibleRegion) params[0];
@@ -677,7 +590,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 //        @Override
 //        protected BikeRouteNamur doInBackground(Object... params) {
 //            if (params.length > 0) {
-//                BikeRouteNamurDAO bikeRouteNamurDAO = new BikeRouteNamurDAO();
+//                BikeRouteNamurWS bikeRouteNamurDAO = new BikeRouteNamurWS();
 //                BikeRouteNamur bikeRouteNamur = new BikeRouteNamur();
 //                try {
 //                    VisibleRegion visibleRegion = (VisibleRegion) params[0];

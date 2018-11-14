@@ -13,7 +13,7 @@ import java.net.URL;
 
 import xyz.eeckhout.smartcity.model.villeNamur.bikeRoute.BikeRouteNamur;
 
-public class BikeRouteNamurDAO {
+public class BikeRouteNamurWS {
     private static final String API_BASE_URL = "https://data.namur.be/api/records/1.0/search/";
     public BikeRouteNamur getAllItineraireVeloVille() throws Exception {
         URL url = new URL(getApiBaseUrl() + "?dataset=namur-mobilite-itineraires-velo&facet=iti_code_reg&facet=iti_code_eu&facet=iti_communal&facet=iti_code_com&rows=30");
