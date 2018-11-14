@@ -30,7 +30,6 @@ public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATR
         return carParkingNamur;
     }
 
-
     public MutableLiveData<BikeParkingNamur> getBikeParking() {
         if(parkingVelo == null){
             parkingVelo = new MutableLiveData<>();
@@ -63,7 +62,7 @@ public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATR
     @Override
     public void getStationsATResult(ArrayList<JCDecauxStation> stations) {
         this.jcDecauxBikes.getValue().clear();
-        this.jcDecauxBikes.getValue().addAll(stations);
+        this.jcDecauxBikes.postValue(stations);
     }
 
     @Override

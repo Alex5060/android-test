@@ -1,8 +1,8 @@
 package xyz.eeckhout.smartcity.controller;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -33,9 +33,6 @@ import com.google.android.gms.maps.model.VisibleRegion;
 import java.util.ArrayList;
 
 import xyz.eeckhout.smartcity.R;
-import xyz.eeckhout.smartcity.dataAccess.BikeParkingNamurWS;
-import xyz.eeckhout.smartcity.dataAccess.BikeRouteNamurWS;
-import xyz.eeckhout.smartcity.dataAccess.CarParkingNamurWS;
 import xyz.eeckhout.smartcity.model.jcdecaux.JCDecauxStation;
 import xyz.eeckhout.smartcity.model.villeNamur.bikeParking.BikeParkingNamur;
 import xyz.eeckhout.smartcity.model.villeNamur.bikeRoute.BikeRouteNamur;
@@ -140,6 +137,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(50.469313, 4.862612), 15));
             map.getUiSettings().setZoomControlsEnabled(true);
 
+            // Create the observer which updates the UI.
             addAllData();
 
             // Set a listener for marker click.
@@ -167,19 +165,52 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private void addAllData(){
         map.clear();
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isJCDecauxLoadingEnable", true)) {
-            addAllLibiaVeloMarkers(model.getJcDecauxBikes().getValue());
+            final Observer<ArrayList<JCDecauxStation>> jcDecauxStationObserver = new Observer<ArrayList<JCDecauxStation>>() {
+                @Override
+                public void onChanged(@Nullable final ArrayList<JCDecauxStation> jcDecauxStation) {
+                    // Update the UI, in this case, a TextView.
+                    addAllLibiaVeloMarkers(jcDecauxStation);
+                }
+            };
+
+            // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+            model.getJcDecauxBikes().observe(this, jcDecauxStationObserver);
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isCarParkingNamurLoadingEnable", true)) {
-            //if(carParkingNamur != null)
-                addCarParkings(model.getCarParkingNamur().getValue());
+            final Observer<CarParkingNamur> carParkingNamurObserver = new Observer<CarParkingNamur>() {
+                @Override
+                public void onChanged(@Nullable final CarParkingNamur carParkingNamur) {
+                    // Update the UI, in this case, a TextView.
+                    addCarParkings(carParkingNamur);
+                }
+            };
+
+            // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+            model.getCarParkingNamur().observe(this, carParkingNamurObserver);
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeParkingNamurLoadingEnable", true)) {
-           //if(parkingVelo != null)
-                addBikeParkings(model.getBikeParking().getValue());
+            final Observer<BikeParkingNamur> bikeParkingNamurObserver = new Observer<BikeParkingNamur>() {
+                @Override
+                public void onChanged(@Nullable final BikeParkingNamur bikeParkingNamur) {
+                    // Update the UI, in this case, a TextView.
+                    addBikeParkings(bikeParkingNamur);
+                }
+            };
+
+            // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+            model.getBikeParking().observe(this, bikeParkingNamurObserver);
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeRouteLoadingEnable", true)) {
-            //if(itineraireVelo != null)
-                addBikesRoutes(model.getItineraireVelo().getValue());
+            final Observer<BikeRouteNamur> bikeRouteNamurObserver = new Observer<BikeRouteNamur>() {
+                @Override
+                public void onChanged(@Nullable final BikeRouteNamur bikeRouteNamur) {
+                    // Update the UI, in this case, a TextView.
+                    addBikesRoutes(bikeRouteNamur);
+                }
+            };
+
+            // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+            model.getItineraireVelo().observe(this, bikeRouteNamurObserver);
         }
     }
 
