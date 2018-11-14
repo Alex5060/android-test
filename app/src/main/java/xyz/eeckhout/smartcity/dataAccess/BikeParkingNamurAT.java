@@ -17,16 +17,16 @@ public class BikeParkingNamurAT extends AsyncTask<Object, Void, BikeParkingNamur
 
     private GetBikeParkingNamurATResult getBikeParkingNamurATResult;
 
-    public BikeParkingNamurAT(GetBikeParkingNamurATResult getJCDecauxATResult) {
-        this.getBikeParkingNamurATResult = getJCDecauxATResult;
+    public BikeParkingNamurAT(GetBikeParkingNamurATResult getBikeParkingNamurATResult) {
+        this.getBikeParkingNamurATResult = getBikeParkingNamurATResult;
     }
 
     @Override
     protected BikeParkingNamur doInBackground(Object... params) {
-            BikeParkingNamur bikeParkingNamur = new BikeParkingNamur();
             try {
-                bikeParkingNamur = BikeParkingNamurWS.getAllBikeParkingNamur();
+                this.bikeParkingNamur = BikeParkingNamurWS.getAllBikeParkingNamur();
             } catch (Exception e) {
+                this.exception = e;
                 Log.i("erreur", e.getMessage());
             }
             return bikeParkingNamur;
@@ -35,8 +35,8 @@ public class BikeParkingNamurAT extends AsyncTask<Object, Void, BikeParkingNamur
     @Override
     protected void onPostExecute(BikeParkingNamur bikeParkingNamur) {
         if(getBikeParkingNamurATResult != null){
-            if(bikeParkingNamur != null){
-                getBikeParkingNamurATResult.getBikeParkingNamur(bikeParkingNamur);
+            if(exception != null){
+                getBikeParkingNamurATResult.getBikeParkingNamur(this.bikeParkingNamur);
             }
             else{
                 getBikeParkingNamurATResult.getBikeParkingNamurATResultError(exception);

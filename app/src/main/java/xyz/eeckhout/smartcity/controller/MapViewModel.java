@@ -7,13 +7,14 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import xyz.eeckhout.smartcity.dataAccess.BikeParkingNamurAT;
+import xyz.eeckhout.smartcity.dataAccess.BikeRouteNamurAT;
 import xyz.eeckhout.smartcity.dataAccess.JCDecauxAT;
 import xyz.eeckhout.smartcity.model.jcdecaux.JCDecauxStation;
 import xyz.eeckhout.smartcity.model.villeNamur.bikeParking.BikeParkingNamur;
 import xyz.eeckhout.smartcity.model.villeNamur.bikeRoute.BikeRouteNamur;
 import xyz.eeckhout.smartcity.model.villeNamur.carParking.CarParkingNamur;
 
-public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATResult, BikeParkingNamurAT.GetBikeParkingNamurATResult {
+public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATResult, BikeParkingNamurAT.GetBikeParkingNamurATResult, BikeRouteNamurAT.GetBikeRouteNamurATResult {
     private MutableLiveData<CarParkingNamur> carParkingNamur;
     private MutableLiveData<BikeParkingNamur> parkingVelo;
     private MutableLiveData<BikeRouteNamur> itineraireVelo;
@@ -41,6 +42,8 @@ public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATR
     public MutableLiveData<BikeRouteNamur> getItineraireVelo() {
         if(itineraireVelo == null){
             itineraireVelo = new MutableLiveData<>();
+            BikeRouteNamurAT bikeRouteNamurAT = new BikeRouteNamurAT(this);
+            bikeRouteNamurAT.execute();
         }
         return itineraireVelo;
     }
@@ -69,11 +72,21 @@ public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATR
 
     @Override
     public void getBikeParkingNamur(BikeParkingNamur bikeParkingNamur) {
-
+        this.parkingVelo.setValue(bikeParkingNamur);
     }
 
     @Override
     public void getBikeParkingNamurATResultError(Exception exception) {
+        Log.i("error", exception.getMessage());
+    }
+
+    @Override
+    public void getBikeRouteNamur(BikeRouteNamur bikeRouteNamur) {
+        this.itineraireVelo.setValue(bikeRouteNamur);
+    }
+
+    @Override
+    public void getBikeRouteAtResultError(Exception exception) {
         Log.i("error", exception.getMessage());
     }
 }

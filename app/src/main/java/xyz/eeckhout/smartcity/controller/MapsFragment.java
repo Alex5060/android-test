@@ -54,7 +54,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private BikeParkingNamur parkingVelo;
     private BikeRouteNamur itineraireVelo;
     private ArrayList<JCDecauxStation> jcDecauxBikes;
-    private LoadBikeRouteNamur loadBikeRouteNamur;
     private LoadCarParkingNamur loadCarParkingNamur;
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 100;
@@ -118,9 +117,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         super.onDestroy();
         mMapView.onDestroy();
         //        super.onDestroy();
-        if (loadBikeRouteNamur != null) {
-            loadBikeRouteNamur.cancel(true);
-        }
         if (loadCarParkingNamur != null) {
             loadCarParkingNamur.cancel(true);
         }
@@ -206,14 +202,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             addBikeParkings(mViewModel.getBikeParking().getValue());
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeRouteLoadingEnable", true)) {
-            if(itineraireVelo != null && itineraireVelo.getRecords().size() > 0){
-                addBikesRoutes(itineraireVelo);
-            }
-            else {
-                /* Loading ItineraireVelo */
-                loadBikeRouteNamur = new LoadBikeRouteNamur();
-                loadBikeRouteNamur.execute(getVisibleRegion());
-            }
+            addBikesRoutes(mViewModel.getItineraireVelo().getValue());
         }
     }
 
@@ -304,37 +293,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
             Polyline polyline = map.addPolyline(rectOptions);
             polyline.setTag(record);
-        }
-    }
-
-    private class LoadBikeRouteNamur extends AsyncTask<Object, Void, BikeRouteNamur> {
-        @Override
-        protected BikeRouteNamur doInBackground(Object... params) {
-            if (params.length > 0) {
-                BikeRouteNamurWS bikeRouteNamurWS = new BikeRouteNamurWS();
-                BikeRouteNamur bikeRouteNamur = new BikeRouteNamur();
-                try {
-                    VisibleRegion visibleRegion = (VisibleRegion) params[0];
-                    bikeRouteNamur = bikeRouteNamurWS.getItinerairesFromArea(visibleRegion.latLngBounds.getCenter(), Utils.getDistanceVisibleRegion(visibleRegion));
-                } catch (Exception e) {
-                    Log.i("erreur", e.getMessage());
-                }
-                return bikeRouteNamur;
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(BikeRouteNamur bikeRouteNamur) {
-            if (bikeRouteNamur != null) {
-                itineraireVelo = bikeRouteNamur;
-                addBikesRoutes(itineraireVelo);
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
         }
     }
 }
