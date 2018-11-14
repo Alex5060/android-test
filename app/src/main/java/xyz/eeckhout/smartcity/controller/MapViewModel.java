@@ -8,13 +8,14 @@ import java.util.ArrayList;
 
 import xyz.eeckhout.smartcity.dataAccess.BikeParkingNamurAT;
 import xyz.eeckhout.smartcity.dataAccess.BikeRouteNamurAT;
+import xyz.eeckhout.smartcity.dataAccess.CarParkingNamurAT;
 import xyz.eeckhout.smartcity.dataAccess.JCDecauxAT;
 import xyz.eeckhout.smartcity.model.jcdecaux.JCDecauxStation;
 import xyz.eeckhout.smartcity.model.villeNamur.bikeParking.BikeParkingNamur;
 import xyz.eeckhout.smartcity.model.villeNamur.bikeRoute.BikeRouteNamur;
 import xyz.eeckhout.smartcity.model.villeNamur.carParking.CarParkingNamur;
 
-public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATResult, BikeParkingNamurAT.GetBikeParkingNamurATResult, BikeRouteNamurAT.GetBikeRouteNamurATResult {
+public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATResult, BikeParkingNamurAT.GetBikeParkingNamurATResult, BikeRouteNamurAT.GetBikeRouteNamurATResult, CarParkingNamurAT.GetCarParkingNamurATResult {
     private MutableLiveData<CarParkingNamur> carParkingNamur;
     private MutableLiveData<BikeParkingNamur> parkingVelo;
     private MutableLiveData<BikeRouteNamur> itineraireVelo;
@@ -24,7 +25,8 @@ public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATR
     public MutableLiveData<CarParkingNamur> getCarParkingNamur() {
         if(carParkingNamur == null){
             carParkingNamur = new MutableLiveData<>();
-//            initCarParkingNamur();
+            CarParkingNamurAT carParkingNamurAT = new CarParkingNamurAT(this);
+            carParkingNamurAT.execute();
         }
         return carParkingNamur;
     }
@@ -60,7 +62,7 @@ public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATR
 
 
     @Override
-    public void getStations(ArrayList<JCDecauxStation> stations) {
+    public void getStationsATResult(ArrayList<JCDecauxStation> stations) {
         this.jcDecauxBikes.getValue().clear();
         this.jcDecauxBikes.getValue().addAll(stations);
     }
@@ -87,6 +89,16 @@ public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATR
 
     @Override
     public void getBikeRouteAtResultError(Exception exception) {
+        Log.i("error", exception.getMessage());
+    }
+
+    @Override
+    public void getAllCarParkingNamur(CarParkingNamur carParkingNamur) {
+        this.carParkingNamur.setValue(carParkingNamur);
+    }
+
+    @Override
+    public void getCarParkingNamurATResultError(Exception exception) {
         Log.i("error", exception.getMessage());
     }
 }

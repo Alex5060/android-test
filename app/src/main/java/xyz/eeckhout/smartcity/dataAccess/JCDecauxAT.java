@@ -35,13 +35,13 @@ public class JCDecauxAT extends AsyncTask<String, Void, ArrayList<JCDecauxStatio
             if (exception != null) {
                 getJCDecauxATResult.getStationsATResultError(exception);
             } else {
-                getJCDecauxATResult.getStations(stations);
+                getJCDecauxATResult.getStationsATResult(stations);
             }
         }
     }
 
     public interface GetJCDecauxATResult{
-        void getStations(ArrayList<JCDecauxStation> stations);
+        void getStationsATResult(ArrayList<JCDecauxStation> stations);
         void getStationsATResultError(Exception exception);
     }
 }

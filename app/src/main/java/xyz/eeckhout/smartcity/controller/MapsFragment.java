@@ -54,7 +54,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private BikeParkingNamur parkingVelo;
     private BikeRouteNamur itineraireVelo;
     private ArrayList<JCDecauxStation> jcDecauxBikes;
-    private LoadCarParkingNamur loadCarParkingNamur;
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 100;
     private MapViewModel model;
@@ -116,10 +115,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
-        //        super.onDestroy();
-        if (loadCarParkingNamur != null) {
-            loadCarParkingNamur.cancel(true);
-        }
     }
 
     @Override
@@ -186,17 +181,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private void addAllData(){
         map.clear();
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isJCDecauxLoadingEnable", true)) {
-                addAllLibiaVeloMarkers(mViewModel.getJcDecauxBikes().getValue());
+            addAllLibiaVeloMarkers(mViewModel.getJcDecauxBikes().getValue());
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isCarParkingNamurLoadingEnable", true)) {
-            if(carParkingNamur != null && carParkingNamur.getRecords().size() > 0){
-                addCarParkings(carParkingNamur);
-            }
-            else {
-                /* Loading Parking Voiture */
-                loadCarParkingNamur = new LoadCarParkingNamur();
-                loadCarParkingNamur.execute(getVisibleRegion());
-            }
+            addCarParkings(mViewModel.getCarParkingNamur().getValue());
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeParkingNamurLoadingEnable", true)) {
             addBikeParkings(mViewModel.getBikeParking().getValue());
@@ -228,33 +216,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     private VisibleRegion getVisibleRegion() {
         return map.getProjection().getVisibleRegion();
-    }
-
-    private class LoadCarParkingNamur extends AsyncTask<Object, Void, CarParkingNamur> {
-        @Override
-        protected CarParkingNamur doInBackground(Object... params) {
-            if (params.length > 0) {
-                CarParkingNamurWS carParkingNamurWS = new CarParkingNamurWS();
-                CarParkingNamur examples = new CarParkingNamur();
-                try {
-                    VisibleRegion visibleRegion = (VisibleRegion) params[0];
-                    //examples = carParkingNamurWS.getAllJCDecaux();
-                    examples = carParkingNamurWS.getParkingFromArea(visibleRegion.latLngBounds.getCenter(), Utils.getDistanceVisibleRegion(visibleRegion));
-                } catch (Exception e) {
-                    Log.i("erreur", e.getMessage());
-                }
-                return examples;
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(CarParkingNamur carParkingNamur) {
-            if (carParkingNamur != null) {
-                MapsFragment.this.carParkingNamur = carParkingNamur;
-                addCarParkings(carParkingNamur);
-            }
-        }
     }
 
     private void addCarParkings(CarParkingNamur carParkingNamur){
