@@ -36,10 +36,10 @@ public class BikeParkingNamurAT extends AsyncTask<Object, Void, BikeParkingNamur
     protected void onPostExecute(BikeParkingNamur bikeParkingNamur) {
         if(getBikeParkingNamurATResult != null){
             if(exception != null){
-                getBikeParkingNamurATResult.getBikeParkingNamur(this.bikeParkingNamur);
+                getBikeParkingNamurATResult.getBikeParkingNamurATResultError(exception);
             }
             else{
-                getBikeParkingNamurATResult.getBikeParkingNamurATResultError(exception);
+                getBikeParkingNamurATResult.getBikeParkingNamur(this.bikeParkingNamur);
             }
         }
     }

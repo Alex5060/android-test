@@ -35,7 +35,7 @@ public class BikeRouteNamurAT extends AsyncTask<Object, Void, BikeRouteNamur> {
 
     @Override
     protected void onPostExecute(BikeRouteNamur bikeRouteNamur) {
-        if (this.bikeRouteNamur != null) {
+        if (this.getBikeRouteNamurATResult != null) {
             if (exception != null) {
                 getBikeRouteNamurATResult.getBikeRouteAtResultError(exception);
             } else {
@@ -44,10 +44,6 @@ public class BikeRouteNamurAT extends AsyncTask<Object, Void, BikeRouteNamur> {
         }
     }
 
-    @Override
-    protected void onCancelled() {
-        super.onCancelled();
-    }
 
     public interface GetBikeRouteNamurATResult{
         void getBikeRouteNamur(BikeRouteNamur bikeRouteNamur);
