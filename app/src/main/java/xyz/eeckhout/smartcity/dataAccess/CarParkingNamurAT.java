@@ -36,9 +36,9 @@ public class CarParkingNamurAT extends AsyncTask<Object, Void, CarParkingNamur> 
     protected void onPostExecute(CarParkingNamur carParkingNamur) {
         if(getCarParkingNamurATResult != null) {
             if (this.exception != null) {
-                getCarParkingNamurATResult.getAllCarParkingNamur(this.carParkingNamur);
-            } else {
                 getCarParkingNamurATResult.getCarParkingNamurATResultError(exception);
+            } else {
+                getCarParkingNamurATResult.getAllCarParkingNamur(this.carParkingNamur);
             }
         }
     }

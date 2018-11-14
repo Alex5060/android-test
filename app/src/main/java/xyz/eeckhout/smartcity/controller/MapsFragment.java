@@ -45,7 +45,6 @@ import xyz.eeckhout.smartcity.model.villeNamur.carParking.Record;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private View rootView;
-    private MapViewModel mViewModel;
     private GoogleMap map;
     private MapView mMapView;
     private static final int JCDECAUX_MIDDLE_LIMIT = 5;
@@ -65,14 +64,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-
-        model = ViewModelProviders.of(this).get(MapViewModel.class);
-        if(model != null) {
-            carParkingNamur = model.getCarParkingNamur().getValue();
-            jcDecauxBikes = model.getJcDecauxBikes().getValue();
-            itineraireVelo = model.getItineraireVelo().getValue();
-            parkingVelo = model.getBikeParking().getValue();
-        }
     }
 
     @Override
@@ -101,7 +92,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(MapViewModel.class);
+        model = ViewModelProviders.of(this).get(MapViewModel.class);
         // TODO: Use the ViewModel
     }
 
@@ -150,6 +141,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(50.469313, 4.862612), 15));
             map.getUiSettings().setZoomControlsEnabled(true);
 
+            addAllData();
+
             // Set a listener for marker click.
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
@@ -169,28 +162,22 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     Toast.makeText(getContext(), polyline.getTag().toString(), Toast.LENGTH_LONG).show();
                 }
             });
-            map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-                @Override
-                public void onCameraIdle() {
-                    addAllData();
-                }
-            });
         }
     }
 
     private void addAllData(){
         map.clear();
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isJCDecauxLoadingEnable", true)) {
-            addAllLibiaVeloMarkers(mViewModel.getJcDecauxBikes().getValue());
+            addAllLibiaVeloMarkers(model.getJcDecauxBikes().getValue());
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isCarParkingNamurLoadingEnable", true)) {
-            addCarParkings(mViewModel.getCarParkingNamur().getValue());
+            addCarParkings(model.getCarParkingNamur().getValue());
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeParkingNamurLoadingEnable", true)) {
-            addBikeParkings(mViewModel.getBikeParking().getValue());
+            addBikeParkings(model.getBikeParking().getValue());
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeRouteLoadingEnable", true)) {
-            addBikesRoutes(mViewModel.getItineraireVelo().getValue());
+            addBikesRoutes(model.getItineraireVelo().getValue());
         }
     }
 

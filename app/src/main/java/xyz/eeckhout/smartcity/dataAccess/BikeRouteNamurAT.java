@@ -44,7 +44,6 @@ public class BikeRouteNamurAT extends AsyncTask<Object, Void, BikeRouteNamur> {
         }
     }
 
-
     public interface GetBikeRouteNamurATResult{
         void getBikeRouteNamur(BikeRouteNamur bikeRouteNamur);
         void getBikeRouteAtResultError(Exception exception);
