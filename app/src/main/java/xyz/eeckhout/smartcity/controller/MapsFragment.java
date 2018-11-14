@@ -61,8 +61,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        model = ViewModelProviders.of(this).get(MapViewModel.class);
-
+        model = ViewModelProviders.of(getActivity()).get(MapViewModel.class);
     }
 
     @Override
@@ -91,7 +90,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        model = ViewModelProviders.of(this).get(MapViewModel.class);
     }
 
     @Override
