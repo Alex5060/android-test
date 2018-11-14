@@ -25,7 +25,7 @@ public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATR
         if(carParkingNamur == null){
             carParkingNamur = new MutableLiveData<>();
             CarParkingNamurAT carParkingNamurAT = new CarParkingNamurAT(this);
-            //carParkingNamurAT.execute();
+            carParkingNamurAT.execute();
         }
         return carParkingNamur;
     }
@@ -35,7 +35,7 @@ public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATR
         if(parkingVelo == null){
             parkingVelo = new MutableLiveData<>();
             BikeParkingNamurAT bikeParkingNamurAT = new BikeParkingNamurAT(this);
-            //bikeParkingNamurAT.execute();
+            bikeParkingNamurAT.execute();
         }
         return parkingVelo;
     }
@@ -44,7 +44,7 @@ public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATR
         if(itineraireVelo == null){
             itineraireVelo = new MutableLiveData<>();
             BikeRouteNamurAT bikeRouteNamurAT = new BikeRouteNamurAT(this);
-            //bikeRouteNamurAT.execute();
+            bikeRouteNamurAT.execute();
         }
         return itineraireVelo;
     }

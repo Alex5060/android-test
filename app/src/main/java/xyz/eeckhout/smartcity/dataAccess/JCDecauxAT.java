@@ -19,7 +19,6 @@ public class JCDecauxAT extends AsyncTask<String, Void, ArrayList<JCDecauxStatio
 
     @Override
     protected ArrayList<JCDecauxStation> doInBackground(String... params) {
-        ArrayList<JCDecauxStation> stations = new ArrayList<>();
         try {
             this.stations = JCDecauxWS.getAllJCDecaux();
         } catch (Exception e) {

@@ -64,6 +64,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+        model = ViewModelProviders.of(this).get(MapViewModel.class);
+
     }
 
     @Override
@@ -93,7 +95,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         model = ViewModelProviders.of(this).get(MapViewModel.class);
-        // TODO: Use the ViewModel
     }
 
     @Override
@@ -111,8 +112,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        model.getCarParkingNamur().setValue(carParkingNamur);
-        model.getItineraireVelo().setValue(itineraireVelo);
         mMapView.onSaveInstanceState(outState);
     }
 
@@ -171,13 +170,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             addAllLibiaVeloMarkers(model.getJcDecauxBikes().getValue());
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isCarParkingNamurLoadingEnable", true)) {
-            addCarParkings(model.getCarParkingNamur().getValue());
+            //if(carParkingNamur != null)
+                addCarParkings(model.getCarParkingNamur().getValue());
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeParkingNamurLoadingEnable", true)) {
-            addBikeParkings(model.getBikeParking().getValue());
+           //if(parkingVelo != null)
+                addBikeParkings(model.getBikeParking().getValue());
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeRouteLoadingEnable", true)) {
-            addBikesRoutes(model.getItineraireVelo().getValue());
+            //if(itineraireVelo != null)
+                addBikesRoutes(model.getItineraireVelo().getValue());
         }
     }
 
@@ -206,14 +208,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void addCarParkings(CarParkingNamur carParkingNamur){
-        for (Record record : carParkingNamur.getRecords()) {
-            LatLng latLng = new LatLng(record.getFields().getGeoPoint2d().get(0), record.getFields().getGeoPoint2d().get(1));
-            map.addMarker(
-                    new MarkerOptions().position(latLng)
-                            .title(record.getFields().getPlsyDescri())
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.parking_voiture))
-                            .snippet("Nb places : " + record.getFields().getPlaces()))
-                    .setTag(record);
+        if(carParkingNamur != null && carParkingNamur.getRecords() != null) {
+            for (Record record : carParkingNamur.getRecords()) {
+                LatLng latLng = new LatLng(record.getFields().getGeoPoint2d().get(0), record.getFields().getGeoPoint2d().get(1));
+                map.addMarker(
+                        new MarkerOptions().position(latLng)
+                                .title(record.getFields().getPlsyDescri())
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.parking_voiture))
+                                .snippet("Nb places : " + record.getFields().getPlaces()))
+                        .setTag(record);
+            }
         }
     }
 
