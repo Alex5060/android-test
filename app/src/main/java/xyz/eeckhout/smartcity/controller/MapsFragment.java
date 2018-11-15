@@ -16,6 +16,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -144,8 +145,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(50.469313, 4.862612), 15));
             map.getUiSettings().setZoomControlsEnabled(true);
 
+            enableMyLocationIfPermitted();
+
             if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                map.setMyLocationEnabled(true);
                 locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, new LocationListener() {
                     @Override
@@ -247,6 +249,19 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
             // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
             model.getItineraireVelo().observe(this, bikeRouteNamurObserver);
+        }
+    }
+
+    private void enableMyLocationIfPermitted() {
+        if (ContextCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION},
+                    1);
+        } else if (map != null) {
+            map.setMyLocationEnabled(true);
         }
     }
 
