@@ -20,11 +20,16 @@ public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATR
     private MutableLiveData<BikeParkingNamur> parkingVelo;
     private MutableLiveData<BikeRouteNamur> itineraireVelo;
     private MutableLiveData<ArrayList<JCDecauxStation>> jcDecauxBikes;
+    private CarParkingNamurAT carParkingNamurAT;
+    private BikeRouteNamurAT bikeRouteNamurAT;
+    private BikeParkingNamurAT bikeParkingNamurAT;
+    private JCDecauxAT jcDecauxAT;
+
 
     public MutableLiveData<CarParkingNamur> getCarParkingNamur() {
         if(carParkingNamur == null){
             carParkingNamur = new MutableLiveData<>();
-            CarParkingNamurAT carParkingNamurAT = new CarParkingNamurAT(this);
+            carParkingNamurAT = new CarParkingNamurAT(this);
             carParkingNamurAT.execute();
         }
         return carParkingNamur;
@@ -33,7 +38,7 @@ public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATR
     public MutableLiveData<BikeParkingNamur> getBikeParking() {
         if(parkingVelo == null){
             parkingVelo = new MutableLiveData<>();
-            BikeParkingNamurAT bikeParkingNamurAT = new BikeParkingNamurAT(this);
+            bikeParkingNamurAT = new BikeParkingNamurAT(this);
             bikeParkingNamurAT.execute();
         }
         return parkingVelo;
@@ -42,7 +47,7 @@ public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATR
     public MutableLiveData<BikeRouteNamur> getItineraireVelo() {
         if(itineraireVelo == null){
             itineraireVelo = new MutableLiveData<>();
-            BikeRouteNamurAT bikeRouteNamurAT = new BikeRouteNamurAT(this);
+            bikeRouteNamurAT = new BikeRouteNamurAT(this);
             bikeRouteNamurAT.execute();
         }
         return itineraireVelo;
@@ -52,8 +57,8 @@ public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATR
         if(jcDecauxBikes == null){
             jcDecauxBikes = new MutableLiveData<>();
             jcDecauxBikes.setValue(new ArrayList<JCDecauxStation>());
-            JCDecauxAT loadJCDecaux = new JCDecauxAT(this);
-            loadJCDecaux.execute();
+            jcDecauxAT = new JCDecauxAT(this);
+            jcDecauxAT.execute();
         }
         return jcDecauxBikes;
     }
@@ -103,6 +108,9 @@ public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATR
     @Override
     protected void onCleared() {
         super.onCleared();
-
+        jcDecauxAT.cancel(true);
+        bikeParkingNamurAT.cancel(true);
+        bikeRouteNamurAT.cancel(true);
+        carParkingNamurAT.cancel(true);
     }
 }
