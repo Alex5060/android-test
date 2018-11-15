@@ -5,9 +5,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class JCDecauxBikes implements Serializable
+public class JCDecauxStation implements Serializable
 {
-
     @SerializedName("number")
     @Expose
     private Integer number;
@@ -50,7 +49,7 @@ public class JCDecauxBikes implements Serializable
      * No args constructor for use in serialization
      *
      */
-    public JCDecauxBikes() {
+    public JCDecauxStation() {
     }
 
     /**
@@ -68,7 +67,7 @@ public class JCDecauxBikes implements Serializable
      * @param contractName
      * @param availableBikes
      */
-    public JCDecauxBikes(Integer number, String contractName, String name, String address, Position position, Boolean banking, Boolean bonus, Integer bikeStands, Integer availableBikeStands, Integer availableBikes, String status, Double lastUpdate) {
+    public JCDecauxStation(Integer number, String contractName, String name, String address, Position position, Boolean banking, Boolean bonus, Integer bikeStands, Integer availableBikeStands, Integer availableBikes, String status, Double lastUpdate) {
         super();
         this.number = number;
         this.contractName = contractName;
@@ -182,7 +181,7 @@ public class JCDecauxBikes implements Serializable
 
     @Override
     public String toString() {
-        return "JCDecauxBikes{" +
+        return "JCDecauxStation{" +
                 "number=" + number +
                 ", contractName='" + contractName + '\'' +
                 ", name='" + name + '\'' +
