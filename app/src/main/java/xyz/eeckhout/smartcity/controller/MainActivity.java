@@ -7,7 +7,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -20,6 +19,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import xyz.eeckhout.smartcity.AccountFragment;
+import xyz.eeckhout.smartcity.Map_settingFragment;
 import xyz.eeckhout.smartcity.R;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -111,6 +111,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .commit();
     }
 
+    public void getMapPreferenceFragment(){
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content, new Map_settingFragment())
+                .commit();
+    }
+
     private void getInternetErrorFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -155,6 +162,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             init_fragment = R.id.nav_camera;
             getMapFragment();
         } else if (id == R.id.nav_gallery) {
+            init_fragment = R.id.nav_gallery;
+            getMapPreferenceFragment();
 
         } else if (id == R.id.nav_slideshow) {
 

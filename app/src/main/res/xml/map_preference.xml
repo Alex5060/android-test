@@ -1,0 +1,30 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">>
+
+    <PreferenceCategory
+        android:title="@string/map_setting_filter">
+
+        <SwitchPreference
+            android:key="@string/map_setting_key_isBikeParkingNamurLoadingEnable"
+            android:title="@string/map_setting_BikeParking_label"
+            android:defaultValue="true"
+            />
+        <SwitchPreference
+            android:key="@string/map_setting_key_isCarParkingNamurLoadingEnable"
+            android:title="@string/map_setting_CarParking_label"
+            android:defaultValue="true"
+            />
+        <SwitchPreference
+            android:key="@string/map_setting_key_isJCDecauxLoadingEnable"
+            android:title="@string/map_setting_jcdecaux_label"
+            android:defaultValue="true"
+            />
+        <SwitchPreference
+            android:key="@string/map_setting_key_isBikeRouteLoadingEnable"
+            android:title="@string/map_setting_BikeRoute_label"
+            android:defaultValue="true"
+            />
+
+    </PreferenceCategory>
+</PreferenceScreen>
