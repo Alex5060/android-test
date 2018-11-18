@@ -23,11 +23,15 @@
         completions."
     </string>
     <string name="error_internet_connection">Internet connection required !</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="map_setting_filter">Filtre</string>
+    <string name="map_setting_filter_description">Filtrer les points à afficher sur la carte</string>
+    <string name="map_setting_key_isJCDecauxLoadingEnable">isJCDecauxLoadingEnable</string>
+    <string name="map_setting_key_isCarParkingNamurLoadingEnable">isCarParkingNamurLoadingEnable</string>
+    <string name="map_setting_key_isBikeParkingNamurLoadingEnable">isBikeParkingNamurLoadingEnable</string>
+    <string name="map_setting_key_isBikeRouteLoadingEnable">isBikeRouteLoadingEnable</string>
+    <string name="map_setting_CarParking_label">Parking voitures</string>
+    <string name="map_setting_BikeParking_label">Parking vélos</string>
+    <string name="map_setting_BikeRoute_label">Itinéraires vélo</string>
+    <string name="map_setting_jcdecaux_label">Libiavélo</string>
     <string name="error_refresh_button_label">Rafraichir</string>
-
-
-
 </resources>

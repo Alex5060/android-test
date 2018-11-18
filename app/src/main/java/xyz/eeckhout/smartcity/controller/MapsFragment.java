@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -83,13 +82,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             mMapView = (MapView) rootView.findViewById(R.id.map);
             mMapView.onCreate(savedInstanceState);
             mMapView.getMapAsync(this);
-            FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.button_loading_libiavelo);
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    addAllData();
-                }
-            });
+//            FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.button_loading_libiavelo);
+//            fab.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//
+//                }
+//            });
         }
         catch (InflateException e){
             Log.e("samy", "Inflate exception");
