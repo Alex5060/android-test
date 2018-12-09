@@ -1,8 +1,10 @@
-package xyz.eeckhout.smartcity;
+package xyz.eeckhout.smartcity.controller;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceFragmentCompat;
+
+import xyz.eeckhout.smartcity.R;
 
 //implements SharedPreferences.OnSharedPreferenceChangeListener
 public class Map_settingFragment extends PreferenceFragmentCompat {
