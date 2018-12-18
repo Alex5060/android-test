@@ -1,5 +1,7 @@
 package xyz.eeckhout.smartcity.controller;
 
+import xyz.eeckhout.smartcity.controller.MainActivity;
+
 import android.Manifest;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -13,6 +15,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -21,6 +24,7 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -40,6 +44,7 @@ import com.google.android.gms.maps.model.VisibleRegion;
 
 import java.util.ArrayList;
 
+import butterknife.OnClick;
 import xyz.eeckhout.smartcity.R;
 import xyz.eeckhout.smartcity.model.jcdecaux.JCDecauxStation;
 import xyz.eeckhout.smartcity.model.villeNamur.bikeParking.BikeParkingNamur;
@@ -61,6 +66,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 100;
     private MapViewModel model;
+    private BottomSheetViewModel bottomSheetViewModel;
     LocationManager locationManager;
 
     public static xyz.eeckhout.smartcity.controller.MapsFragment newInstance() {
@@ -71,6 +77,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         model = ViewModelProviders.of(getActivity()).get(MapViewModel.class);
+        bottomSheetViewModel = ViewModelProviders.of(getActivity()).get(BottomSheetViewModel.class);
     }
 
     @Override
@@ -183,8 +190,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(final Marker marker) {
+                    bottomSheetViewModel.setMarker(marker);
                     // Check if a click count was set, then display the click count.
-                    Toast.makeText(getContext(), marker.getTitle() + " has been clicked.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), marker.getTitle() + " has been clicked :" + marker.getTag() + ".", Toast.LENGTH_SHORT).show();
+                    //TextView preview = getActivity().findViewById(R.id.preview);
+                    //preview.setText(marker.getTitle());
+                    //Toast.makeText(getContext(), preview.getText() + " has been clicked :" + marker.getTag() + ".", Toast.LENGTH_LONG).show();
+                    ((MainActivity) getActivity()).showBottomSheetDialogFragment();
 
                     // Return false to indicate that we have not consumed the event and that we wish
                     // for the default behavior to occur (which is for the camera to move such that the
@@ -198,6 +210,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     Toast.makeText(getContext(), ((xyz.eeckhout.smartcity.model.villeNamur.bikeRoute.Record) polyline.getTag()).getFields().getNom(), Toast.LENGTH_LONG).show();
                 }
             });
+
         }
     }
 

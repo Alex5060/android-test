@@ -3,6 +3,7 @@ package xyz.eeckhout.smartcity.controller;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -16,8 +17,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
-
+import com.google.android.gms.maps.model.Marker;
+import butterknife.OnClick;
+import xyz.eeckhout.smartcity.AccountFragment;
+import xyz.eeckhout.smartcity.controller.BottomSheetFragment;
+import xyz.eeckhout.smartcity.Map_settingFragment;
 import xyz.eeckhout.smartcity.R;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -36,8 +42,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                AVEC LE FRAGMENT
+                showBottomSheetDialogFragment();
+
             }
         });
 
@@ -189,6 +196,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startFragment(R.id.nav_camera);
     }
 
+    public void showBottomSheetDialogFragment() {
+        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
+        bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+    }
+
+    public void showBottomSheetDialogFragment(Marker marker) {
+        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
+
+
+        TextView view = findViewById(R.id.preview);
+        //view.setText(marker.getTitle());
+        //bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -207,4 +228,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onSaveInstanceState(outState);
         outState.putLong("fragment_actif", init_fragment);
     }
+
+
 }
