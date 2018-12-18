@@ -1,4 +1,4 @@
-package xyz.eeckhout.smartcity;
+package xyz.eeckhout.smartcity.controller;
 
 import android.arch.lifecycle.ViewModel;
 

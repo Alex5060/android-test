@@ -18,8 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import xyz.eeckhout.smartcity.AccountFragment;
-import xyz.eeckhout.smartcity.Map_settingFragment;
 import xyz.eeckhout.smartcity.R;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -58,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else{
             startFragment();
         }
+
+        getLoginFragment();
     }
 
     @Override
@@ -103,6 +103,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(getApplicationContext(), R.string.error_internet_connection, Toast.LENGTH_LONG).show();
         }
     }
+
+    private void getLoginFragment(){
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content, new LoginFragment())
+                .commit();
+    }
+
 
     private void getAccountFragment(){
         getSupportFragmentManager()
