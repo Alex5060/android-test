@@ -21,9 +21,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.maps.model.Marker;
 import butterknife.OnClick;
-import xyz.eeckhout.smartcity.AccountFragment;
+import xyz.eeckhout.smartcity.controller.AccountFragment;
 import xyz.eeckhout.smartcity.controller.BottomSheetFragment;
-import xyz.eeckhout.smartcity.Map_settingFragment;
+import xyz.eeckhout.smartcity.controller.Map_settingFragment;
 import xyz.eeckhout.smartcity.R;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
