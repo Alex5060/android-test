@@ -19,9 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.maps.model.Marker;
-
 import butterknife.OnClick;
 import xyz.eeckhout.smartcity.AccountFragment;
 import xyz.eeckhout.smartcity.controller.BottomSheetFragment;
@@ -65,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else{
             startFragment();
         }
+
+        getLoginFragment();
     }
 
     @Override
@@ -110,6 +110,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(getApplicationContext(), R.string.error_internet_connection, Toast.LENGTH_LONG).show();
         }
     }
+
+    private void getLoginFragment(){
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content, new LoginFragment())
+                .commit();
+    }
+
 
     private void getAccountFragment(){
         getSupportFragmentManager()

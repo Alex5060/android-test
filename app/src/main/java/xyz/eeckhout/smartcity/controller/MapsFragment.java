@@ -198,7 +198,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     //Toast.makeText(getContext(), preview.getText() + " has been clicked :" + marker.getTag() + ".", Toast.LENGTH_LONG).show();
                     ((MainActivity) getActivity()).showBottomSheetDialogFragment();
 
-
                     // Return false to indicate that we have not consumed the event and that we wish
                     // for the default behavior to occur (which is for the camera to move such that the
                     // marker is centered and for the marker's info window to open, if it has one).
@@ -208,7 +207,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             map.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
                 @Override
                 public void onPolylineClick(Polyline polyline) {
-                    Toast.makeText(getContext(), polyline.getTag().toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), ((xyz.eeckhout.smartcity.model.villeNamur.bikeRoute.Record) polyline.getTag()).getFields().getNom(), Toast.LENGTH_LONG).show();
                 }
             });
 
