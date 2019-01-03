@@ -3,29 +3,27 @@ package xyz.eeckhout.smartcity.dataAccess;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.google.android.gms.maps.model.VisibleRegion;
+import java.util.List;
 
-import java.util.ArrayList;
+import xyz.eeckhout.smartcity.api.ServicesApi;
+import xyz.eeckhout.smartcity.model.ServiceDTO;
 
-import xyz.eeckhout.smartcity.controller.MapsFragment;
-import xyz.eeckhout.smartcity.controller.Utils;
-import xyz.eeckhout.smartcity.model.jcdecaux.JCDecauxStation;
-import xyz.eeckhout.smartcity.model.villeNamur.carParking.CarParkingNamur;
-
-public class CarParkingNamurAT extends AsyncTask<Object, Void, CarParkingNamur> {
-    private CarParkingNamur carParkingNamur;
+public class CarParkingNamurAT extends AsyncTask<Object, Void, List<ServiceDTO>> {
+    private List<ServiceDTO> carParkingNamur;
     private Exception exception;
+    private int category;
 
     private GetCarParkingNamurATResult getCarParkingNamurATResult;
 
-    public CarParkingNamurAT(GetCarParkingNamurATResult getCarParkingNamurATResult) {
+    public CarParkingNamurAT(GetCarParkingNamurATResult getCarParkingNamurATResult, int category) {
         this.getCarParkingNamurATResult = getCarParkingNamurATResult;
+        this.category = category;
     }
 
     @Override
-    protected CarParkingNamur doInBackground(Object... params) {
+    protected List<ServiceDTO> doInBackground(Object... params) {
             try {
-                carParkingNamur = CarParkingNamurWS.getAllCarParkingNamur();
+                carParkingNamur = new ServicesApi().getServicesByCategory(category,0,200);
             } catch (Exception e) {
                 Log.i("erreur", e.getMessage());
             }
@@ -33,7 +31,7 @@ public class CarParkingNamurAT extends AsyncTask<Object, Void, CarParkingNamur> 
     }
 
     @Override
-    protected void onPostExecute(CarParkingNamur carParkingNamur) {
+    protected void onPostExecute(List<ServiceDTO> carParkingNamur) {
         if(getCarParkingNamurATResult != null) {
             if (this.exception != null) {
                 getCarParkingNamurATResult.getCarParkingNamurATResultError(exception);
@@ -44,7 +42,7 @@ public class CarParkingNamurAT extends AsyncTask<Object, Void, CarParkingNamur> 
     }
 
     public interface GetCarParkingNamurATResult{
-        void getAllCarParkingNamur(CarParkingNamur carParkingNamur);
+        void getAllCarParkingNamur(List<ServiceDTO> carParkingNamur);
         void getCarParkingNamurATResultError(Exception exception);
     }
 }

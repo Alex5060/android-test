@@ -1,7 +1,5 @@
 package xyz.eeckhout.smartcity.controller;
 
-import xyz.eeckhout.smartcity.controller.MainActivity;
-
 import android.Manifest;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -15,7 +13,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -24,7 +21,6 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -41,16 +37,16 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
 import com.google.android.gms.maps.model.VisibleRegion;
+import com.google.maps.android.PolyUtil;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import butterknife.OnClick;
 import xyz.eeckhout.smartcity.R;
+import xyz.eeckhout.smartcity.model.*;
 import xyz.eeckhout.smartcity.model.jcdecaux.JCDecauxStation;
-import xyz.eeckhout.smartcity.model.villeNamur.bikeParking.BikeParkingNamur;
-import xyz.eeckhout.smartcity.model.villeNamur.bikeRoute.BikeRouteNamur;
-import xyz.eeckhout.smartcity.model.villeNamur.carParking.CarParkingNamur;
-import xyz.eeckhout.smartcity.model.villeNamur.carParking.Record;
 
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
@@ -59,10 +55,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private MapView mMapView;
     private static final int JCDECAUX_MIDDLE_LIMIT = 5;
     private static final int JCDECAUX_CRITICAL_LIMIT = 2;
-    private CarParkingNamur carParkingNamur;
-    private BikeParkingNamur parkingVelo;
-    private BikeRouteNamur itineraireVelo;
-    private ArrayList<JCDecauxStation> jcDecauxBikes;
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 100;
     private MapViewModel model;
@@ -217,9 +209,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private void addAllData(){
         map.clear();
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isJCDecauxLoadingEnable", true)) {
-            final Observer<ArrayList<JCDecauxStation>> jcDecauxStationObserver = new Observer<ArrayList<JCDecauxStation>>() {
+            final Observer<List<ServiceDTO>> jcDecauxStationObserver = new Observer<List<ServiceDTO>>() {
                 @Override
-                public void onChanged(@Nullable final ArrayList<JCDecauxStation> jcDecauxStation) {
+                public void onChanged(@Nullable final List<ServiceDTO> jcDecauxStation) {
                     // Update the UI, in this case, a TextView.
                     addAllLibiaVeloMarkers(jcDecauxStation);
                 }
@@ -229,9 +221,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             model.getJcDecauxBikes().observe(this, jcDecauxStationObserver);
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isCarParkingNamurLoadingEnable", true)) {
-            final Observer<CarParkingNamur> carParkingNamurObserver = new Observer<CarParkingNamur>() {
+            final Observer<List<ServiceDTO>> carParkingNamurObserver = new Observer<List<ServiceDTO>>() {
                 @Override
-                public void onChanged(@Nullable final CarParkingNamur carParkingNamur) {
+                public void onChanged(@Nullable final List<ServiceDTO> carParkingNamur) {
                     // Update the UI, in this case, a TextView.
                     addCarParkings(carParkingNamur);
                 }
@@ -241,9 +233,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             model.getCarParkingNamur().observe(this, carParkingNamurObserver);
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeParkingNamurLoadingEnable", true)) {
-            final Observer<BikeParkingNamur> bikeParkingNamurObserver = new Observer<BikeParkingNamur>() {
+            final Observer<List<ServiceDTO>> bikeParkingNamurObserver = new Observer<List<ServiceDTO>>() {
                 @Override
-                public void onChanged(@Nullable final BikeParkingNamur bikeParkingNamur) {
+                public void onChanged(@Nullable final List<ServiceDTO> bikeParkingNamur) {
                     // Update the UI, in this case, a TextView.
                     addBikeParkings(bikeParkingNamur);
                 }
@@ -253,9 +245,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             model.getBikeParking().observe(this, bikeParkingNamurObserver);
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeRouteLoadingEnable", true)) {
-            final Observer<BikeRouteNamur> bikeRouteNamurObserver = new Observer<BikeRouteNamur>() {
+            final Observer<List<DisplayedRoutesDTO>> bikeRouteNamurObserver = new Observer<List<DisplayedRoutesDTO>>() {
                 @Override
-                public void onChanged(@Nullable final BikeRouteNamur bikeRouteNamur) {
+                public void onChanged(@Nullable final List<DisplayedRoutesDTO> bikeRouteNamur) {
                     // Update the UI, in this case, a TextView.
                     addBikesRoutes(bikeRouteNamur);
                 }
@@ -279,23 +271,31 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void addAllLibiaVeloMarkers(ArrayList<JCDecauxStation> bikes){
-        for (JCDecauxStation bike : bikes) {
-            LatLng latLng = new LatLng(bike.getPosition().getLat(), bike.getPosition().getLng());
-            Marker marker = map.addMarker(
-                    new MarkerOptions().position(latLng)
-                            .title(bike.getName())
-                            .snippet("Disponibilités : " + bike.getAvailableBikes()));
-            if (bike.getAvailableBikes() > JCDECAUX_MIDDLE_LIMIT) {
-                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_vert));
-            } else {
-                if (bike.getAvailableBikes() > JCDECAUX_CRITICAL_LIMIT) {
-                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_orange));
+    private void addAllLibiaVeloMarkers(List<ServiceDTO> bikes){
+        try{
+            Log.i("erreur", "nb jcdecaux "+bikes.size());
+            for (ServiceDTO bike : bikes) {
+                //JSONObject object = new JSONObject(bike.getFacultativeValue());
+                int availableBikes = 5;
+                LatLng latLng = new LatLng(bike.getLatitude(), bike.getLongitude());
+                Marker marker = map.addMarker(
+                        new MarkerOptions().position(latLng)
+                                .title(bike.getServiceName())
+                                .snippet("Disponibilités : " + availableBikes));
+                if (availableBikes> JCDECAUX_MIDDLE_LIMIT) {
+                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_vert));
                 } else {
-                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_rouge));
+                    if (availableBikes > JCDECAUX_CRITICAL_LIMIT) {
+                        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_orange));
+                    } else {
+                        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_rouge));
+                    }
                 }
+                marker.setTag(bike);
             }
-            marker.setTag(bike);
+        }
+        catch(Exception e){
+            Log.i("erreur", e.getMessage());
         }
     }
 
@@ -303,44 +303,56 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         return map.getProjection().getVisibleRegion();
     }
 
-    private void addCarParkings(CarParkingNamur carParkingNamur){
-        if(carParkingNamur != null && carParkingNamur.getRecords() != null) {
-            for (Record record : carParkingNamur.getRecords()) {
-                LatLng latLng = new LatLng(record.getFields().getGeoPoint2d().get(0), record.getFields().getGeoPoint2d().get(1));
+    private void addCarParkings(List<ServiceDTO> carParkingNamur){
+        Log.i("erreur", "nb carPark "+ carParkingNamur.size());
+        try{
+            for (ServiceDTO service : carParkingNamur) {
+                JSONObject object = new JSONObject(service.getFacultativeValue());
+                LatLng latLng = new LatLng(service.getLatitude(), service.getLongitude());
                 map.addMarker(
                         new MarkerOptions().position(latLng)
-                                .title(record.getFields().getPlsyDescri())
+                                .title(service.getServiceName())
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.parking_voiture))
-                                .snippet("Nb places : " + record.getFields().getPlaces()))
-                        .setTag(record);
+                                .snippet("Nb places : " + object.getInt("Places"))).setTag(service);
             }
         }
-    }
-
-    private void addBikeParkings(BikeParkingNamur bikeParkingNamur){
-        for (xyz.eeckhout.smartcity.model.villeNamur.bikeParking.Record record : bikeParkingNamur.getRecords()) {
-            LatLng latLng = new LatLng(record.getFields().getGeoPoint2d().get(0), record.getFields().getGeoPoint2d().get(1));
-            map.addMarker(
-                    new MarkerOptions().position(latLng)
-                            .title(record.getFields().getNomStation())
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.parking_velo))
-                            .snippet("Nb places : " + record.getFields().getNbreArceaux())
-            ).setTag(record);
+        catch(Exception e){
+            Log.i("error", e.getMessage());
         }
     }
 
-    private void addBikesRoutes(BikeRouteNamur bikeRouteNamur){
-        for (xyz.eeckhout.smartcity.model.villeNamur.bikeRoute.Record record : bikeRouteNamur.getRecords()) {
+    private void addBikeParkings(List<ServiceDTO> bikeParkingNamur){
+        try{
+            Log.i("erreur", "nb BikeParking : "+bikeParkingNamur.size());
+            for (ServiceDTO service : bikeParkingNamur) {
+                JSONObject object = new JSONObject(service.getFacultativeValue());
+                LatLng latLng = new LatLng(service.getLatitude(), service.getLongitude());
+                map.addMarker(
+                        new MarkerOptions().position(latLng)
+                                .title(service.getServiceName())
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.parking_velo))
+                                .snippet("Nb places : " + object.getString("Places"))
+                ).setTag(service);
+            }
+        }
+        catch(Exception e){
+            Log.i("error", e.getMessage());
+        }
+    }
+
+    private void addBikesRoutes(List<DisplayedRoutesDTO> bikeRouteNamur){
+        Log.i("erreur", "nb routes : "+ bikeRouteNamur.size());
+        for (DisplayedRoutesDTO route : bikeRouteNamur) {
             PolylineOptions rectOptions = new PolylineOptions()
                     .clickable(true)
                     .width(15)
                     .color(Color.rgb(0, 205, 0))
                     .startCap(new RoundCap())
                     .endCap(new RoundCap())
-                    .addAll(record.getFields().getGeoShape().getLatLng());
+                    .addAll(PolyUtil.decode(route.getEncodedCoordinates()));
 
             Polyline polyline = map.addPolyline(rectOptions);
-            polyline.setTag(record);
+            polyline.setTag(route);
         }
     }
 }

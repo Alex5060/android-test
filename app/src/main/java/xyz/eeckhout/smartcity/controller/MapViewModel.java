@@ -5,58 +5,62 @@ import android.arch.lifecycle.ViewModel;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import xyz.eeckhout.smartcity.dataAccess.BikeParkingNamurAT;
 import xyz.eeckhout.smartcity.dataAccess.BikeRouteNamurAT;
 import xyz.eeckhout.smartcity.dataAccess.CarParkingNamurAT;
 import xyz.eeckhout.smartcity.dataAccess.JCDecauxAT;
+import xyz.eeckhout.smartcity.model.DisplayedRoutesDTO;
+import xyz.eeckhout.smartcity.model.ServiceDTO;
 import xyz.eeckhout.smartcity.model.jcdecaux.JCDecauxStation;
-import xyz.eeckhout.smartcity.model.villeNamur.bikeParking.BikeParkingNamur;
 import xyz.eeckhout.smartcity.model.villeNamur.bikeRoute.BikeRouteNamur;
-import xyz.eeckhout.smartcity.model.villeNamur.carParking.CarParkingNamur;
 
-public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATResult, BikeParkingNamurAT.GetBikeParkingNamurATResult, BikeRouteNamurAT.GetBikeRouteNamurATResult, CarParkingNamurAT.GetCarParkingNamurATResult {
-    private MutableLiveData<CarParkingNamur> carParkingNamur;
-    private MutableLiveData<BikeParkingNamur> parkingVelo;
-    private MutableLiveData<BikeRouteNamur> itineraireVelo;
-    private MutableLiveData<ArrayList<JCDecauxStation>> jcDecauxBikes;
+public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATResult, BikeParkingNamurAT.GetBikeParkingNamurATResult ,BikeRouteNamurAT.GetBikeRouteNamurATResult, CarParkingNamurAT.GetCarParkingNamurATResult {
+    private MutableLiveData<List<ServiceDTO>> carParkingNamur;
+    private MutableLiveData<List<ServiceDTO>> parkingVelo;
+    private MutableLiveData<List<DisplayedRoutesDTO>> itineraireVelo;
+    private MutableLiveData<List<ServiceDTO>> jcDecauxBikes;
     private CarParkingNamurAT carParkingNamurAT;
     private BikeRouteNamurAT bikeRouteNamurAT;
     private BikeParkingNamurAT bikeParkingNamurAT;
     private JCDecauxAT jcDecauxAT;
 
 
-    public MutableLiveData<CarParkingNamur> getCarParkingNamur() {
+    public MutableLiveData<List<ServiceDTO>> getCarParkingNamur() {
         if(carParkingNamur == null){
             carParkingNamur = new MutableLiveData<>();
-            carParkingNamurAT = new CarParkingNamurAT(this);
+            carParkingNamur.setValue(new ArrayList<ServiceDTO>());
+            carParkingNamurAT = new CarParkingNamurAT(this, 2);
             carParkingNamurAT.execute();
         }
         return carParkingNamur;
     }
 
-    public MutableLiveData<BikeParkingNamur> getBikeParking() {
+    public MutableLiveData<List<ServiceDTO>> getBikeParking() {
         if(parkingVelo == null){
             parkingVelo = new MutableLiveData<>();
+            parkingVelo.setValue(new ArrayList<ServiceDTO>());
             bikeParkingNamurAT = new BikeParkingNamurAT(this);
             bikeParkingNamurAT.execute();
         }
         return parkingVelo;
     }
 
-    public MutableLiveData<BikeRouteNamur> getItineraireVelo() {
+    public MutableLiveData<List<DisplayedRoutesDTO>> getItineraireVelo() {
         if(itineraireVelo == null){
             itineraireVelo = new MutableLiveData<>();
+            itineraireVelo.setValue(new ArrayList<DisplayedRoutesDTO>());
             bikeRouteNamurAT = new BikeRouteNamurAT(this);
             bikeRouteNamurAT.execute();
         }
         return itineraireVelo;
     }
 
-    public MutableLiveData<ArrayList<JCDecauxStation>> getJcDecauxBikes() {
+    public MutableLiveData<List<ServiceDTO>> getJcDecauxBikes() {
         if(jcDecauxBikes == null){
             jcDecauxBikes = new MutableLiveData<>();
-            jcDecauxBikes.setValue(new ArrayList<JCDecauxStation>());
+            jcDecauxBikes.setValue(new ArrayList<ServiceDTO>());
             jcDecauxAT = new JCDecauxAT(this);
             jcDecauxAT.execute();
         }
@@ -65,7 +69,7 @@ public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATR
 
 
     @Override
-    public void getStationsATResult(ArrayList<JCDecauxStation> stations) {
+    public void getStationsATResult(List<ServiceDTO> stations) {
         this.jcDecauxBikes.getValue().clear();
         this.jcDecauxBikes.postValue(stations);
     }
@@ -76,18 +80,9 @@ public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATR
     }
 
     @Override
-    public void getBikeParkingNamur(BikeParkingNamur bikeParkingNamur) {
-        this.parkingVelo.setValue(bikeParkingNamur);
-    }
-
-    @Override
-    public void getBikeParkingNamurATResultError(Exception exception) {
-        Log.i("error", exception.getMessage());
-    }
-
-    @Override
-    public void getBikeRouteNamur(BikeRouteNamur bikeRouteNamur) {
-        this.itineraireVelo.setValue(bikeRouteNamur);
+    public void getBikeRouteNamur(List<DisplayedRoutesDTO> bikeRouteNamur) {
+        this.itineraireVelo.getValue().clear();
+        this.itineraireVelo.postValue(bikeRouteNamur);
     }
 
     @Override
@@ -96,8 +91,9 @@ public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATR
     }
 
     @Override
-    public void getAllCarParkingNamur(CarParkingNamur carParkingNamur) {
-        this.carParkingNamur.setValue(carParkingNamur);
+    public void getAllCarParkingNamur(List<ServiceDTO> carParkingNamur) {
+        this.carParkingNamur.getValue().clear();
+        this.carParkingNamur.postValue(carParkingNamur);
     }
 
     @Override
@@ -112,5 +108,16 @@ public class MapViewModel extends ViewModel implements JCDecauxAT.GetJCDecauxATR
         bikeParkingNamurAT.cancel(true);
         bikeRouteNamurAT.cancel(true);
         carParkingNamurAT.cancel(true);
+    }
+
+    @Override
+    public void getBikeParkingNamur(List<ServiceDTO> bikeParkingNamur) {
+        this.parkingVelo.getValue().clear();
+        this.parkingVelo.postValue(bikeParkingNamur);
+    }
+
+    @Override
+    public void getBikeParkingNamurATResultError(Exception exception) {
+        Log.i("erreur", exception.getMessage());
     }
 }

@@ -3,16 +3,13 @@ package xyz.eeckhout.smartcity.dataAccess;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.google.android.gms.maps.model.VisibleRegion;
+import java.util.List;
 
-import java.util.ArrayList;
+import xyz.eeckhout.smartcity.api.ServicesApi;
+import xyz.eeckhout.smartcity.model.ServiceDTO;
 
-import xyz.eeckhout.smartcity.controller.Utils;
-import xyz.eeckhout.smartcity.model.jcdecaux.JCDecauxStation;
-import xyz.eeckhout.smartcity.model.villeNamur.bikeParking.BikeParkingNamur;
-
-public class BikeParkingNamurAT extends AsyncTask<Object, Void, BikeParkingNamur> {
-    private BikeParkingNamur bikeParkingNamur;
+public class BikeParkingNamurAT extends AsyncTask<Object, Void, List<ServiceDTO>> {
+    private List<ServiceDTO> bikeParkingNamur;
     private Exception exception;
 
     private GetBikeParkingNamurATResult getBikeParkingNamurATResult;
@@ -22,9 +19,9 @@ public class BikeParkingNamurAT extends AsyncTask<Object, Void, BikeParkingNamur
     }
 
     @Override
-    protected BikeParkingNamur doInBackground(Object... params) {
+    protected List<ServiceDTO> doInBackground(Object... params) {
             try {
-                this.bikeParkingNamur = BikeParkingNamurWS.getAllBikeParkingNamur();
+                this.bikeParkingNamur = new ServicesApi().getServicesByCategory(3,0,200);
             } catch (Exception e) {
                 this.exception = e;
                 Log.i("erreur", e.getMessage());
@@ -33,7 +30,7 @@ public class BikeParkingNamurAT extends AsyncTask<Object, Void, BikeParkingNamur
     }
 
     @Override
-    protected void onPostExecute(BikeParkingNamur bikeParkingNamur) {
+    protected void onPostExecute(List<ServiceDTO> bikeParkingNamur) {
         if(getBikeParkingNamurATResult != null){
             if(exception != null){
                 getBikeParkingNamurATResult.getBikeParkingNamurATResultError(exception);
@@ -45,7 +42,7 @@ public class BikeParkingNamurAT extends AsyncTask<Object, Void, BikeParkingNamur
     }
 
     public interface GetBikeParkingNamurATResult{
-        void getBikeParkingNamur(BikeParkingNamur bikeParkingNamur);
+        void getBikeParkingNamur(List<ServiceDTO> bikeParkingNamur);
         void getBikeParkingNamurATResultError(Exception exception);
     }
 }

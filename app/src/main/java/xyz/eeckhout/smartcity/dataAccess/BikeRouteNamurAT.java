@@ -6,14 +6,17 @@ import android.util.Log;
 import com.google.android.gms.maps.model.VisibleRegion;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import xyz.eeckhout.smartcity.api.RoutesApi;
 import xyz.eeckhout.smartcity.controller.Utils;
+import xyz.eeckhout.smartcity.model.DisplayedRoutesDTO;
 import xyz.eeckhout.smartcity.model.jcdecaux.JCDecauxStation;
 import xyz.eeckhout.smartcity.model.villeNamur.bikeParking.BikeParkingNamur;
 import xyz.eeckhout.smartcity.model.villeNamur.bikeRoute.BikeRouteNamur;
 
-public class BikeRouteNamurAT extends AsyncTask<Object, Void, BikeRouteNamur> {
-    private BikeRouteNamur bikeRouteNamur;
+public class BikeRouteNamurAT extends AsyncTask<Object, Void, List<DisplayedRoutesDTO>> {
+    private List<DisplayedRoutesDTO> bikeRouteNamur;
     private Exception exception;
 
     private GetBikeRouteNamurATResult getBikeRouteNamurATResult;
@@ -23,9 +26,9 @@ public class BikeRouteNamurAT extends AsyncTask<Object, Void, BikeRouteNamur> {
     }
 
     @Override
-    protected BikeRouteNamur doInBackground(Object... params) {
+    protected List<DisplayedRoutesDTO> doInBackground(Object... params) {
             try {
-                this.bikeRouteNamur = BikeRouteNamurWS.getAllBikeRouteNamur();
+                this.bikeRouteNamur = new RoutesApi().get();
             } catch (Exception e) {
                 exception = e;
                 Log.i("erreur", e.getMessage());
@@ -34,7 +37,7 @@ public class BikeRouteNamurAT extends AsyncTask<Object, Void, BikeRouteNamur> {
     }
 
     @Override
-    protected void onPostExecute(BikeRouteNamur bikeRouteNamur) {
+    protected void onPostExecute(List<DisplayedRoutesDTO> bikeRouteNamur) {
         if (this.getBikeRouteNamurATResult != null) {
             if (exception != null) {
                 getBikeRouteNamurATResult.getBikeRouteAtResultError(exception);
@@ -45,7 +48,7 @@ public class BikeRouteNamurAT extends AsyncTask<Object, Void, BikeRouteNamur> {
     }
 
     public interface GetBikeRouteNamurATResult{
-        void getBikeRouteNamur(BikeRouteNamur bikeRouteNamur);
+        void getBikeRouteNamur(List<DisplayedRoutesDTO> bikeRouteNamur);
         void getBikeRouteAtResultError(Exception exception);
     }
 }
