@@ -6,10 +6,10 @@ import android.util.Log;
 import java.util.List;
 
 import xyz.eeckhout.smartcity.api.ServicesApi;
-import xyz.eeckhout.smartcity.model.ServiceDTO;
+import xyz.eeckhout.smartcity.model.ServiceGetDTO;
 
-public class CarParkingNamurAT extends AsyncTask<Object, Void, List<ServiceDTO>> {
-    private List<ServiceDTO> carParkingNamur;
+public class CarParkingNamurAT extends AsyncTask<Object, Void, List<ServiceGetDTO>> {
+    private List<ServiceGetDTO> carParkingNamur;
     private Exception exception;
     private int category;
 
@@ -21,7 +21,7 @@ public class CarParkingNamurAT extends AsyncTask<Object, Void, List<ServiceDTO>>
     }
 
     @Override
-    protected List<ServiceDTO> doInBackground(Object... params) {
+    protected List<ServiceGetDTO> doInBackground(Object... params) {
             try {
                 carParkingNamur = new ServicesApi().getServicesByCategory(category,0,200);
             } catch (Exception e) {
@@ -31,7 +31,7 @@ public class CarParkingNamurAT extends AsyncTask<Object, Void, List<ServiceDTO>>
     }
 
     @Override
-    protected void onPostExecute(List<ServiceDTO> carParkingNamur) {
+    protected void onPostExecute(List<ServiceGetDTO> carParkingNamur) {
         if(getCarParkingNamurATResult != null) {
             if (this.exception != null) {
                 getCarParkingNamurATResult.getCarParkingNamurATResultError(exception);
@@ -42,7 +42,7 @@ public class CarParkingNamurAT extends AsyncTask<Object, Void, List<ServiceDTO>>
     }
 
     public interface GetCarParkingNamurATResult{
-        void getAllCarParkingNamur(List<ServiceDTO> carParkingNamur);
+        void getAllCarParkingNamur(List<ServiceGetDTO> carParkingNamur);
         void getCarParkingNamurATResultError(Exception exception);
     }
 }

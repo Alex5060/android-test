@@ -22,26 +22,12 @@ import com.google.gson.stream.JsonWriter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
-import org.joda.time.DateTime;
-import xyz.eeckhout.smartcity.model.CategoryDTO;
 
 /**
- * ServiceDTO
+ * ServiceGetDTO
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-01-03T20:36:15.687+01:00")
-public class ServiceDTO {
-  @SerializedName("category")
-  private CategoryDTO category = null;
-
-  @SerializedName("dateInsert")
-  private DateTime dateInsert = null;
-
-  @SerializedName("lastUpdate")
-  private DateTime lastUpdate = null;
-
-  @SerializedName("rowVersion")
-  private byte[] rowVersion = null;
-
+public class ServiceGetDTO {
   @SerializedName("id")
   private Integer id = null;
 
@@ -72,79 +58,7 @@ public class ServiceDTO {
   @SerializedName("facultativeValue")
   private String facultativeValue = null;
 
-  public ServiceDTO category(CategoryDTO category) {
-    this.category = category;
-    return this;
-  }
-
-   /**
-   * Get category
-   * @return category
-  **/
-  @ApiModelProperty(value = "")
-  public CategoryDTO getCategory() {
-    return category;
-  }
-
-  public void setCategory(CategoryDTO category) {
-    this.category = category;
-  }
-
-  public ServiceDTO dateInsert(DateTime dateInsert) {
-    this.dateInsert = dateInsert;
-    return this;
-  }
-
-   /**
-   * Get dateInsert
-   * @return dateInsert
-  **/
-  @ApiModelProperty(value = "")
-  public DateTime getDateInsert() {
-    return dateInsert;
-  }
-
-  public void setDateInsert(DateTime dateInsert) {
-    this.dateInsert = dateInsert;
-  }
-
-  public ServiceDTO lastUpdate(DateTime lastUpdate) {
-    this.lastUpdate = lastUpdate;
-    return this;
-  }
-
-   /**
-   * Get lastUpdate
-   * @return lastUpdate
-  **/
-  @ApiModelProperty(value = "")
-  public DateTime getLastUpdate() {
-    return lastUpdate;
-  }
-
-  public void setLastUpdate(DateTime lastUpdate) {
-    this.lastUpdate = lastUpdate;
-  }
-
-  public ServiceDTO rowVersion(byte[] rowVersion) {
-    this.rowVersion = rowVersion;
-    return this;
-  }
-
-   /**
-   * Get rowVersion
-   * @return rowVersion
-  **/
-  @ApiModelProperty(value = "")
-  public byte[] getRowVersion() {
-    return rowVersion;
-  }
-
-  public void setRowVersion(byte[] rowVersion) {
-    this.rowVersion = rowVersion;
-  }
-
-  public ServiceDTO id(Integer id) {
+  public ServiceGetDTO id(Integer id) {
     this.id = id;
     return this;
   }
@@ -162,7 +76,7 @@ public class ServiceDTO {
     this.id = id;
   }
 
-  public ServiceDTO recordid(String recordid) {
+  public ServiceGetDTO recordid(String recordid) {
     this.recordid = recordid;
     return this;
   }
@@ -180,7 +94,7 @@ public class ServiceDTO {
     this.recordid = recordid;
   }
 
-  public ServiceDTO datasetid(String datasetid) {
+  public ServiceGetDTO datasetid(String datasetid) {
     this.datasetid = datasetid;
     return this;
   }
@@ -198,7 +112,7 @@ public class ServiceDTO {
     this.datasetid = datasetid;
   }
 
-  public ServiceDTO state(String state) {
+  public ServiceGetDTO state(String state) {
     this.state = state;
     return this;
   }
@@ -216,7 +130,7 @@ public class ServiceDTO {
     this.state = state;
   }
 
-  public ServiceDTO creator(String creator) {
+  public ServiceGetDTO creator(String creator) {
     this.creator = creator;
     return this;
   }
@@ -234,7 +148,7 @@ public class ServiceDTO {
     this.creator = creator;
   }
 
-  public ServiceDTO longitude(Double longitude) {
+  public ServiceGetDTO longitude(Double longitude) {
     this.longitude = longitude;
     return this;
   }
@@ -252,7 +166,7 @@ public class ServiceDTO {
     this.longitude = longitude;
   }
 
-  public ServiceDTO latitude(Double latitude) {
+  public ServiceGetDTO latitude(Double latitude) {
     this.latitude = latitude;
     return this;
   }
@@ -270,7 +184,7 @@ public class ServiceDTO {
     this.latitude = latitude;
   }
 
-  public ServiceDTO serviceName(String serviceName) {
+  public ServiceGetDTO serviceName(String serviceName) {
     this.serviceName = serviceName;
     return this;
   }
@@ -288,7 +202,7 @@ public class ServiceDTO {
     this.serviceName = serviceName;
   }
 
-  public ServiceDTO categoryId(Integer categoryId) {
+  public ServiceGetDTO categoryId(Integer categoryId) {
     this.categoryId = categoryId;
     return this;
   }
@@ -306,7 +220,7 @@ public class ServiceDTO {
     this.categoryId = categoryId;
   }
 
-  public ServiceDTO facultativeValue(String facultativeValue) {
+  public ServiceGetDTO facultativeValue(String facultativeValue) {
     this.facultativeValue = facultativeValue;
     return this;
   }
@@ -333,38 +247,30 @@ public class ServiceDTO {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ServiceDTO serviceDTO = (ServiceDTO) o;
-    return Objects.equals(this.category, serviceDTO.category) &&
-        Objects.equals(this.dateInsert, serviceDTO.dateInsert) &&
-        Objects.equals(this.lastUpdate, serviceDTO.lastUpdate) &&
-        Objects.equals(this.rowVersion, serviceDTO.rowVersion) &&
-        Objects.equals(this.id, serviceDTO.id) &&
-        Objects.equals(this.recordid, serviceDTO.recordid) &&
-        Objects.equals(this.datasetid, serviceDTO.datasetid) &&
-        Objects.equals(this.state, serviceDTO.state) &&
-        Objects.equals(this.creator, serviceDTO.creator) &&
-        Objects.equals(this.longitude, serviceDTO.longitude) &&
-        Objects.equals(this.latitude, serviceDTO.latitude) &&
-        Objects.equals(this.serviceName, serviceDTO.serviceName) &&
-        Objects.equals(this.categoryId, serviceDTO.categoryId) &&
-        Objects.equals(this.facultativeValue, serviceDTO.facultativeValue);
+    ServiceGetDTO serviceGetDTO = (ServiceGetDTO) o;
+    return Objects.equals(this.id, serviceGetDTO.id) &&
+        Objects.equals(this.recordid, serviceGetDTO.recordid) &&
+        Objects.equals(this.datasetid, serviceGetDTO.datasetid) &&
+        Objects.equals(this.state, serviceGetDTO.state) &&
+        Objects.equals(this.creator, serviceGetDTO.creator) &&
+        Objects.equals(this.longitude, serviceGetDTO.longitude) &&
+        Objects.equals(this.latitude, serviceGetDTO.latitude) &&
+        Objects.equals(this.serviceName, serviceGetDTO.serviceName) &&
+        Objects.equals(this.categoryId, serviceGetDTO.categoryId) &&
+        Objects.equals(this.facultativeValue, serviceGetDTO.facultativeValue);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(category, dateInsert, lastUpdate, rowVersion, id, recordid, datasetid, state, creator, longitude, latitude, serviceName, categoryId, facultativeValue);
+    return Objects.hash(id, recordid, datasetid, state, creator, longitude, latitude, serviceName, categoryId, facultativeValue);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ServiceDTO {\n");
+    sb.append("class ServiceGetDTO {\n");
     
-    sb.append("    category: ").append(toIndentedString(category)).append("\n");
-    sb.append("    dateInsert: ").append(toIndentedString(dateInsert)).append("\n");
-    sb.append("    lastUpdate: ").append(toIndentedString(lastUpdate)).append("\n");
-    sb.append("    rowVersion: ").append(toIndentedString(rowVersion)).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    recordid: ").append(toIndentedString(recordid)).append("\n");
     sb.append("    datasetid: ").append(toIndentedString(datasetid)).append("\n");

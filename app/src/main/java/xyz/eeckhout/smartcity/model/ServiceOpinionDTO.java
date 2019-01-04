@@ -14,17 +14,20 @@
 package xyz.eeckhout.smartcity.model;
 
 import java.util.Objects;
-
+import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
+import java.io.IOException;
 import org.joda.time.DateTime;
 
 /**
  * ServiceOpinionDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-01-02T23:06:48.990+01:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-01-03T20:36:15.687+01:00")
 public class ServiceOpinionDTO {
   @SerializedName("id")
   private Integer id = null;

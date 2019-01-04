@@ -6,10 +6,10 @@ import android.util.Log;
 import java.util.List;
 
 import xyz.eeckhout.smartcity.api.ServicesApi;
-import xyz.eeckhout.smartcity.model.ServiceDTO;
+import xyz.eeckhout.smartcity.model.ServiceGetDTO;
 
-public class BikeParkingNamurAT extends AsyncTask<Object, Void, List<ServiceDTO>> {
-    private List<ServiceDTO> bikeParkingNamur;
+public class BikeParkingNamurAT extends AsyncTask<Object, Void, List<ServiceGetDTO>> {
+    private List<ServiceGetDTO> bikeParkingNamur;
     private Exception exception;
 
     private GetBikeParkingNamurATResult getBikeParkingNamurATResult;
@@ -19,7 +19,7 @@ public class BikeParkingNamurAT extends AsyncTask<Object, Void, List<ServiceDTO>
     }
 
     @Override
-    protected List<ServiceDTO> doInBackground(Object... params) {
+    protected List<ServiceGetDTO> doInBackground(Object... params) {
             try {
                 this.bikeParkingNamur = new ServicesApi().getServicesByCategory(3,0,200);
             } catch (Exception e) {
@@ -30,7 +30,7 @@ public class BikeParkingNamurAT extends AsyncTask<Object, Void, List<ServiceDTO>
     }
 
     @Override
-    protected void onPostExecute(List<ServiceDTO> bikeParkingNamur) {
+    protected void onPostExecute(List<ServiceGetDTO> bikeParkingNamur) {
         if(getBikeParkingNamurATResult != null){
             if(exception != null){
                 getBikeParkingNamurATResult.getBikeParkingNamurATResultError(exception);
@@ -42,7 +42,7 @@ public class BikeParkingNamurAT extends AsyncTask<Object, Void, List<ServiceDTO>
     }
 
     public interface GetBikeParkingNamurATResult{
-        void getBikeParkingNamur(List<ServiceDTO> bikeParkingNamur);
+        void getBikeParkingNamur(List<ServiceGetDTO> bikeParkingNamur);
         void getBikeParkingNamurATResultError(Exception exception);
     }
 }

@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.eeckhout.smartcity.api.ServicesApi;
-import xyz.eeckhout.smartcity.model.ServiceDTO;
+import xyz.eeckhout.smartcity.model.ServiceGetDTO;
 import xyz.eeckhout.smartcity.model.jcdecaux.JCDecauxStation;
 
-public class JCDecauxAT extends AsyncTask<String, Void, List<ServiceDTO>> {
-    private List<ServiceDTO> stations;
+public class JCDecauxAT extends AsyncTask<String, Void, List<ServiceGetDTO>> {
+    private List<ServiceGetDTO> stations;
     private Exception exception;
 
     private GetJCDecauxATResult getJCDecauxATResult;
@@ -21,7 +21,7 @@ public class JCDecauxAT extends AsyncTask<String, Void, List<ServiceDTO>> {
     }
 
     @Override
-    protected List<ServiceDTO> doInBackground(String... params) {
+    protected List<ServiceGetDTO> doInBackground(String... params) {
         try {
             this.stations = new ServicesApi().getServicesByCategory(1, 0, 2000);
         } catch (Exception e) {
@@ -32,7 +32,7 @@ public class JCDecauxAT extends AsyncTask<String, Void, List<ServiceDTO>> {
     }
 
     @Override
-    protected void onPostExecute(List<ServiceDTO> bikes) {
+    protected void onPostExecute(List<ServiceGetDTO> bikes) {
         if(getJCDecauxATResult != null) {
             if (exception != null) {
                 getJCDecauxATResult.getStationsATResultError(exception);
@@ -43,7 +43,7 @@ public class JCDecauxAT extends AsyncTask<String, Void, List<ServiceDTO>> {
     }
 
     public interface GetJCDecauxATResult{
-        void getStationsATResult(List<ServiceDTO> stations);
+        void getStationsATResult(List<ServiceGetDTO> stations);
         void getStationsATResultError(Exception exception);
     }
 }

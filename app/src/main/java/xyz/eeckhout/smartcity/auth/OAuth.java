@@ -18,7 +18,7 @@ import xyz.eeckhout.smartcity.Pair;
 import java.util.Map;
 import java.util.List;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-01-02T23:06:48.990+01:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-01-03T17:11:54.546+01:00")
 public class OAuth implements Authentication {
   private String accessToken;
 

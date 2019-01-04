@@ -1,4 +1,4 @@
-package xyz.eeckhout.smartcity.controller;
+package xyz.eeckhout.smartcity;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -9,26 +9,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import xyz.eeckhout.smartcity.R;
+public class RegisterFragment extends Fragment {
 
-public class LoginFragment extends Fragment {
+    private RegisterViewModel mViewModel;
 
-    private LoginViewModel mViewModel;
-
-    public static LoginFragment newInstance() {
-        return new LoginFragment();
+    public static RegisterFragment newInstance() {
+        return new RegisterFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.login_fragment, container, false);
+        return inflater.inflate(R.layout.register_fragment, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(RegisterViewModel.class);
         // TODO: Use the ViewModel
     }
 

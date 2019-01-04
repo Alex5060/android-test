@@ -1,8 +1,12 @@
 package xyz.eeckhout.smartcity.controller;
 
 import android.Manifest;
+import android.accounts.AccountAuthenticatorActivity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -14,20 +18,45 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.auth0.android.jwt.DecodeException;
+import com.auth0.android.jwt.JWT;
 import com.google.android.gms.maps.model.Marker;
+
+import org.w3c.dom.Text;
+
 import butterknife.OnClick;
+import xyz.eeckhout.smartcity.ApiClient;
+import xyz.eeckhout.smartcity.ApiException;
+import xyz.eeckhout.smartcity.LoginActivity;
+import xyz.eeckhout.smartcity.api.AccountsApi;
+import xyz.eeckhout.smartcity.api.JwtApi;
 import xyz.eeckhout.smartcity.controller.AccountFragment;
 import xyz.eeckhout.smartcity.controller.BottomSheetFragment;
 import xyz.eeckhout.smartcity.controller.Map_settingFragment;
 import xyz.eeckhout.smartcity.R;
+import xyz.eeckhout.smartcity.model.TokenDTO;
+import xyz.eeckhout.smartcity.model.UserLoginDTO;
+import xyz.eeckhout.smartcity.model.UserMinalInfoDTO;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private int init_fragment;
+    private UserMinalInfoDTO user;
+
+    public UserMinalInfoDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserMinalInfoDTO user) {
+        this.user = user;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,14 +86,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        new GetUserTask().execute();
+
         if(savedInstanceState != null){
             startFragment( (int) savedInstanceState.getLong("fragment_actif", R.id.nav_camera));
         }
         else{
             startFragment();
         }
-
-        getLoginFragment();
     }
 
     @Override
@@ -110,14 +139,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(getApplicationContext(), R.string.error_internet_connection, Toast.LENGTH_LONG).show();
         }
     }
-
-    private void getLoginFragment(){
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.content, new LoginFragment())
-                .commit();
-    }
-
 
     private void getAccountFragment(){
         getSupportFragmentManager()
@@ -229,5 +250,52 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         outState.putLong("fragment_actif", init_fragment);
     }
 
+    public class GetUserTask extends AsyncTask<Void, Void, UserMinalInfoDTO> {
 
+        private UserLoginDTO loginDTO;
+
+        GetUserTask() {
+        }
+
+        @Override
+        protected UserMinalInfoDTO doInBackground(Void... params) {
+            JWT token;
+            String jwt = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("accessToken", null);
+            try {
+                token = new JWT(jwt);
+                String uid = token.getClaim("uid").asString();
+                AccountsApi api = new AccountsApi();
+                api.getApiClient().setAccessToken(jwt);
+                //api.getApiClient().setAccessToken(jwt);
+                UserMinalInfoDTO user = api.getUserById(uid);
+                return user;
+            }
+            catch(DecodeException e){
+                Log.i("erreur", e.getMessage());
+            } catch (ApiException e) {
+                Log.i("erreur", e.getMessage());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(final UserMinalInfoDTO user) {
+            if (user != null) {
+                TextView userName = (TextView) findViewById(R.id.nav_userName);
+                TextView email = (TextView) findViewById(R.id.nav_userEmail);
+                email.setText(user.getEmail());
+                if(user.getFirstName() != null && !user.getFirstName().isEmpty()){
+                    userName.setText(user.getFirstName() + " "+ user.getLastName());
+                }
+                else {
+                    userName.setText(user.getUserName());
+                }
+            }
+            setUser(user);
+        }
+
+        @Override
+        protected void onCancelled() {
+        }
+    }
 }

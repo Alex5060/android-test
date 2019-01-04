@@ -14,21 +14,25 @@
 package xyz.eeckhout.smartcity.model;
 
 import java.util.Objects;
-
+import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.IOException;
 
 /**
  * CategoryDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-01-02T23:06:48.990+01:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-01-03T20:36:15.687+01:00")
 public class CategoryDTO {
   @SerializedName("id")
   private Integer id = null;
 
   @SerializedName("rowVersion")
-  private String rowVersion = null;
+  private byte[] rowVersion = null;
 
   @SerializedName("name")
   private String name = null;
@@ -51,7 +55,7 @@ public class CategoryDTO {
     this.id = id;
   }
 
-  public CategoryDTO rowVersion(String rowVersion) {
+  public CategoryDTO rowVersion(byte[] rowVersion) {
     this.rowVersion = rowVersion;
     return this;
   }
@@ -61,11 +65,11 @@ public class CategoryDTO {
    * @return rowVersion
   **/
   @ApiModelProperty(value = "")
-  public String getRowVersion() {
+  public byte[] getRowVersion() {
     return rowVersion;
   }
 
-  public void setRowVersion(String rowVersion) {
+  public void setRowVersion(byte[] rowVersion) {
     this.rowVersion = rowVersion;
   }
 

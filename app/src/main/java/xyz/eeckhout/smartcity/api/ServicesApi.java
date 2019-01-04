@@ -28,6 +28,7 @@ import java.io.IOException;
 
 
 import xyz.eeckhout.smartcity.model.ServiceDTO;
+import xyz.eeckhout.smartcity.model.ServiceGetDTO;
 import xyz.eeckhout.smartcity.model.ServiceMinDTO;
 import xyz.eeckhout.smartcity.model.ServiceOpinionMinDTO;
 
@@ -745,11 +746,11 @@ public class ServicesApi {
      * @param category  (required)
      * @param pageIndex  (optional, default to 0)
      * @param pageSize  (optional, default to 3)
-     * @return List&lt;ServiceDTO&gt;
+     * @return List&lt;ServiceGetDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public List<ServiceDTO> getServicesByCategory(Integer category, Integer pageIndex, Integer pageSize) throws ApiException {
-        ApiResponse<List<ServiceDTO>> resp = getServicesByCategoryWithHttpInfo(category, pageIndex, pageSize);
+    public List<ServiceGetDTO> getServicesByCategory(Integer category, Integer pageIndex, Integer pageSize) throws ApiException {
+        ApiResponse<List<ServiceGetDTO>> resp = getServicesByCategoryWithHttpInfo(category, pageIndex, pageSize);
         return resp.getData();
     }
 
@@ -759,12 +760,12 @@ public class ServicesApi {
      * @param category  (required)
      * @param pageIndex  (optional, default to 0)
      * @param pageSize  (optional, default to 3)
-     * @return ApiResponse&lt;List&lt;ServiceDTO&gt;&gt;
+     * @return ApiResponse&lt;List&lt;ServiceGetDTO&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<List<ServiceDTO>> getServicesByCategoryWithHttpInfo(Integer category, Integer pageIndex, Integer pageSize) throws ApiException {
+    public ApiResponse<List<ServiceGetDTO>> getServicesByCategoryWithHttpInfo(Integer category, Integer pageIndex, Integer pageSize) throws ApiException {
         com.squareup.okhttp.Call call = getServicesByCategoryValidateBeforeCall(category, pageIndex, pageSize, null, null);
-        Type localVarReturnType = new TypeToken<List<ServiceDTO>>(){}.getType();
+        Type localVarReturnType = new TypeToken<List<ServiceGetDTO>>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
@@ -778,7 +779,7 @@ public class ServicesApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getServicesByCategoryAsync(Integer category, Integer pageIndex, Integer pageSize, final ApiCallback<List<ServiceDTO>> callback) throws ApiException {
+    public com.squareup.okhttp.Call getServicesByCategoryAsync(Integer category, Integer pageIndex, Integer pageSize, final ApiCallback<List<ServiceGetDTO>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -800,7 +801,7 @@ public class ServicesApi {
         }
 
         com.squareup.okhttp.Call call = getServicesByCategoryValidateBeforeCall(category, pageIndex, pageSize, progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<List<ServiceDTO>>(){}.getType();
+        Type localVarReturnType = new TypeToken<List<ServiceGetDTO>>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
@@ -934,14 +935,14 @@ public class ServicesApi {
     /**
      * Build call for put
      * @param id  (required)
-     * @param value  (optional)
+     * @param service  (optional)
      * @param progressListener Progress listener
      * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call putCall(Integer id, String value, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = value;
+    public com.squareup.okhttp.Call putCall(Integer id, ServiceDTO service, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        Object localVarPostBody = service;
 
         // create path and map variables
         String localVarPath = "/api/Services/{id}"
@@ -983,7 +984,7 @@ public class ServicesApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call putValidateBeforeCall(Integer id, String value, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call putValidateBeforeCall(Integer id, ServiceDTO service, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
@@ -991,7 +992,7 @@ public class ServicesApi {
         }
         
 
-        com.squareup.okhttp.Call call = putCall(id, value, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = putCall(id, service, progressListener, progressRequestListener);
         return call;
 
     }
@@ -1000,23 +1001,23 @@ public class ServicesApi {
      * 
      * 
      * @param id  (required)
-     * @param value  (optional)
+     * @param service  (optional)
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public void put(Integer id, String value) throws ApiException {
-        putWithHttpInfo(id, value);
+    public void put(Integer id, ServiceDTO service) throws ApiException {
+        putWithHttpInfo(id, service);
     }
 
     /**
      * 
      * 
      * @param id  (required)
-     * @param value  (optional)
+     * @param service  (optional)
      * @return ApiResponse&lt;Void&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Void> putWithHttpInfo(Integer id, String value) throws ApiException {
-        com.squareup.okhttp.Call call = putValidateBeforeCall(id, value, null, null);
+    public ApiResponse<Void> putWithHttpInfo(Integer id, ServiceDTO service) throws ApiException {
+        com.squareup.okhttp.Call call = putValidateBeforeCall(id, service, null, null);
         return apiClient.execute(call);
     }
 
@@ -1024,12 +1025,12 @@ public class ServicesApi {
      *  (asynchronously)
      * 
      * @param id  (required)
-     * @param value  (optional)
+     * @param service  (optional)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call putAsync(Integer id, String value, final ApiCallback<Void> callback) throws ApiException {
+    public com.squareup.okhttp.Call putAsync(Integer id, ServiceDTO service, final ApiCallback<Void> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1050,7 +1051,7 @@ public class ServicesApi {
             };
         }
 
-        com.squareup.okhttp.Call call = putValidateBeforeCall(id, value, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = putValidateBeforeCall(id, service, progressListener, progressRequestListener);
         apiClient.executeAsync(call, callback);
         return call;
     }

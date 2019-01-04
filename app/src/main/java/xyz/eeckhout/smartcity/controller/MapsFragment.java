@@ -184,7 +184,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 public boolean onMarkerClick(final Marker marker) {
                     bottomSheetViewModel.setMarker(marker);
                     // Check if a click count was set, then display the click count.
-                    Toast.makeText(getContext(), marker.getTitle() + " has been clicked :" + marker.getTag() + ".", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), marker.getTitle() + " has been clicked :" + marker.getTag() + ".", Toast.LENGTH_SHORT).show();
                     //TextView preview = getActivity().findViewById(R.id.preview);
                     //preview.setText(marker.getTitle());
                     //Toast.makeText(getContext(), preview.getText() + " has been clicked :" + marker.getTag() + ".", Toast.LENGTH_LONG).show();
@@ -209,9 +209,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private void addAllData(){
         map.clear();
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isJCDecauxLoadingEnable", true)) {
-            final Observer<List<ServiceDTO>> jcDecauxStationObserver = new Observer<List<ServiceDTO>>() {
+            final Observer<List<ServiceGetDTO>> jcDecauxStationObserver = new Observer<List<ServiceGetDTO>>() {
                 @Override
-                public void onChanged(@Nullable final List<ServiceDTO> jcDecauxStation) {
+                public void onChanged(@Nullable final List<ServiceGetDTO> jcDecauxStation) {
                     // Update the UI, in this case, a TextView.
                     addAllLibiaVeloMarkers(jcDecauxStation);
                 }
@@ -221,9 +221,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             model.getJcDecauxBikes().observe(this, jcDecauxStationObserver);
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isCarParkingNamurLoadingEnable", true)) {
-            final Observer<List<ServiceDTO>> carParkingNamurObserver = new Observer<List<ServiceDTO>>() {
+            final Observer<List<ServiceGetDTO>> carParkingNamurObserver = new Observer<List<ServiceGetDTO>>() {
                 @Override
-                public void onChanged(@Nullable final List<ServiceDTO> carParkingNamur) {
+                public void onChanged(@Nullable final List<ServiceGetDTO> carParkingNamur) {
                     // Update the UI, in this case, a TextView.
                     addCarParkings(carParkingNamur);
                 }
@@ -233,9 +233,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             model.getCarParkingNamur().observe(this, carParkingNamurObserver);
         }
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("isBikeParkingNamurLoadingEnable", true)) {
-            final Observer<List<ServiceDTO>> bikeParkingNamurObserver = new Observer<List<ServiceDTO>>() {
+            final Observer<List<ServiceGetDTO>> bikeParkingNamurObserver = new Observer<List<ServiceGetDTO>>() {
                 @Override
-                public void onChanged(@Nullable final List<ServiceDTO> bikeParkingNamur) {
+                public void onChanged(@Nullable final List<ServiceGetDTO> bikeParkingNamur) {
                     // Update the UI, in this case, a TextView.
                     addBikeParkings(bikeParkingNamur);
                 }
@@ -271,17 +271,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void addAllLibiaVeloMarkers(List<ServiceDTO> bikes){
+    private void addAllLibiaVeloMarkers(List<ServiceGetDTO> bikes){
         try{
             Log.i("erreur", "nb jcdecaux "+bikes.size());
-            for (ServiceDTO bike : bikes) {
-                //JSONObject object = new JSONObject(bike.getFacultativeValue());
-                int availableBikes = 5;
+            for (ServiceGetDTO bike : bikes) {
+                JSONObject object = bike.getFacultativeValue() != null && !bike.getFacultativeValue().isEmpty() ? new JSONObject(bike.getFacultativeValue()) : null;
+                int availableBikes = object != null ? object.has("AvailableBikes") ? object.getInt("AvailableBikes") : 0 : 0;
                 LatLng latLng = new LatLng(bike.getLatitude(), bike.getLongitude());
                 Marker marker = map.addMarker(
                         new MarkerOptions().position(latLng)
-                                .title(bike.getServiceName())
-                                .snippet("Disponibilités : " + availableBikes));
+                                .title(bike.getServiceName()));
                 if (availableBikes> JCDECAUX_MIDDLE_LIMIT) {
                     marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.libiavelo2_vert));
                 } else {
@@ -303,17 +302,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         return map.getProjection().getVisibleRegion();
     }
 
-    private void addCarParkings(List<ServiceDTO> carParkingNamur){
+    private void addCarParkings(List<ServiceGetDTO> carParkingNamur){
         Log.i("erreur", "nb carPark "+ carParkingNamur.size());
         try{
-            for (ServiceDTO service : carParkingNamur) {
-                JSONObject object = new JSONObject(service.getFacultativeValue());
+            for (ServiceGetDTO service : carParkingNamur) {
+                //JSONObject object = service.getFacultativeValue() != null ? new JSONObject(service.getFacultativeValue()) : null;
                 LatLng latLng = new LatLng(service.getLatitude(), service.getLongitude());
                 map.addMarker(
                         new MarkerOptions().position(latLng)
                                 .title(service.getServiceName())
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.parking_voiture))
-                                .snippet("Nb places : " + object.getInt("Places"))).setTag(service);
+                        ).setTag(service);
             }
         }
         catch(Exception e){
@@ -321,17 +320,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void addBikeParkings(List<ServiceDTO> bikeParkingNamur){
+    private void addBikeParkings(List<ServiceGetDTO> bikeParkingNamur){
         try{
             Log.i("erreur", "nb BikeParking : "+bikeParkingNamur.size());
-            for (ServiceDTO service : bikeParkingNamur) {
-                JSONObject object = new JSONObject(service.getFacultativeValue());
+            for (ServiceGetDTO service : bikeParkingNamur) {
+                //JSONObject object = new JSONObject(service.getFacultativeValue());
                 LatLng latLng = new LatLng(service.getLatitude(), service.getLongitude());
                 map.addMarker(
                         new MarkerOptions().position(latLng)
                                 .title(service.getServiceName())
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.parking_velo))
-                                .snippet("Nb places : " + object.getString("Places"))
                 ).setTag(service);
             }
         }

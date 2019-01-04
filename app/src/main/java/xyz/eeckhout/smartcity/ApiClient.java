@@ -52,6 +52,7 @@ import xyz.eeckhout.smartcity.auth.OAuth;
 
 public class ApiClient {
 
+
     private String basePath = "https://gobike.azurewebsites.net";
     private boolean debugging = false;
     private Map<String, String> defaultHeaderMap = new HashMap<String, String>();
@@ -89,7 +90,8 @@ public class ApiClient {
 
         // Setup authentications (key: authentication name, value: authentication).
         authentications = new HashMap<String, Authentication>();
-        authentications.put("Bearer", new ApiKeyAuth("header", "Authorization"));
+        //authentications.put("Bearer", new ApiKeyAuth("header", "Authorization"));
+        authentications.put("Bearer", new OAuth());
         // Prevent the authentications from being modified.
         authentications = Collections.unmodifiableMap(authentications);
     }

@@ -44,4 +44,5 @@
     <string name="login_password_label">Mot de passe</string>
     <string name="login_button_label">Se connecter</string>
     <string name="login_description_label">Connectez-vous à l\'application afin d\'utiliser toutes les fonctionnalités offertes</string>
+    <string name="register_button">S\'inscrire</string>
 </resources>
