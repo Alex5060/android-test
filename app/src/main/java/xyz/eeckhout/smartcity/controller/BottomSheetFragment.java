@@ -1,6 +1,8 @@
 package xyz.eeckhout.smartcity.controller;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.util.Log;
@@ -22,6 +24,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
     private BottomSheetViewModel viewModel;
     private ServiceViewModel serviceViewModel;
     private Marker marker;
+    private View goButton;
     public BottomSheetFragment() {
         // Required empty public constructor
     }
@@ -41,6 +44,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
 
         TextView title = view.findViewById(R.id.preview);
         TextView places = view.findViewById(R.id.share);
+        goButton = view.findViewById(R.id.bottom_sheet_go);
         final ServiceGetDTO service = (ServiceGetDTO) viewModel.getMarker().getTag();
         title.setText(service.getServiceName());
         try {
@@ -62,13 +66,30 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
             Log.i("rrreur", e.getMessage());
         }
 
-        TextView viewAll = (TextView) view.findViewById(R.id.button_servicefull);
+        View viewAll = view.findViewById(R.id.bottom_sheet_details);
         viewAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 serviceViewModel.getService(service.getId());
                 dismiss();
                 ((MainActivity) getActivity()).getServiceFragment();
+            }
+        });
+
+        goButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create a Uri from an intent string. Use the result to create an Intent.
+                Uri gmmIntentUri = Uri.parse("google.navigation:q="+service.getLatitude()+","+service.getLongitude());
+
+// Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+// Make the Intent explicit by setting the Google Maps package
+                mapIntent.setPackage("com.google.android.apps.maps");
+
+// Attempt to start an activity that can handle the Intent
+                startActivity(mapIntent);
+
             }
         });
         return view;

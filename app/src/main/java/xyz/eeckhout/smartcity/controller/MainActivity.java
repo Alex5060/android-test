@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -25,10 +24,10 @@ import android.widget.Toast;
 
 import com.auth0.android.jwt.DecodeException;
 import com.auth0.android.jwt.JWT;
-import com.google.android.gms.maps.model.Marker;
 
 import xyz.eeckhout.smartcity.ApiException;
 import xyz.eeckhout.smartcity.R;
+import xyz.eeckhout.smartcity.TokenHelper;
 import xyz.eeckhout.smartcity.api.AccountsApi;
 import xyz.eeckhout.smartcity.model.UserLoginDTO;
 import xyz.eeckhout.smartcity.model.UserMinalInfoDTO;
@@ -49,21 +48,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        checkIsLogged();
         enableMyLocationIfPermitted();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                AVEC LE FRAGMENT
-                showBottomSheetDialogFragment();
-
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -229,6 +218,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public void checkIsLogged(){
+        Boolean isConnected =  TokenHelper.isTokenValid(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("accessToken",""));
+        if(!isConnected){
+            PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().remove("accessToken").commit();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+        }
+    }
+
+
+
     private void startFragment(){
         startFragment(R.id.nav_map);
     }
@@ -236,15 +236,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void showBottomSheetDialogFragment() {
         BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
         bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
-    }
-
-    public void showBottomSheetDialogFragment(Marker marker) {
-        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
-
-
-        TextView view = findViewById(R.id.preview);
-        //view.setText(marker.getTitle());
-        //bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -282,7 +273,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String uid = token.getClaim("uid").asString();
                 AccountsApi api = new AccountsApi();
                 api.getApiClient().setAccessToken(jwt);
-                //api.getApiClient().setAccessToken(jwt);
                 UserMinalInfoDTO user = api.getUserById(uid);
                 return user;
             }

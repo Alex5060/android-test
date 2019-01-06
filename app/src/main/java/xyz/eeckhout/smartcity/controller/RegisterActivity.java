@@ -35,7 +35,6 @@ import android.widget.TextView;
 
 import org.joda.time.DateTime;
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,6 +93,17 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         setContentView(R.layout.activity_register);
         // Set up the login form.
         mUsernameView = (AutoCompleteTextView) findViewById(R.id.register_username);
+        mUsernameView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
+                    attemptLogin();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.register_password);
@@ -254,13 +264,13 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
 
         // Check for a valid password, if the user entered one.
         if (username == null || TextUtils.isEmpty(username)) {
-            mUsernameView.setError(getString(R.string.error_invalid_password));
+            mUsernameView.setError(getString(R.string.error_field_required));
             focusView = mUsernameView;
             cancel = true;
         }
 
         if (password == null || TextUtils.isEmpty(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+            mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
         }
@@ -296,7 +306,14 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         }
         catch(Exception e){
             cancel = true;
+        }
+
+        if(birthdate == null){
             mBirthdateView.setError(getString(R.string.date_format_error));
+            focusView = mBirthdateView;
+        }
+        else if(birthdate.isAfterNow()){
+            mBirthdateView.setError(getString(R.string.error_date_after_now));
             focusView = mBirthdateView;
         }
 
@@ -317,7 +334,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 4;
+        return password.length() >= 6;
     }
 
     /**
@@ -436,6 +453,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         private final DateTime mBirthdate;
         private final UserRegistrationDTO registrationDTO;
         private JSONArray errors;
+        private ApiException exception;
 
         UserRegisterTask(String username, String email, String password, String lastname, String firstname, char gender, DateTime birthdate) {
             mEmail = email;
@@ -461,12 +479,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                 new AccountsApi().addUser(registrationDTO);
             }
             catch(ApiException exception){
-                try {
-                    Log.i("erreur", exception.getResponseBody());
-                    errors = new JSONArray(exception.getResponseBody());
-                } catch(JSONException e){
-                    Log.i("erreur", "JSON parse exception");
-                }
+                this.exception = exception;
                 return false;
             }
             return true;
@@ -481,7 +494,19 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
             } else {
-
+                Log.i("erreur", exception.getCode()+"");
+                Log.i("erreur", exception.getResponseBody());
+                if(exception.getCode() == 400){
+                    if(exception.getResponseBody().contains("DuplicateUserName")){
+                        mUsernameView.setError(getString(R.string.error_duplicate_username));
+                    }
+                    if(exception.getResponseBody().contains("DuplicateEmail")){
+                        mEmailView.setError(getString(R.string.error_duplicate_email));
+                    }
+                    if(exception.getResponseBody().contains("PasswordRequiresDigit")){
+                        mPasswordView.setError(getString(R.string.error_invalid_password));
+                    }
+                }
             }
         }
 

@@ -71,6 +71,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+        ((MainActivity) getActivity()).checkIsLogged();
         model = ViewModelProviders.of(getActivity()).get(MapViewModel.class);
         bottomSheetViewModel = ViewModelProviders.of(getActivity()).get(BottomSheetViewModel.class);
     }

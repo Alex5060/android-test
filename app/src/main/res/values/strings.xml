@@ -24,7 +24,8 @@
     <string name="action_sign_in">Se connecter</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">Le mot de passe est trop court</string>
+    <string name="error_invalid_password">Le mot de passe doit contenir au moins un chiffre et 6 caractères !</string>
+    <string name="error_date_after_now">La date de naissance ne peut pas être supérieure à la date du jour !</string>
     <string name="login_error_incorrect_username">Compte utilisateur inexistant !</string>
     <string name="login_error_incorrect_password">Mot de passe incorrecte !</string>
     <string name="error_field_required">Le champ est requis</string>
@@ -45,7 +46,8 @@
     <!--Error page-->
     <string name="error_internet_connection">Internet connection required !</string>
     <string name="error_refresh_button_label">Rafraichir</string>
-
+    <string name="error_duplicate_username">Nom d\'utilisateur déjà existant</string>
+    <string name="error_duplicate_email">Email déjà utilisée</string>
     <string name="login_email_label">Email</string>
     <string name="login_password_label">Mot de passe</string>
     <string name="login_button_label">Se connecter</string>
@@ -67,4 +69,5 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="go_button_label">Y aller !</string>
 </resources>
