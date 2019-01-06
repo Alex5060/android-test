@@ -132,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void getServiceFragment(){
+        init_fragment = R.id.service_layout;
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.content, new ServiceFragment())
@@ -215,6 +216,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_authors) {
             init_fragment = R.id.nav_authors;
             getAuthorsFragment();
+        } else if (id == R.id.service_layout) {
+            getServiceFragment();
         }
     }
 
@@ -226,8 +229,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
         }
     }
-
-
 
     private void startFragment(){
         startFragment(R.id.nav_map);

@@ -6,8 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-
 import java.util.List;
 
 import xyz.eeckhout.smartcity.R;
@@ -52,8 +50,9 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder
     public void onBindViewHolder(MyViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        Glide.with(fragment.getContext())
+        GlideApp.with(fragment.getContext())
                 .load(mDataset.get(position).getUrl())
+                .centerCrop()
                 .into(holder.mTextView);
     }
 
