@@ -115,6 +115,8 @@ public class ServiceFragment extends Fragment implements PutOpinionAT.GetOpinion
                                 serviceDisponibilite.setText(object.getString("Places"));
                                 break;
                         }
+                        getPhotos();
+                        getOpinions();
                     }
                     catch(Exception e){
                         Log.i("rrreur", e.getMessage());
@@ -125,11 +127,23 @@ public class ServiceFragment extends Fragment implements PutOpinionAT.GetOpinion
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         mViewModel.getService().observe(this, serviceObserver);
+    }
 
+    public void updateOpinion(ServiceOpinionDTO opinionDTO){
+        opinionDTO.setIsVisible(false);
+        new PutOpinionAT(opinionDTO, token, this).execute();
+    }
+
+    public void deleteOpinion(ServiceOpinionDTO opinionDTO){
+        new DeleteOpinionAT(opinionDTO, token, this).execute();
+    }
+
+    public void getPhotos(){
         final Observer<List<PhotoDTO>> photosObserver = new Observer<List<PhotoDTO>>() {
             @Override
             public void onChanged(@Nullable List<PhotoDTO> photos) {
                 if(photos != null && photos.size() > 0) {
+                    Log.i("erreur", photos.size()+"");
                     mAdapter = new PhotoAdapter(photos, ServiceFragment.this);
                     mPhotoRecyclerView.setAdapter(mAdapter);
                     mPhotoRecyclerView.setVisibility(View.VISIBLE);
@@ -145,16 +159,6 @@ public class ServiceFragment extends Fragment implements PutOpinionAT.GetOpinion
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         mViewModel.getPhotos(serviceId,0,5,PreferenceManager.getDefaultSharedPreferences(getContext()).getString("accessToken", "")).observe(this, photosObserver);
 
-        getOpinions();
-    }
-
-    public void updateOpinion(ServiceOpinionDTO opinionDTO){
-        opinionDTO.setIsVisible(false);
-        new PutOpinionAT(opinionDTO, token, this).execute();
-    }
-
-    public void deleteOpinion(ServiceOpinionDTO opinionDTO){
-        new DeleteOpinionAT(opinionDTO, token, this).execute();
     }
 
     public void getOpinions(){

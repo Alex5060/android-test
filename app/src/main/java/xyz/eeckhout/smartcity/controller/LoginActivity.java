@@ -67,6 +67,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        if(TokenHelper.isTokenValid(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("accessToken", null))){
+            Intent intent = new Intent(this.getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
