@@ -13,6 +13,15 @@
 
 package xyz.eeckhout.smartcity.api;
 
+import com.google.gson.reflect.TypeToken;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import xyz.eeckhout.smartcity.ApiCallback;
 import xyz.eeckhout.smartcity.ApiClient;
 import xyz.eeckhout.smartcity.ApiException;
@@ -21,22 +30,12 @@ import xyz.eeckhout.smartcity.Configuration;
 import xyz.eeckhout.smartcity.Pair;
 import xyz.eeckhout.smartcity.ProgressRequestBody;
 import xyz.eeckhout.smartcity.ProgressResponseBody;
-
-import com.google.gson.reflect.TypeToken;
-
-import java.io.IOException;
-
-
 import xyz.eeckhout.smartcity.model.ServiceDTO;
 import xyz.eeckhout.smartcity.model.ServiceGetDTO;
+import xyz.eeckhout.smartcity.model.ServiceLikeDTO;
 import xyz.eeckhout.smartcity.model.ServiceMinDTO;
+import xyz.eeckhout.smartcity.model.ServiceOpinionDTO;
 import xyz.eeckhout.smartcity.model.ServiceOpinionMinDTO;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ServicesApi {
     private ApiClient apiClient;
@@ -127,11 +126,11 @@ public class ServicesApi {
      * 
      * @param id  (required)
      * @param opinion  (optional)
-     * @return ServiceDTO
+     * @return ServiceOpinionDTO
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ServiceDTO addOpinion(Integer id, ServiceOpinionMinDTO opinion) throws ApiException {
-        ApiResponse<ServiceDTO> resp = addOpinionWithHttpInfo(id, opinion);
+    public ServiceOpinionDTO addOpinion(Integer id, ServiceOpinionMinDTO opinion) throws ApiException {
+        ApiResponse<ServiceOpinionDTO> resp = addOpinionWithHttpInfo(id, opinion);
         return resp.getData();
     }
 
@@ -140,12 +139,12 @@ public class ServicesApi {
      * 
      * @param id  (required)
      * @param opinion  (optional)
-     * @return ApiResponse&lt;ServiceDTO&gt;
+     * @return ApiResponse&lt;ServiceOpinionDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<ServiceDTO> addOpinionWithHttpInfo(Integer id, ServiceOpinionMinDTO opinion) throws ApiException {
+    public ApiResponse<ServiceOpinionDTO> addOpinionWithHttpInfo(Integer id, ServiceOpinionMinDTO opinion) throws ApiException {
         com.squareup.okhttp.Call call = addOpinionValidateBeforeCall(id, opinion, null, null);
-        Type localVarReturnType = new TypeToken<ServiceDTO>(){}.getType();
+        Type localVarReturnType = new TypeToken<ServiceOpinionDTO>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
@@ -158,7 +157,7 @@ public class ServicesApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call addOpinionAsync(Integer id, ServiceOpinionMinDTO opinion, final ApiCallback<ServiceDTO> callback) throws ApiException {
+    public com.squareup.okhttp.Call addOpinionAsync(Integer id, ServiceOpinionMinDTO opinion, final ApiCallback<ServiceOpinionDTO> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -180,7 +179,7 @@ public class ServicesApi {
         }
 
         com.squareup.okhttp.Call call = addOpinionValidateBeforeCall(id, opinion, progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<ServiceDTO>(){}.getType();
+        Type localVarReturnType = new TypeToken<ServiceOpinionDTO>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
@@ -414,6 +413,139 @@ public class ServicesApi {
 
         com.squareup.okhttp.Call call = deleteValidateBeforeCall(id, progressListener, progressRequestListener);
         apiClient.executeAsync(call, callback);
+        return call;
+    }
+    /**
+     * Build call for getLikeByServiceAndUser
+     * @param id  (required)
+     * @param uid  (required)
+     * @param progressListener Progress listener
+     * @param progressRequestListener Progress request listener
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     */
+    public com.squareup.okhttp.Call getLikeByServiceAndUserCall(Integer id, String uid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        Object localVarPostBody = null;
+
+        // create path and map variables
+        String localVarPath = "/api/Services/{id}/like/{uid}"
+            .replaceAll("\\{" + "id" + "\\}", apiClient.escapeString(id.toString()))
+            .replaceAll("\\{" + "uid" + "\\}", apiClient.escapeString(uid.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        final String[] localVarAccepts = {
+            "text/plain", "application/json", "text/json"
+        };
+        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
+
+        final String[] localVarContentTypes = {
+            
+        };
+        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        if(progressListener != null) {
+            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+                @Override
+                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
+                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                    return originalResponse.newBuilder()
+                    .body(new ProgressResponseBody(originalResponse.body(), progressListener))
+                    .build();
+                }
+            });
+        }
+
+        String[] localVarAuthNames = new String[] { "Bearer" };
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private com.squareup.okhttp.Call getLikeByServiceAndUserValidateBeforeCall(Integer id, String uid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        
+        // verify the required parameter 'id' is set
+        if (id == null) {
+            throw new ApiException("Missing the required parameter 'id' when calling getLikeByServiceAndUser(Async)");
+        }
+        
+        // verify the required parameter 'uid' is set
+        if (uid == null) {
+            throw new ApiException("Missing the required parameter 'uid' when calling getLikeByServiceAndUser(Async)");
+        }
+        
+
+        com.squareup.okhttp.Call call = getLikeByServiceAndUserCall(id, uid, progressListener, progressRequestListener);
+        return call;
+
+    }
+
+    /**
+     * 
+     * 
+     * @param id  (required)
+     * @param uid  (required)
+     * @return ServiceLikeDTO
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     */
+    public ServiceLikeDTO getLikeByServiceAndUser(Integer id, String uid) throws ApiException {
+        ApiResponse<ServiceLikeDTO> resp = getLikeByServiceAndUserWithHttpInfo(id, uid);
+        return resp.getData();
+    }
+
+    /**
+     * 
+     * 
+     * @param id  (required)
+     * @param uid  (required)
+     * @return ApiResponse&lt;ServiceLikeDTO&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     */
+    public ApiResponse<ServiceLikeDTO> getLikeByServiceAndUserWithHttpInfo(Integer id, String uid) throws ApiException {
+        com.squareup.okhttp.Call call = getLikeByServiceAndUserValidateBeforeCall(id, uid, null, null);
+        Type localVarReturnType = new TypeToken<ServiceLikeDTO>(){}.getType();
+        return apiClient.execute(call, localVarReturnType);
+    }
+
+    /**
+     *  (asynchronously)
+     * 
+     * @param id  (required)
+     * @param uid  (required)
+     * @param callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     */
+    public com.squareup.okhttp.Call getLikeByServiceAndUserAsync(Integer id, String uid, final ApiCallback<ServiceLikeDTO> callback) throws ApiException {
+
+        ProgressResponseBody.ProgressListener progressListener = null;
+        ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
+
+        if (callback != null) {
+            progressListener = new ProgressResponseBody.ProgressListener() {
+                @Override
+                public void update(long bytesRead, long contentLength, boolean done) {
+                    callback.onDownloadProgress(bytesRead, contentLength, done);
+                }
+            };
+
+            progressRequestListener = new ProgressRequestBody.ProgressRequestListener() {
+                @Override
+                public void onRequestProgress(long bytesWritten, long contentLength, boolean done) {
+                    callback.onUploadProgress(bytesWritten, contentLength, done);
+                }
+            };
+        }
+
+        com.squareup.okhttp.Call call = getLikeByServiceAndUserValidateBeforeCall(id, uid, progressListener, progressRequestListener);
+        Type localVarReturnType = new TypeToken<ServiceLikeDTO>(){}.getType();
+        apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
     /**
@@ -875,11 +1007,11 @@ public class ServicesApi {
      * 
      * @param id  (required)
      * @param note  (optional)
-     * @return ServiceDTO
+     * @return ServiceLikeDTO
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ServiceDTO likeServices(Integer id, Integer note) throws ApiException {
-        ApiResponse<ServiceDTO> resp = likeServicesWithHttpInfo(id, note);
+    public ServiceLikeDTO likeServices(Integer id, Integer note) throws ApiException {
+        ApiResponse<ServiceLikeDTO> resp = likeServicesWithHttpInfo(id, note);
         return resp.getData();
     }
 
@@ -888,12 +1020,12 @@ public class ServicesApi {
      * 
      * @param id  (required)
      * @param note  (optional)
-     * @return ApiResponse&lt;ServiceDTO&gt;
+     * @return ApiResponse&lt;ServiceLikeDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<ServiceDTO> likeServicesWithHttpInfo(Integer id, Integer note) throws ApiException {
+    public ApiResponse<ServiceLikeDTO> likeServicesWithHttpInfo(Integer id, Integer note) throws ApiException {
         com.squareup.okhttp.Call call = likeServicesValidateBeforeCall(id, note, null, null);
-        Type localVarReturnType = new TypeToken<ServiceDTO>(){}.getType();
+        Type localVarReturnType = new TypeToken<ServiceLikeDTO>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
@@ -906,7 +1038,7 @@ public class ServicesApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call likeServicesAsync(Integer id, Integer note, final ApiCallback<ServiceDTO> callback) throws ApiException {
+    public com.squareup.okhttp.Call likeServicesAsync(Integer id, Integer note, final ApiCallback<ServiceLikeDTO> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -928,7 +1060,7 @@ public class ServicesApi {
         }
 
         com.squareup.okhttp.Call call = likeServicesValidateBeforeCall(id, note, progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<ServiceDTO>(){}.getType();
+        Type localVarReturnType = new TypeToken<ServiceLikeDTO>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
@@ -956,7 +1088,7 @@ public class ServicesApi {
         Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
         final String[] localVarAccepts = {
-            
+            "text/plain", "application/json", "text/json"
         };
         final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
         if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
@@ -1002,10 +1134,12 @@ public class ServicesApi {
      * 
      * @param id  (required)
      * @param service  (optional)
+     * @return ServiceDTO
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public void put(Integer id, ServiceDTO service) throws ApiException {
-        putWithHttpInfo(id, service);
+    public ServiceDTO put(Integer id, ServiceDTO service) throws ApiException {
+        ApiResponse<ServiceDTO> resp = putWithHttpInfo(id, service);
+        return resp.getData();
     }
 
     /**
@@ -1013,12 +1147,13 @@ public class ServicesApi {
      * 
      * @param id  (required)
      * @param service  (optional)
-     * @return ApiResponse&lt;Void&gt;
+     * @return ApiResponse&lt;ServiceDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Void> putWithHttpInfo(Integer id, ServiceDTO service) throws ApiException {
+    public ApiResponse<ServiceDTO> putWithHttpInfo(Integer id, ServiceDTO service) throws ApiException {
         com.squareup.okhttp.Call call = putValidateBeforeCall(id, service, null, null);
-        return apiClient.execute(call);
+        Type localVarReturnType = new TypeToken<ServiceDTO>(){}.getType();
+        return apiClient.execute(call, localVarReturnType);
     }
 
     /**
@@ -1030,7 +1165,7 @@ public class ServicesApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call putAsync(Integer id, ServiceDTO service, final ApiCallback<Void> callback) throws ApiException {
+    public com.squareup.okhttp.Call putAsync(Integer id, ServiceDTO service, final ApiCallback<ServiceDTO> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1052,7 +1187,8 @@ public class ServicesApi {
         }
 
         com.squareup.okhttp.Call call = putValidateBeforeCall(id, service, progressListener, progressRequestListener);
-        apiClient.executeAsync(call, callback);
+        Type localVarReturnType = new TypeToken<ServiceDTO>(){}.getType();
+        apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
 }

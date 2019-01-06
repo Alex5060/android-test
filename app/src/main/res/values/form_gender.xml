@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="form_gender">
+        <item id="m">Homme</item>
+        <item id="f">Femme</item>
+    </string-array>
+</resources>

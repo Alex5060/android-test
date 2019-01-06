@@ -1,16 +1,13 @@
 package xyz.eeckhout.smartcity.controller;
 
 import android.Manifest;
-import android.accounts.AccountAuthenticatorActivity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -22,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,19 +27,9 @@ import com.auth0.android.jwt.DecodeException;
 import com.auth0.android.jwt.JWT;
 import com.google.android.gms.maps.model.Marker;
 
-import org.w3c.dom.Text;
-
-import butterknife.OnClick;
-import xyz.eeckhout.smartcity.ApiClient;
 import xyz.eeckhout.smartcity.ApiException;
-import xyz.eeckhout.smartcity.LoginActivity;
-import xyz.eeckhout.smartcity.api.AccountsApi;
-import xyz.eeckhout.smartcity.api.JwtApi;
-import xyz.eeckhout.smartcity.controller.AccountFragment;
-import xyz.eeckhout.smartcity.controller.BottomSheetFragment;
-import xyz.eeckhout.smartcity.controller.Map_settingFragment;
 import xyz.eeckhout.smartcity.R;
-import xyz.eeckhout.smartcity.model.TokenDTO;
+import xyz.eeckhout.smartcity.api.AccountsApi;
 import xyz.eeckhout.smartcity.model.UserLoginDTO;
 import xyz.eeckhout.smartcity.model.UserMinalInfoDTO;
 
@@ -132,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (Utils.isDataConnectionAvailable(getApplicationContext())) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.content, MapsFragment.newInstance())
+                    .replace(R.id.content, MapFragment.newInstance())
                     .commit();
         } else {
             getInternetErrorFragment();
@@ -150,7 +138,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void getMapPreferenceFragment(){
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.content, new Map_settingFragment())
+                .replace(R.id.content, new MapSettingFragment())
+                .commit();
+    }
+
+    public void getServiceFragment(){
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content, new ServiceFragment())
                 .commit();
     }
 
@@ -158,6 +153,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.content, new InternetConnectionErrorFragment())
+                .commit();
+    }
+
+    private void getRGPDFragment() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content, new RGPDFragment())
+                .commit();
+    }
+
+
+    private void getCGUFragment() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content, new CGUFragment())
+                .commit();
+    }
+
+    private void getAuthorsFragment() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content, new AuthorsFragment())
                 .commit();
     }
 
@@ -194,27 +211,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void startFragment(int id){
-        if (id == R.id.nav_camera) {
-            init_fragment = R.id.nav_camera;
+        if (id == R.id.nav_map) {
+            init_fragment = R.id.nav_map;
             getMapFragment();
-        } else if (id == R.id.nav_gallery) {
-            init_fragment = R.id.nav_gallery;
+        } else if (id == R.id.nav_settings) {
+            init_fragment = R.id.nav_settings;
             getMapPreferenceFragment();
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-            init_fragment = R.id.nav_manage;
-            getAccountFragment();
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_rgpd) {
+            init_fragment = R.id.nav_rgpd;
+            getRGPDFragment();
+        } else if (id == R.id.nav_cgu) {
+            init_fragment = R.id.nav_cgu;
+            getCGUFragment();
+        } else if (id == R.id.nav_authors) {
+            init_fragment = R.id.nav_authors;
+            getAuthorsFragment();
         }
     }
 
     private void startFragment(){
-        startFragment(R.id.nav_camera);
+        startFragment(R.id.nav_map);
     }
 
     public void showBottomSheetDialogFragment() {
@@ -290,6 +306,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 else {
                     userName.setText(user.getUserName());
                 }
+
+                Button logout = findViewById(R.id.button_logout);
+                logout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().remove("accessToken").commit();
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        startActivity(intent);
+                    }
+                });
             }
             setUser(user);
         }

@@ -13,6 +13,15 @@
 
 package xyz.eeckhout.smartcity.api;
 
+import com.google.gson.reflect.TypeToken;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import xyz.eeckhout.smartcity.ApiCallback;
 import xyz.eeckhout.smartcity.ApiClient;
 import xyz.eeckhout.smartcity.ApiException;
@@ -21,19 +30,8 @@ import xyz.eeckhout.smartcity.Configuration;
 import xyz.eeckhout.smartcity.Pair;
 import xyz.eeckhout.smartcity.ProgressRequestBody;
 import xyz.eeckhout.smartcity.ProgressResponseBody;
-
-import com.google.gson.reflect.TypeToken;
-
-import java.io.IOException;
-
-
 import xyz.eeckhout.smartcity.model.ServiceOpinionDTO;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import xyz.eeckhout.smartcity.model.ServiceOpinionLikeDTO;
 
 public class ServiceOpinionApi {
     private ApiClient apiClient;
@@ -54,6 +52,125 @@ public class ServiceOpinionApi {
         this.apiClient = apiClient;
     }
 
+    /**
+     * Build call for delete
+     * @param id  (required)
+     * @param progressListener Progress listener
+     * @param progressRequestListener Progress request listener
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     */
+    public com.squareup.okhttp.Call deleteCall(Integer id, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        Object localVarPostBody = null;
+
+        // create path and map variables
+        String localVarPath = "/api/ServiceOpinion/{id}"
+            .replaceAll("\\{" + "id" + "\\}", apiClient.escapeString(id.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        final String[] localVarAccepts = {
+            
+        };
+        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
+
+        final String[] localVarContentTypes = {
+            
+        };
+        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        if(progressListener != null) {
+            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+                @Override
+                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
+                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                    return originalResponse.newBuilder()
+                    .body(new ProgressResponseBody(originalResponse.body(), progressListener))
+                    .build();
+                }
+            });
+        }
+
+        String[] localVarAuthNames = new String[] { "Bearer" };
+        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private com.squareup.okhttp.Call deleteValidateBeforeCall(Integer id, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        
+        // verify the required parameter 'id' is set
+        if (id == null) {
+            throw new ApiException("Missing the required parameter 'id' when calling delete(Async)");
+        }
+        
+
+        com.squareup.okhttp.Call call = deleteCall(id, progressListener, progressRequestListener);
+        return call;
+
+    }
+
+    /**
+     * 
+     * 
+     * @param id  (required)
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     */
+    public void delete(Integer id) throws ApiException {
+        deleteWithHttpInfo(id);
+    }
+
+    /**
+     * 
+     * 
+     * @param id  (required)
+     * @return ApiResponse&lt;Void&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     */
+    public ApiResponse<Void> deleteWithHttpInfo(Integer id) throws ApiException {
+        com.squareup.okhttp.Call call = deleteValidateBeforeCall(id, null, null);
+        return apiClient.execute(call);
+    }
+
+    /**
+     *  (asynchronously)
+     * 
+     * @param id  (required)
+     * @param callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     */
+    public com.squareup.okhttp.Call deleteAsync(Integer id, final ApiCallback<Void> callback) throws ApiException {
+
+        ProgressResponseBody.ProgressListener progressListener = null;
+        ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
+
+        if (callback != null) {
+            progressListener = new ProgressResponseBody.ProgressListener() {
+                @Override
+                public void update(long bytesRead, long contentLength, boolean done) {
+                    callback.onDownloadProgress(bytesRead, contentLength, done);
+                }
+            };
+
+            progressRequestListener = new ProgressRequestBody.ProgressRequestListener() {
+                @Override
+                public void onRequestProgress(long bytesWritten, long contentLength, boolean done) {
+                    callback.onUploadProgress(bytesWritten, contentLength, done);
+                }
+            };
+        }
+
+        com.squareup.okhttp.Call call = deleteValidateBeforeCall(id, progressListener, progressRequestListener);
+        apiClient.executeAsync(call, callback);
+        return call;
+    }
     /**
      * Build call for deleteLikeOpinion
      * @param id  (required)
@@ -301,7 +418,7 @@ public class ServiceOpinionApi {
         return call;
     }
     /**
-     * Build call for get
+     * Build call for getAll
      * @param pageIndex  (optional, default to 0)
      * @param pageSize  (optional, default to 5)
      * @param progressListener Progress listener
@@ -309,7 +426,7 @@ public class ServiceOpinionApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call getCall(Integer pageIndex, Integer pageSize, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call getAllCall(Integer pageIndex, Integer pageSize, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -327,7 +444,7 @@ public class ServiceOpinionApi {
         Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
         final String[] localVarAccepts = {
-            
+            "text/plain", "application/json", "text/json"
         };
         final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
         if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
@@ -355,10 +472,10 @@ public class ServiceOpinionApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getValidateBeforeCall(Integer pageIndex, Integer pageSize, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getAllValidateBeforeCall(Integer pageIndex, Integer pageSize, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
 
-        com.squareup.okhttp.Call call = getCall(pageIndex, pageSize, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getAllCall(pageIndex, pageSize, progressListener, progressRequestListener);
         return call;
 
     }
@@ -368,10 +485,12 @@ public class ServiceOpinionApi {
      * 
      * @param pageIndex  (optional, default to 0)
      * @param pageSize  (optional, default to 5)
+     * @return List&lt;ServiceOpinionDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public void get(Integer pageIndex, Integer pageSize) throws ApiException {
-        getWithHttpInfo(pageIndex, pageSize);
+    public List<ServiceOpinionDTO> getAll(Integer pageIndex, Integer pageSize) throws ApiException {
+        ApiResponse<List<ServiceOpinionDTO>> resp = getAllWithHttpInfo(pageIndex, pageSize);
+        return resp.getData();
     }
 
     /**
@@ -379,12 +498,13 @@ public class ServiceOpinionApi {
      * 
      * @param pageIndex  (optional, default to 0)
      * @param pageSize  (optional, default to 5)
-     * @return ApiResponse&lt;Void&gt;
+     * @return ApiResponse&lt;List&lt;ServiceOpinionDTO&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Void> getWithHttpInfo(Integer pageIndex, Integer pageSize) throws ApiException {
-        com.squareup.okhttp.Call call = getValidateBeforeCall(pageIndex, pageSize, null, null);
-        return apiClient.execute(call);
+    public ApiResponse<List<ServiceOpinionDTO>> getAllWithHttpInfo(Integer pageIndex, Integer pageSize) throws ApiException {
+        com.squareup.okhttp.Call call = getAllValidateBeforeCall(pageIndex, pageSize, null, null);
+        Type localVarReturnType = new TypeToken<List<ServiceOpinionDTO>>(){}.getType();
+        return apiClient.execute(call, localVarReturnType);
     }
 
     /**
@@ -396,7 +516,7 @@ public class ServiceOpinionApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getAsync(Integer pageIndex, Integer pageSize, final ApiCallback<Void> callback) throws ApiException {
+    public com.squareup.okhttp.Call getAllAsync(Integer pageIndex, Integer pageSize, final ApiCallback<List<ServiceOpinionDTO>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -417,19 +537,20 @@ public class ServiceOpinionApi {
             };
         }
 
-        com.squareup.okhttp.Call call = getValidateBeforeCall(pageIndex, pageSize, progressListener, progressRequestListener);
-        apiClient.executeAsync(call, callback);
+        com.squareup.okhttp.Call call = getAllValidateBeforeCall(pageIndex, pageSize, progressListener, progressRequestListener);
+        Type localVarReturnType = new TypeToken<List<ServiceOpinionDTO>>(){}.getType();
+        apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
     /**
-     * Build call for getOpinionById
+     * Build call for getById
      * @param id  (required)
      * @param progressListener Progress listener
      * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call getOpinionByIdCall(Integer id, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call getByIdCall(Integer id, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -472,15 +593,15 @@ public class ServiceOpinionApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getOpinionByIdValidateBeforeCall(Integer id, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getByIdValidateBeforeCall(Integer id, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling getOpinionById(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling getById(Async)");
         }
         
 
-        com.squareup.okhttp.Call call = getOpinionByIdCall(id, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getByIdCall(id, progressListener, progressRequestListener);
         return call;
 
     }
@@ -489,11 +610,11 @@ public class ServiceOpinionApi {
      * 
      * 
      * @param id  (required)
-     * @return List&lt;ServiceOpinionDTO&gt;
+     * @return ServiceOpinionDTO
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public List<ServiceOpinionDTO> getOpinionById(Integer id) throws ApiException {
-        ApiResponse<List<ServiceOpinionDTO>> resp = getOpinionByIdWithHttpInfo(id);
+    public ServiceOpinionDTO getById(Integer id) throws ApiException {
+        ApiResponse<ServiceOpinionDTO> resp = getByIdWithHttpInfo(id);
         return resp.getData();
     }
 
@@ -501,12 +622,12 @@ public class ServiceOpinionApi {
      * 
      * 
      * @param id  (required)
-     * @return ApiResponse&lt;List&lt;ServiceOpinionDTO&gt;&gt;
+     * @return ApiResponse&lt;ServiceOpinionDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<List<ServiceOpinionDTO>> getOpinionByIdWithHttpInfo(Integer id) throws ApiException {
-        com.squareup.okhttp.Call call = getOpinionByIdValidateBeforeCall(id, null, null);
-        Type localVarReturnType = new TypeToken<List<ServiceOpinionDTO>>(){}.getType();
+    public ApiResponse<ServiceOpinionDTO> getByIdWithHttpInfo(Integer id) throws ApiException {
+        com.squareup.okhttp.Call call = getByIdValidateBeforeCall(id, null, null);
+        Type localVarReturnType = new TypeToken<ServiceOpinionDTO>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
@@ -518,7 +639,7 @@ public class ServiceOpinionApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getOpinionByIdAsync(Integer id, final ApiCallback<List<ServiceOpinionDTO>> callback) throws ApiException {
+    public com.squareup.okhttp.Call getByIdAsync(Integer id, final ApiCallback<ServiceOpinionDTO> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -539,9 +660,285 @@ public class ServiceOpinionApi {
             };
         }
 
-        com.squareup.okhttp.Call call = getOpinionByIdValidateBeforeCall(id, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getByIdValidateBeforeCall(id, progressListener, progressRequestListener);
+        Type localVarReturnType = new TypeToken<ServiceOpinionDTO>(){}.getType();
+        apiClient.executeAsync(call, localVarReturnType, callback);
+        return call;
+    }
+    /**
+     * Build call for getByService
+     * @param serviceId  (required)
+     * @param pageIndex  (optional, default to 0)
+     * @param pageSize  (optional, default to 5)
+     * @param message  (optional)
+     * @param isVisible  (optional)
+     * @param progressListener Progress listener
+     * @param progressRequestListener Progress request listener
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     */
+    public com.squareup.okhttp.Call getByServiceCall(Integer serviceId, Integer pageIndex, Integer pageSize, String message, Boolean isVisible, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        Object localVarPostBody = null;
+
+        // create path and map variables
+        String localVarPath = "/api/ServiceOpinion/service/{serviceId}"
+            .replaceAll("\\{" + "serviceId" + "\\}", apiClient.escapeString(serviceId.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        if (pageIndex != null)
+        localVarQueryParams.addAll(apiClient.parameterToPair("pageIndex", pageIndex));
+        if (pageSize != null)
+        localVarQueryParams.addAll(apiClient.parameterToPair("pageSize", pageSize));
+        if (message != null)
+        localVarQueryParams.addAll(apiClient.parameterToPair("message", message));
+        if (isVisible != null)
+        localVarQueryParams.addAll(apiClient.parameterToPair("isVisible", isVisible));
+
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        final String[] localVarAccepts = {
+            "text/plain", "application/json", "text/json"
+        };
+        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
+
+        final String[] localVarContentTypes = {
+            
+        };
+        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        if(progressListener != null) {
+            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+                @Override
+                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
+                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                    return originalResponse.newBuilder()
+                    .body(new ProgressResponseBody(originalResponse.body(), progressListener))
+                    .build();
+                }
+            });
+        }
+
+        String[] localVarAuthNames = new String[] { "Bearer" };
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private com.squareup.okhttp.Call getByServiceValidateBeforeCall(Integer serviceId, Integer pageIndex, Integer pageSize, String message, Boolean isVisible, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        
+        // verify the required parameter 'serviceId' is set
+        if (serviceId == null) {
+            throw new ApiException("Missing the required parameter 'serviceId' when calling getByService(Async)");
+        }
+        
+
+        com.squareup.okhttp.Call call = getByServiceCall(serviceId, pageIndex, pageSize, message, isVisible, progressListener, progressRequestListener);
+        return call;
+
+    }
+
+    /**
+     * 
+     * 
+     * @param serviceId  (required)
+     * @param pageIndex  (optional, default to 0)
+     * @param pageSize  (optional, default to 5)
+     * @param message  (optional)
+     * @param isVisible  (optional)
+     * @return List&lt;ServiceOpinionDTO&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     */
+    public List<ServiceOpinionDTO> getByService(Integer serviceId, Integer pageIndex, Integer pageSize, String message, Boolean isVisible) throws ApiException {
+        ApiResponse<List<ServiceOpinionDTO>> resp = getByServiceWithHttpInfo(serviceId, pageIndex, pageSize, message, isVisible);
+        return resp.getData();
+    }
+
+    /**
+     * 
+     * 
+     * @param serviceId  (required)
+     * @param pageIndex  (optional, default to 0)
+     * @param pageSize  (optional, default to 5)
+     * @param message  (optional)
+     * @param isVisible  (optional)
+     * @return ApiResponse&lt;List&lt;ServiceOpinionDTO&gt;&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     */
+    public ApiResponse<List<ServiceOpinionDTO>> getByServiceWithHttpInfo(Integer serviceId, Integer pageIndex, Integer pageSize, String message, Boolean isVisible) throws ApiException {
+        com.squareup.okhttp.Call call = getByServiceValidateBeforeCall(serviceId, pageIndex, pageSize, message, isVisible, null, null);
+        Type localVarReturnType = new TypeToken<List<ServiceOpinionDTO>>(){}.getType();
+        return apiClient.execute(call, localVarReturnType);
+    }
+
+    /**
+     *  (asynchronously)
+     * 
+     * @param serviceId  (required)
+     * @param pageIndex  (optional, default to 0)
+     * @param pageSize  (optional, default to 5)
+     * @param message  (optional)
+     * @param isVisible  (optional)
+     * @param callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     */
+    public com.squareup.okhttp.Call getByServiceAsync(Integer serviceId, Integer pageIndex, Integer pageSize, String message, Boolean isVisible, final ApiCallback<List<ServiceOpinionDTO>> callback) throws ApiException {
+
+        ProgressResponseBody.ProgressListener progressListener = null;
+        ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
+
+        if (callback != null) {
+            progressListener = new ProgressResponseBody.ProgressListener() {
+                @Override
+                public void update(long bytesRead, long contentLength, boolean done) {
+                    callback.onDownloadProgress(bytesRead, contentLength, done);
+                }
+            };
+
+            progressRequestListener = new ProgressRequestBody.ProgressRequestListener() {
+                @Override
+                public void onRequestProgress(long bytesWritten, long contentLength, boolean done) {
+                    callback.onUploadProgress(bytesWritten, contentLength, done);
+                }
+            };
+        }
+
+        com.squareup.okhttp.Call call = getByServiceValidateBeforeCall(serviceId, pageIndex, pageSize, message, isVisible, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<List<ServiceOpinionDTO>>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
+        return call;
+    }
+    /**
+     * Build call for getOpinionLikeByServiceAndUser
+     * @param id  (required)
+     * @param uid  (required)
+     * @param progressListener Progress listener
+     * @param progressRequestListener Progress request listener
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     */
+    public com.squareup.okhttp.Call getOpinionLikeByServiceAndUserCall(Integer id, String uid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        Object localVarPostBody = null;
+
+        // create path and map variables
+        String localVarPath = "/api/ServiceOpinion/{id}/like/{uid}"
+            .replaceAll("\\{" + "id" + "\\}", apiClient.escapeString(id.toString()))
+            .replaceAll("\\{" + "uid" + "\\}", apiClient.escapeString(uid.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        final String[] localVarAccepts = {
+            
+        };
+        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
+
+        final String[] localVarContentTypes = {
+            
+        };
+        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        if(progressListener != null) {
+            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+                @Override
+                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
+                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                    return originalResponse.newBuilder()
+                    .body(new ProgressResponseBody(originalResponse.body(), progressListener))
+                    .build();
+                }
+            });
+        }
+
+        String[] localVarAuthNames = new String[] { "Bearer" };
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private com.squareup.okhttp.Call getOpinionLikeByServiceAndUserValidateBeforeCall(Integer id, String uid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        
+        // verify the required parameter 'id' is set
+        if (id == null) {
+            throw new ApiException("Missing the required parameter 'id' when calling getOpinionLikeByServiceAndUser(Async)");
+        }
+        
+        // verify the required parameter 'uid' is set
+        if (uid == null) {
+            throw new ApiException("Missing the required parameter 'uid' when calling getOpinionLikeByServiceAndUser(Async)");
+        }
+        
+
+        com.squareup.okhttp.Call call = getOpinionLikeByServiceAndUserCall(id, uid, progressListener, progressRequestListener);
+        return call;
+
+    }
+
+    /**
+     * 
+     * 
+     * @param id  (required)
+     * @param uid  (required)
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     */
+    public void getOpinionLikeByServiceAndUser(Integer id, String uid) throws ApiException {
+        getOpinionLikeByServiceAndUserWithHttpInfo(id, uid);
+    }
+
+    /**
+     * 
+     * 
+     * @param id  (required)
+     * @param uid  (required)
+     * @return ApiResponse&lt;Void&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     */
+    public ApiResponse<Void> getOpinionLikeByServiceAndUserWithHttpInfo(Integer id, String uid) throws ApiException {
+        com.squareup.okhttp.Call call = getOpinionLikeByServiceAndUserValidateBeforeCall(id, uid, null, null);
+        return apiClient.execute(call);
+    }
+
+    /**
+     *  (asynchronously)
+     * 
+     * @param id  (required)
+     * @param uid  (required)
+     * @param callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     */
+    public com.squareup.okhttp.Call getOpinionLikeByServiceAndUserAsync(Integer id, String uid, final ApiCallback<Void> callback) throws ApiException {
+
+        ProgressResponseBody.ProgressListener progressListener = null;
+        ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
+
+        if (callback != null) {
+            progressListener = new ProgressResponseBody.ProgressListener() {
+                @Override
+                public void update(long bytesRead, long contentLength, boolean done) {
+                    callback.onDownloadProgress(bytesRead, contentLength, done);
+                }
+            };
+
+            progressRequestListener = new ProgressRequestBody.ProgressRequestListener() {
+                @Override
+                public void onRequestProgress(long bytesWritten, long contentLength, boolean done) {
+                    callback.onUploadProgress(bytesWritten, contentLength, done);
+                }
+            };
+        }
+
+        com.squareup.okhttp.Call call = getOpinionLikeByServiceAndUserValidateBeforeCall(id, uid, progressListener, progressRequestListener);
+        apiClient.executeAsync(call, callback);
         return call;
     }
     /**
@@ -567,7 +964,7 @@ public class ServiceOpinionApi {
         Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
         final String[] localVarAccepts = {
-            
+            "text/plain", "application/json", "text/json"
         };
         final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
         if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
@@ -612,22 +1009,25 @@ public class ServiceOpinionApi {
      * 
      * 
      * @param id  (required)
+     * @return ServiceOpinionLikeDTO
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public void likeOpinion(Integer id) throws ApiException {
-        likeOpinionWithHttpInfo(id);
+    public ServiceOpinionLikeDTO likeOpinion(Integer id) throws ApiException {
+        ApiResponse<ServiceOpinionLikeDTO> resp = likeOpinionWithHttpInfo(id);
+        return resp.getData();
     }
 
     /**
      * 
      * 
      * @param id  (required)
-     * @return ApiResponse&lt;Void&gt;
+     * @return ApiResponse&lt;ServiceOpinionLikeDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Void> likeOpinionWithHttpInfo(Integer id) throws ApiException {
+    public ApiResponse<ServiceOpinionLikeDTO> likeOpinionWithHttpInfo(Integer id) throws ApiException {
         com.squareup.okhttp.Call call = likeOpinionValidateBeforeCall(id, null, null);
-        return apiClient.execute(call);
+        Type localVarReturnType = new TypeToken<ServiceOpinionLikeDTO>(){}.getType();
+        return apiClient.execute(call, localVarReturnType);
     }
 
     /**
@@ -638,7 +1038,7 @@ public class ServiceOpinionApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call likeOpinionAsync(Integer id, final ApiCallback<Void> callback) throws ApiException {
+    public com.squareup.okhttp.Call likeOpinionAsync(Integer id, final ApiCallback<ServiceOpinionLikeDTO> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -660,7 +1060,8 @@ public class ServiceOpinionApi {
         }
 
         com.squareup.okhttp.Call call = likeOpinionValidateBeforeCall(id, progressListener, progressRequestListener);
-        apiClient.executeAsync(call, callback);
+        Type localVarReturnType = new TypeToken<ServiceOpinionLikeDTO>(){}.getType();
+        apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
 }

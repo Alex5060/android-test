@@ -13,6 +13,15 @@
 
 package xyz.eeckhout.smartcity.api;
 
+import com.google.gson.reflect.TypeToken;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import xyz.eeckhout.smartcity.ApiCallback;
 import xyz.eeckhout.smartcity.ApiClient;
 import xyz.eeckhout.smartcity.ApiException;
@@ -21,22 +30,9 @@ import xyz.eeckhout.smartcity.Configuration;
 import xyz.eeckhout.smartcity.Pair;
 import xyz.eeckhout.smartcity.ProgressRequestBody;
 import xyz.eeckhout.smartcity.ProgressResponseBody;
-
-import com.google.gson.reflect.TypeToken;
-
-import java.io.IOException;
-
-
-import xyz.eeckhout.smartcity.model.IdentityError;
 import xyz.eeckhout.smartcity.model.RolesDTO;
 import xyz.eeckhout.smartcity.model.UserMinalInfoDTO;
 import xyz.eeckhout.smartcity.model.UserRegistrationDTO;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class AccountsApi {
     private ApiClient apiClient;
@@ -419,7 +415,7 @@ public class AccountsApi {
     /**
      * Build call for getAllUsers
      * @param pageIndex  (optional, default to 0)
-     * @param pageSize  (optional, default to 3)
+     * @param pageSize  (optional, default to 5)
      * @param userName  (optional)
      * @param progressListener Progress listener
      * @param progressRequestListener Progress request listener
@@ -486,7 +482,7 @@ public class AccountsApi {
      * 
      * 
      * @param pageIndex  (optional, default to 0)
-     * @param pageSize  (optional, default to 3)
+     * @param pageSize  (optional, default to 5)
      * @param userName  (optional)
      * @return List&lt;UserMinalInfoDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -500,7 +496,7 @@ public class AccountsApi {
      * 
      * 
      * @param pageIndex  (optional, default to 0)
-     * @param pageSize  (optional, default to 3)
+     * @param pageSize  (optional, default to 5)
      * @param userName  (optional)
      * @return ApiResponse&lt;List&lt;UserMinalInfoDTO&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -515,7 +511,7 @@ public class AccountsApi {
      *  (asynchronously)
      * 
      * @param pageIndex  (optional, default to 0)
-     * @param pageSize  (optional, default to 3)
+     * @param pageSize  (optional, default to 5)
      * @param userName  (optional)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
@@ -668,129 +664,6 @@ public class AccountsApi {
         com.squareup.okhttp.Call call = getUserByIdValidateBeforeCall(id, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<UserMinalInfoDTO>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
-        return call;
-    }
-    /**
-     * Build call for put
-     * @param id  (required)
-     * @param value  (optional)
-     * @param progressListener Progress listener
-     * @param progressRequestListener Progress request listener
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     */
-    public com.squareup.okhttp.Call putCall(Integer id, String value, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = value;
-
-        // create path and map variables
-        String localVarPath = "/api/Accounts/{id}"
-            .replaceAll("\\{" + "id" + "\\}", apiClient.escapeString(id.toString()));
-
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
-
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
-
-        final String[] localVarAccepts = {
-            
-        };
-        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
-
-        final String[] localVarContentTypes = {
-            "application/json-patch+json", "application/json", "text/json", "application/_*+json"
-        };
-        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-        localVarHeaderParams.put("Content-Type", localVarContentType);
-
-        if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
-                @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                    .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                    .build();
-                }
-            });
-        }
-
-        String[] localVarAuthNames = new String[] { "Bearer" };
-        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call putValidateBeforeCall(Integer id, String value, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        
-        // verify the required parameter 'id' is set
-        if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling put(Async)");
-        }
-        
-
-        com.squareup.okhttp.Call call = putCall(id, value, progressListener, progressRequestListener);
-        return call;
-
-    }
-
-    /**
-     * 
-     * 
-     * @param id  (required)
-     * @param value  (optional)
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public void put(Integer id, String value) throws ApiException {
-        putWithHttpInfo(id, value);
-    }
-
-    /**
-     * 
-     * 
-     * @param id  (required)
-     * @param value  (optional)
-     * @return ApiResponse&lt;Void&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public ApiResponse<Void> putWithHttpInfo(Integer id, String value) throws ApiException {
-        com.squareup.okhttp.Call call = putValidateBeforeCall(id, value, null, null);
-        return apiClient.execute(call);
-    }
-
-    /**
-     *  (asynchronously)
-     * 
-     * @param id  (required)
-     * @param value  (optional)
-     * @param callback The callback to be executed when the API call finishes
-     * @return The request call
-     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
-     */
-    public com.squareup.okhttp.Call putAsync(Integer id, String value, final ApiCallback<Void> callback) throws ApiException {
-
-        ProgressResponseBody.ProgressListener progressListener = null;
-        ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
-
-        if (callback != null) {
-            progressListener = new ProgressResponseBody.ProgressListener() {
-                @Override
-                public void update(long bytesRead, long contentLength, boolean done) {
-                    callback.onDownloadProgress(bytesRead, contentLength, done);
-                }
-            };
-
-            progressRequestListener = new ProgressRequestBody.ProgressRequestListener() {
-                @Override
-                public void onRequestProgress(long bytesWritten, long contentLength, boolean done) {
-                    callback.onUploadProgress(bytesWritten, contentLength, done);
-                }
-            };
-        }
-
-        com.squareup.okhttp.Call call = putValidateBeforeCall(id, value, progressListener, progressRequestListener);
-        apiClient.executeAsync(call, callback);
         return call;
     }
 }

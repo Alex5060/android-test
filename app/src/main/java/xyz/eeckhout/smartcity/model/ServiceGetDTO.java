@@ -13,20 +13,16 @@
 
 package xyz.eeckhout.smartcity.model;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
+
+import java.util.Objects;
+
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
 
 /**
  * ServiceGetDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-01-03T20:36:15.687+01:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-01-06T14:36:30.645+01:00")
 public class ServiceGetDTO {
   @SerializedName("id")
   private Integer id = null;
@@ -155,6 +151,8 @@ public class ServiceGetDTO {
 
    /**
    * Get longitude
+   * minimum: -180.0
+   * maximum: 180.0
    * @return longitude
   **/
   @ApiModelProperty(required = true, value = "")
@@ -173,6 +171,8 @@ public class ServiceGetDTO {
 
    /**
    * Get latitude
+   * minimum: -90.0
+   * maximum: 90.0
    * @return latitude
   **/
   @ApiModelProperty(required = true, value = "")

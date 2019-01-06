@@ -13,21 +13,18 @@
 
 package xyz.eeckhout.smartcity.model;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+
 import org.joda.time.DateTime;
+
+import java.util.Objects;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * PhotoDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-01-03T20:36:15.687+01:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-01-06T14:36:30.645+01:00")
 public class PhotoDTO {
   @SerializedName("id")
   private Integer id = null;
@@ -48,7 +45,7 @@ public class PhotoDTO {
   private Integer serviceId = null;
 
   @SerializedName("rowVersion")
-  private byte[] rowVersion = null;
+  private String rowVersion = null;
 
   @SerializedName("name")
   private String name = null;
@@ -161,7 +158,7 @@ public class PhotoDTO {
     this.serviceId = serviceId;
   }
 
-  public PhotoDTO rowVersion(byte[] rowVersion) {
+  public PhotoDTO rowVersion(String rowVersion) {
     this.rowVersion = rowVersion;
     return this;
   }
@@ -171,11 +168,11 @@ public class PhotoDTO {
    * @return rowVersion
   **/
   @ApiModelProperty(value = "")
-  public byte[] getRowVersion() {
+  public String getRowVersion() {
     return rowVersion;
   }
 
-  public void setRowVersion(byte[] rowVersion) {
+  public void setRowVersion(String rowVersion) {
     this.rowVersion = rowVersion;
   }
 

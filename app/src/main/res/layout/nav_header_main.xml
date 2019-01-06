@@ -22,7 +22,7 @@
 
     <TextView
         android:id="@+id/nav_userName"
-        android:layout_width="241dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="@string/nav_header_title"
@@ -33,5 +33,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/nav_header_subtitle" />
+
+    <Button
+        android:id="@+id/button_logout"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:text="@string/label_logout"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Button" />
 
 </LinearLayout>

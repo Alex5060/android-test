@@ -13,28 +13,24 @@
 
 package xyz.eeckhout.smartcity.model;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
+
+import java.util.Objects;
+
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
 
 /**
  * RolesDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-01-03T20:36:15.687+01:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-01-06T14:36:30.645+01:00")
 public class RolesDTO {
   @SerializedName("id")
-  private Integer id = null;
+  private String id = null;
 
   @SerializedName("name")
   private String name = null;
 
-  public RolesDTO id(Integer id) {
+  public RolesDTO id(String id) {
     this.id = id;
     return this;
   }
@@ -44,11 +40,11 @@ public class RolesDTO {
    * @return id
   **/
   @ApiModelProperty(value = "")
-  public Integer getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(Integer id) {
+  public void setId(String id) {
     this.id = id;
   }
 

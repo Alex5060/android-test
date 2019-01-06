@@ -3,12 +3,10 @@ package xyz.eeckhout.smartcity.dataAccess;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import xyz.eeckhout.smartcity.api.ServicesApi;
 import xyz.eeckhout.smartcity.model.ServiceGetDTO;
-import xyz.eeckhout.smartcity.model.jcdecaux.JCDecauxStation;
 
 public class JCDecauxAT extends AsyncTask<String, Void, List<ServiceGetDTO>> {
     private List<ServiceGetDTO> stations;

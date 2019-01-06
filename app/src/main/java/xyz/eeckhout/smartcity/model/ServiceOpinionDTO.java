@@ -13,21 +13,18 @@
 
 package xyz.eeckhout.smartcity.model;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
+
 import org.joda.time.DateTime;
+
+import java.util.Objects;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * ServiceOpinionDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-01-03T20:36:15.687+01:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-01-06T14:36:30.645+01:00")
 public class ServiceOpinionDTO {
   @SerializedName("id")
   private Integer id = null;
@@ -45,7 +42,10 @@ public class ServiceOpinionDTO {
   private Integer serviceId = null;
 
   @SerializedName("rowVersion")
-  private byte[] rowVersion = null;
+  private String rowVersion = null;
+
+  @SerializedName("writer")
+  private UserMinalInfoDTO writer = null;
 
   @SerializedName("comment")
   private String comment = null;
@@ -143,7 +143,7 @@ public class ServiceOpinionDTO {
     this.serviceId = serviceId;
   }
 
-  public ServiceOpinionDTO rowVersion(byte[] rowVersion) {
+  public ServiceOpinionDTO rowVersion(String rowVersion) {
     this.rowVersion = rowVersion;
     return this;
   }
@@ -153,12 +153,30 @@ public class ServiceOpinionDTO {
    * @return rowVersion
   **/
   @ApiModelProperty(value = "")
-  public byte[] getRowVersion() {
+  public String getRowVersion() {
     return rowVersion;
   }
 
-  public void setRowVersion(byte[] rowVersion) {
+  public void setRowVersion(String rowVersion) {
     this.rowVersion = rowVersion;
+  }
+
+  public ServiceOpinionDTO writer(UserMinalInfoDTO writer) {
+    this.writer = writer;
+    return this;
+  }
+
+   /**
+   * Get writer
+   * @return writer
+  **/
+  @ApiModelProperty(value = "")
+  public UserMinalInfoDTO getWriter() {
+    return writer;
+  }
+
+  public void setWriter(UserMinalInfoDTO writer) {
+    this.writer = writer;
   }
 
   public ServiceOpinionDTO comment(String comment) {
@@ -213,13 +231,14 @@ public class ServiceOpinionDTO {
         Objects.equals(this.writerId, serviceOpinionDTO.writerId) &&
         Objects.equals(this.serviceId, serviceOpinionDTO.serviceId) &&
         Objects.equals(this.rowVersion, serviceOpinionDTO.rowVersion) &&
+        Objects.equals(this.writer, serviceOpinionDTO.writer) &&
         Objects.equals(this.comment, serviceOpinionDTO.comment) &&
         Objects.equals(this.answerId, serviceOpinionDTO.answerId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, dateInsert, isVisible, writerId, serviceId, rowVersion, comment, answerId);
+    return Objects.hash(id, dateInsert, isVisible, writerId, serviceId, rowVersion, writer, comment, answerId);
   }
 
 
@@ -234,6 +253,7 @@ public class ServiceOpinionDTO {
     sb.append("    writerId: ").append(toIndentedString(writerId)).append("\n");
     sb.append("    serviceId: ").append(toIndentedString(serviceId)).append("\n");
     sb.append("    rowVersion: ").append(toIndentedString(rowVersion)).append("\n");
+    sb.append("    writer: ").append(toIndentedString(writer)).append("\n");
     sb.append("    comment: ").append(toIndentedString(comment)).append("\n");
     sb.append("    answerId: ").append(toIndentedString(answerId)).append("\n");
     sb.append("}");

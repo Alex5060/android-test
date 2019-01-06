@@ -3,17 +3,10 @@ package xyz.eeckhout.smartcity.dataAccess;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.google.android.gms.maps.model.VisibleRegion;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import xyz.eeckhout.smartcity.api.RoutesApi;
-import xyz.eeckhout.smartcity.controller.Utils;
 import xyz.eeckhout.smartcity.model.DisplayedRoutesDTO;
-import xyz.eeckhout.smartcity.model.jcdecaux.JCDecauxStation;
-import xyz.eeckhout.smartcity.model.villeNamur.bikeParking.BikeParkingNamur;
-import xyz.eeckhout.smartcity.model.villeNamur.bikeRoute.BikeRouteNamur;
 
 public class BikeRouteNamurAT extends AsyncTask<Object, Void, List<DisplayedRoutesDTO>> {
     private List<DisplayedRoutesDTO> bikeRouteNamur;
@@ -27,13 +20,13 @@ public class BikeRouteNamurAT extends AsyncTask<Object, Void, List<DisplayedRout
 
     @Override
     protected List<DisplayedRoutesDTO> doInBackground(Object... params) {
-            try {
-                this.bikeRouteNamur = new RoutesApi().get();
-            } catch (Exception e) {
-                exception = e;
-                Log.i("erreur", e.getMessage());
-            }
-            return bikeRouteNamur;
+        try {
+            this.bikeRouteNamur = new RoutesApi().get();
+        } catch (Exception e) {
+            exception = e;
+            Log.i("erreur", e.getMessage());
+        }
+        return bikeRouteNamur;
     }
 
     @Override
@@ -47,8 +40,9 @@ public class BikeRouteNamurAT extends AsyncTask<Object, Void, List<DisplayedRout
         }
     }
 
-    public interface GetBikeRouteNamurATResult{
+    public interface GetBikeRouteNamurATResult {
         void getBikeRouteNamur(List<DisplayedRoutesDTO> bikeRouteNamur);
+
         void getBikeRouteAtResultError(Exception exception);
     }
 }

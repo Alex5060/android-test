@@ -1,7 +1,5 @@
 package xyz.eeckhout.smartcity.controller;
 
-import android.app.Service;
-import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialogFragment;
@@ -17,9 +15,12 @@ import org.json.JSONObject;
 
 import xyz.eeckhout.smartcity.R;
 import xyz.eeckhout.smartcity.model.ServiceGetDTO;
+import xyz.eeckhout.smartcity.viewModel.BottomSheetViewModel;
+import xyz.eeckhout.smartcity.viewModel.ServiceViewModel;
 
 public class BottomSheetFragment extends BottomSheetDialogFragment {
     private BottomSheetViewModel viewModel;
+    private ServiceViewModel serviceViewModel;
     private Marker marker;
     public BottomSheetFragment() {
         // Required empty public constructor
@@ -29,6 +30,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = ViewModelProviders.of(getActivity()).get(BottomSheetViewModel.class);
+        serviceViewModel = ViewModelProviders.of(getActivity()).get(ServiceViewModel.class);
     }
 
     @Override
@@ -39,7 +41,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
 
         TextView title = view.findViewById(R.id.preview);
         TextView places = view.findViewById(R.id.share);
-        ServiceGetDTO service = (ServiceGetDTO) viewModel.getMarker().getTag();
+        final ServiceGetDTO service = (ServiceGetDTO) viewModel.getMarker().getTag();
         title.setText(service.getServiceName());
         try {
             JSONObject object = service.getFacultativeValue() != null && !service.getFacultativeValue().isEmpty() ? new JSONObject(service.getFacultativeValue()) : null;
@@ -59,6 +61,16 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
         catch(Exception e){
             Log.i("rrreur", e.getMessage());
         }
+
+        TextView viewAll = (TextView) view.findViewById(R.id.button_servicefull);
+        viewAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                serviceViewModel.getService(service.getId());
+                dismiss();
+                ((MainActivity) getActivity()).getServiceFragment();
+            }
+        });
         return view;
     }
 

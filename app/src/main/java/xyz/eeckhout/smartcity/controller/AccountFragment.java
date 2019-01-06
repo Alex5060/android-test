@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import xyz.eeckhout.smartcity.R;
+import xyz.eeckhout.smartcity.viewModel.AccountViewModel;
 
 public class AccountFragment extends Fragment {
 

@@ -13,6 +13,15 @@
 
 package xyz.eeckhout.smartcity.api;
 
+import com.google.gson.reflect.TypeToken;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import xyz.eeckhout.smartcity.ApiCallback;
 import xyz.eeckhout.smartcity.ApiClient;
 import xyz.eeckhout.smartcity.ApiException;
@@ -21,21 +30,8 @@ import xyz.eeckhout.smartcity.Configuration;
 import xyz.eeckhout.smartcity.Pair;
 import xyz.eeckhout.smartcity.ProgressRequestBody;
 import xyz.eeckhout.smartcity.ProgressResponseBody;
-
-import com.google.gson.reflect.TypeToken;
-
-import java.io.IOException;
-
-
-import xyz.eeckhout.smartcity.model.BusinessError;
 import xyz.eeckhout.smartcity.model.CategoryAddDTO;
 import xyz.eeckhout.smartcity.model.CategoryDTO;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class CategoryApi {
     private ApiClient apiClient;
@@ -178,7 +174,7 @@ public class CategoryApi {
     /**
      * Build call for get
      * @param pageIndex  (optional, default to 0)
-     * @param pageSize  (optional, default to 3)
+     * @param pageSize  (optional, default to 5)
      * @param categoryName  (optional)
      * @param progressListener Progress listener
      * @param progressRequestListener Progress request listener
@@ -245,7 +241,7 @@ public class CategoryApi {
      * 
      * 
      * @param pageIndex  (optional, default to 0)
-     * @param pageSize  (optional, default to 3)
+     * @param pageSize  (optional, default to 5)
      * @param categoryName  (optional)
      * @return List&lt;CategoryDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -259,7 +255,7 @@ public class CategoryApi {
      * 
      * 
      * @param pageIndex  (optional, default to 0)
-     * @param pageSize  (optional, default to 3)
+     * @param pageSize  (optional, default to 5)
      * @param categoryName  (optional)
      * @return ApiResponse&lt;List&lt;CategoryDTO&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -274,7 +270,7 @@ public class CategoryApi {
      *  (asynchronously)
      * 
      * @param pageIndex  (optional, default to 0)
-     * @param pageSize  (optional, default to 3)
+     * @param pageSize  (optional, default to 5)
      * @param categoryName  (optional)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
@@ -491,22 +487,25 @@ public class CategoryApi {
      * 
      * 
      * @param categoryDTO  (optional)
+     * @return CategoryDTO
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public void post(CategoryAddDTO categoryDTO) throws ApiException {
-        postWithHttpInfo(categoryDTO);
+    public CategoryDTO post(CategoryAddDTO categoryDTO) throws ApiException {
+        ApiResponse<CategoryDTO> resp = postWithHttpInfo(categoryDTO);
+        return resp.getData();
     }
 
     /**
      * 
      * 
      * @param categoryDTO  (optional)
-     * @return ApiResponse&lt;Void&gt;
+     * @return ApiResponse&lt;CategoryDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Void> postWithHttpInfo(CategoryAddDTO categoryDTO) throws ApiException {
+    public ApiResponse<CategoryDTO> postWithHttpInfo(CategoryAddDTO categoryDTO) throws ApiException {
         com.squareup.okhttp.Call call = postValidateBeforeCall(categoryDTO, null, null);
-        return apiClient.execute(call);
+        Type localVarReturnType = new TypeToken<CategoryDTO>(){}.getType();
+        return apiClient.execute(call, localVarReturnType);
     }
 
     /**
@@ -517,7 +516,7 @@ public class CategoryApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call postAsync(CategoryAddDTO categoryDTO, final ApiCallback<Void> callback) throws ApiException {
+    public com.squareup.okhttp.Call postAsync(CategoryAddDTO categoryDTO, final ApiCallback<CategoryDTO> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -539,7 +538,8 @@ public class CategoryApi {
         }
 
         com.squareup.okhttp.Call call = postValidateBeforeCall(categoryDTO, progressListener, progressRequestListener);
-        apiClient.executeAsync(call, callback);
+        Type localVarReturnType = new TypeToken<CategoryDTO>(){}.getType();
+        apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
     /**
@@ -566,7 +566,7 @@ public class CategoryApi {
         Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
         final String[] localVarAccepts = {
-            
+            "text/plain", "application/json", "text/json"
         };
         final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
         if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
@@ -612,10 +612,12 @@ public class CategoryApi {
      * 
      * @param id  (required)
      * @param category  (optional)
+     * @return CategoryDTO
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public void put(Integer id, CategoryDTO category) throws ApiException {
-        putWithHttpInfo(id, category);
+    public CategoryDTO put(Integer id, CategoryDTO category) throws ApiException {
+        ApiResponse<CategoryDTO> resp = putWithHttpInfo(id, category);
+        return resp.getData();
     }
 
     /**
@@ -623,12 +625,13 @@ public class CategoryApi {
      * 
      * @param id  (required)
      * @param category  (optional)
-     * @return ApiResponse&lt;Void&gt;
+     * @return ApiResponse&lt;CategoryDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Void> putWithHttpInfo(Integer id, CategoryDTO category) throws ApiException {
+    public ApiResponse<CategoryDTO> putWithHttpInfo(Integer id, CategoryDTO category) throws ApiException {
         com.squareup.okhttp.Call call = putValidateBeforeCall(id, category, null, null);
-        return apiClient.execute(call);
+        Type localVarReturnType = new TypeToken<CategoryDTO>(){}.getType();
+        return apiClient.execute(call, localVarReturnType);
     }
 
     /**
@@ -640,7 +643,7 @@ public class CategoryApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call putAsync(Integer id, CategoryDTO category, final ApiCallback<Void> callback) throws ApiException {
+    public com.squareup.okhttp.Call putAsync(Integer id, CategoryDTO category, final ApiCallback<CategoryDTO> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -662,7 +665,8 @@ public class CategoryApi {
         }
 
         com.squareup.okhttp.Call call = putValidateBeforeCall(id, category, progressListener, progressRequestListener);
-        apiClient.executeAsync(call, callback);
+        Type localVarReturnType = new TypeToken<CategoryDTO>(){}.getType();
+        apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
 }

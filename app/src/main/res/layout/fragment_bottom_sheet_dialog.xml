@@ -144,11 +144,11 @@
             android:tint="#737373" />
 
         <TextView
-            android:id="@+id/email"
+            android:id="@+id/button_servicefull"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Email a Copy"
+            android:text="@string/button_label_servicefull"
             android:textColor="#737373"
             android:textSize="16sp" />
 

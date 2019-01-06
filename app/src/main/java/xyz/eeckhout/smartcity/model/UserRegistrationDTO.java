@@ -13,20 +13,18 @@
 
 package xyz.eeckhout.smartcity.model;
 
-import java.util.Objects;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
+
+import org.joda.time.DateTime;
+
+import java.util.Objects;
+
 import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
 
 /**
  * UserRegistrationDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-01-03T20:36:15.687+01:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-01-06T14:36:30.645+01:00")
 public class UserRegistrationDTO {
   @SerializedName("userName")
   private String userName = null;
@@ -36,6 +34,12 @@ public class UserRegistrationDTO {
 
   @SerializedName("password")
   private String password = null;
+
+  @SerializedName("gender")
+  private String gender = null;
+
+  @SerializedName("birthdate")
+  private DateTime birthdate = null;
 
   @SerializedName("firstName")
   private String firstName = null;
@@ -97,6 +101,42 @@ public class UserRegistrationDTO {
     this.password = password;
   }
 
+  public UserRegistrationDTO gender(String gender) {
+    this.gender = gender;
+    return this;
+  }
+
+   /**
+   * Get gender
+   * @return gender
+  **/
+  @ApiModelProperty(required = true, value = "")
+  public String getGender() {
+    return gender;
+  }
+
+  public void setGender(String gender) {
+    this.gender = gender;
+  }
+
+  public UserRegistrationDTO birthdate(DateTime birthdate) {
+    this.birthdate = birthdate;
+    return this;
+  }
+
+   /**
+   * Get birthdate
+   * @return birthdate
+  **/
+  @ApiModelProperty(required = true, value = "")
+  public DateTime getBirthdate() {
+    return birthdate;
+  }
+
+  public void setBirthdate(DateTime birthdate) {
+    this.birthdate = birthdate;
+  }
+
   public UserRegistrationDTO firstName(String firstName) {
     this.firstName = firstName;
     return this;
@@ -146,13 +186,15 @@ public class UserRegistrationDTO {
     return Objects.equals(this.userName, userRegistrationDTO.userName) &&
         Objects.equals(this.email, userRegistrationDTO.email) &&
         Objects.equals(this.password, userRegistrationDTO.password) &&
+        Objects.equals(this.gender, userRegistrationDTO.gender) &&
+        Objects.equals(this.birthdate, userRegistrationDTO.birthdate) &&
         Objects.equals(this.firstName, userRegistrationDTO.firstName) &&
         Objects.equals(this.lastName, userRegistrationDTO.lastName);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(userName, email, password, firstName, lastName);
+    return Objects.hash(userName, email, password, gender, birthdate, firstName, lastName);
   }
 
 
@@ -164,6 +206,8 @@ public class UserRegistrationDTO {
     sb.append("    userName: ").append(toIndentedString(userName)).append("\n");
     sb.append("    email: ").append(toIndentedString(email)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
+    sb.append("    gender: ").append(toIndentedString(gender)).append("\n");
+    sb.append("    birthdate: ").append(toIndentedString(birthdate)).append("\n");
     sb.append("    firstName: ").append(toIndentedString(firstName)).append("\n");
     sb.append("    lastName: ").append(toIndentedString(lastName)).append("\n");
     sb.append("}");
