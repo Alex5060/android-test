@@ -34,7 +34,7 @@
 
         <TextView
             android:id="@+id/opnion_text"
-            android:layout_width="380dp"
+            android:layout_width="653dp"
             android:layout_height="57dp"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="30dp"

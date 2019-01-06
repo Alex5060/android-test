@@ -30,7 +30,7 @@ public class GetPhotoAT extends AsyncTask<String, Void, List<PhotoDTO>> {
         try {
             PhotoApi api = new PhotoApi();
             api.getApiClient().setAccessToken(accessToken);
-            this.photos = api.getByService(id, pageIndex, pageSize);
+            this.photos = api.getByService(id, pageIndex, pageSize, true);
         } catch (Exception e) {
             this.exception = e;
             Log.i("erreur", e.getMessage());

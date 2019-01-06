@@ -201,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void startFragment(int id){
+        setTitle(getString(R.string.app_name));
         if (id == R.id.nav_map) {
             init_fragment = R.id.nav_map;
             getMapFragment();

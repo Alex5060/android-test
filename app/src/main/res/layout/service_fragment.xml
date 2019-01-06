@@ -8,7 +8,7 @@
     tools:context=".controller.ServiceFragment">
 
     <LinearLayout
-        android:layout_width="397dp"
+        android:layout_width="match_parent"
         android:layout_height="315dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -44,11 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="0dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="0dp"
-            android:layout_marginBottom="0dp"
             android:clipToPadding="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -61,13 +57,11 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="399dp"
-        android:layout_height="177dp"
+        android:layout_width="match_parent"
+        android:layout_height="175dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="6dp"
-        android:layout_marginRight="8dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
@@ -95,10 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="0dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/service_disponibilite_title" />
@@ -118,21 +109,6 @@
         app:srcCompat="@android:drawable/ic_dialog_email" />
 
     <TextView
-        android:id="@+id/service_servicename"
-        android:layout_width="356dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.205"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
         android:id="@+id/service_disponibilite_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -141,7 +117,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/service_disponibilite_label"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/service_servicename" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/service_disponibilite"
@@ -152,6 +128,6 @@
         android:layout_marginTop="8dp"
         android:text="TextView"
         app:layout_constraintStart_toEndOf="@+id/service_disponibilite_title"
-        app:layout_constraintTop_toBottomOf="@+id/service_servicename" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

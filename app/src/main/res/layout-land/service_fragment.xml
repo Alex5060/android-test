@@ -10,10 +10,10 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="670dp"
-        android:layout_height="132dp"
+        android:layout_height="113dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="6dp"
         android:layout_marginRight="6dp"
         android:gravity="center"
@@ -53,21 +53,6 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/service_servicename"
-        android:layout_width="356dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
         android:id="@+id/service_disponibilite_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -76,7 +61,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/service_disponibilite_label"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/service_servicename" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/service_disponibilite"
@@ -87,7 +72,7 @@
         android:layout_marginTop="8dp"
         android:text="TextView"
         app:layout_constraintStart_toEndOf="@+id/service_disponibilite_title"
-        app:layout_constraintTop_toBottomOf="@+id/service_servicename" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab2"
@@ -105,7 +90,7 @@
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="668dp"
-        android:layout_height="116dp"
+        android:layout_height="102dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"

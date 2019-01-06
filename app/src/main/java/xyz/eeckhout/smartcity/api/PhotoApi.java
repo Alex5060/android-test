@@ -175,12 +175,13 @@ public class PhotoApi {
      * @param serviceId  (required)
      * @param pageIndex  (optional, default to 0)
      * @param pageSize  (optional, default to 5)
+     * @param isVisible  (optional)
      * @param progressListener Progress listener
      * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call getByServiceCall(Integer serviceId, Integer pageIndex, Integer pageSize, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call getByServiceCall(Integer serviceId, Integer pageIndex, Integer pageSize, Boolean isVisible, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -193,6 +194,8 @@ public class PhotoApi {
         localVarQueryParams.addAll(apiClient.parameterToPair("pageIndex", pageIndex));
         if (pageSize != null)
         localVarQueryParams.addAll(apiClient.parameterToPair("pageSize", pageSize));
+        if (isVisible != null)
+        localVarQueryParams.addAll(apiClient.parameterToPair("isVisible", isVisible));
 
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
 
@@ -227,7 +230,7 @@ public class PhotoApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getByServiceValidateBeforeCall(Integer serviceId, Integer pageIndex, Integer pageSize, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getByServiceValidateBeforeCall(Integer serviceId, Integer pageIndex, Integer pageSize, Boolean isVisible, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         
         // verify the required parameter 'serviceId' is set
         if (serviceId == null) {
@@ -235,7 +238,7 @@ public class PhotoApi {
         }
         
 
-        com.squareup.okhttp.Call call = getByServiceCall(serviceId, pageIndex, pageSize, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getByServiceCall(serviceId, pageIndex, pageSize, isVisible, progressListener, progressRequestListener);
         return call;
 
     }
@@ -246,11 +249,12 @@ public class PhotoApi {
      * @param serviceId  (required)
      * @param pageIndex  (optional, default to 0)
      * @param pageSize  (optional, default to 5)
+     * @param isVisible  (optional)
      * @return List&lt;PhotoDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public List<PhotoDTO> getByService(Integer serviceId, Integer pageIndex, Integer pageSize) throws ApiException {
-        ApiResponse<List<PhotoDTO>> resp = getByServiceWithHttpInfo(serviceId, pageIndex, pageSize);
+    public List<PhotoDTO> getByService(Integer serviceId, Integer pageIndex, Integer pageSize, Boolean isVisible) throws ApiException {
+        ApiResponse<List<PhotoDTO>> resp = getByServiceWithHttpInfo(serviceId, pageIndex, pageSize, isVisible);
         return resp.getData();
     }
 
@@ -260,11 +264,12 @@ public class PhotoApi {
      * @param serviceId  (required)
      * @param pageIndex  (optional, default to 0)
      * @param pageSize  (optional, default to 5)
+     * @param isVisible  (optional)
      * @return ApiResponse&lt;List&lt;PhotoDTO&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<List<PhotoDTO>> getByServiceWithHttpInfo(Integer serviceId, Integer pageIndex, Integer pageSize) throws ApiException {
-        com.squareup.okhttp.Call call = getByServiceValidateBeforeCall(serviceId, pageIndex, pageSize, null, null);
+    public ApiResponse<List<PhotoDTO>> getByServiceWithHttpInfo(Integer serviceId, Integer pageIndex, Integer pageSize, Boolean isVisible) throws ApiException {
+        com.squareup.okhttp.Call call = getByServiceValidateBeforeCall(serviceId, pageIndex, pageSize, isVisible, null, null);
         Type localVarReturnType = new TypeToken<List<PhotoDTO>>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -275,11 +280,12 @@ public class PhotoApi {
      * @param serviceId  (required)
      * @param pageIndex  (optional, default to 0)
      * @param pageSize  (optional, default to 5)
+     * @param isVisible  (optional)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getByServiceAsync(Integer serviceId, Integer pageIndex, Integer pageSize, final ApiCallback<List<PhotoDTO>> callback) throws ApiException {
+    public com.squareup.okhttp.Call getByServiceAsync(Integer serviceId, Integer pageIndex, Integer pageSize, Boolean isVisible, final ApiCallback<List<PhotoDTO>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -300,7 +306,7 @@ public class PhotoApi {
             };
         }
 
-        com.squareup.okhttp.Call call = getByServiceValidateBeforeCall(serviceId, pageIndex, pageSize, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getByServiceValidateBeforeCall(serviceId, pageIndex, pageSize, isVisible, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<List<PhotoDTO>>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;

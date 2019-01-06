@@ -32,7 +32,6 @@ import xyz.eeckhout.smartcity.viewModel.ServiceViewModel;
 public class ServiceFragment extends Fragment implements PutOpinionAT.GetOpinionsATResults, DeleteOpinionAT.DeleteOpinionsATResults {
 
     private ServiceViewModel mViewModel;
-    private TextView serviceNameTV;
     private TextView serviceDisponibilite;
     private boolean isLastPage = false;
     private boolean isLoading = false;
@@ -63,7 +62,6 @@ public class ServiceFragment extends Fragment implements PutOpinionAT.GetOpinion
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.service_fragment, container, false);
-        serviceNameTV = view.findViewById(R.id.service_servicename);
         serviceDisponibilite = view.findViewById(R.id.service_disponibilite);
 
         mPhotoRecyclerView = (RecyclerView) view.findViewById(R.id.service_recyclerview_photo);
@@ -99,8 +97,7 @@ public class ServiceFragment extends Fragment implements PutOpinionAT.GetOpinion
             public void onChanged(@Nullable ServiceDTO service) {
                 if(service != null) {
                     serviceId = service.getId();
-                    serviceNameTV.setText(service.getServiceName());
-
+                    getActivity().setTitle(service.getServiceName());
                     try {
                         JSONObject object = service.getFacultativeValue() != null && !service.getFacultativeValue().isEmpty() ? new JSONObject(service.getFacultativeValue()) : null;
                         switch (service.getCategoryId()) {
